@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
 		android:hint="@string/editText"
 		android:inputType="textMultiLine"
-		android:lines="5" 
+		android:lines="1" 
 		/>
         <EditText
         android:id="@+id/mesure"
@@ -18,7 +18,15 @@
         android:layout_height="wrap_content"
 		android:hint="@string/editText"
 		android:inputType="textMultiLine"
-		android:lines="5" 
+		android:lines="1" 
+		/>
+         <EditText
+        android:id="@+id/tempo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:hint="@string/editText"
+		android:inputType="textMultiLine"
+		android:lines="1" 
 		/>
     
     <Button 
@@ -32,6 +40,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="clean"
+    	/>  
+    	<Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="delete"
+    	/>
+    	<Button
+        android:id="@+id/print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="print"
     	/>
     
     <TextView

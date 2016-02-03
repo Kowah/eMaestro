@@ -13,6 +13,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_Musique = "id_musique";
 	private static final String NAME_Musique = "name";
 	private static final String NB_MESURE = "nb_mesure";
+	private static final String TEMPO = "Tempo";
 
 	//Colonnes table catalogue
 	private static final String Table_Catalogue = "Catalogue";
@@ -30,7 +31,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 			"CREATE TABLE " + TABLE_Musique + " (" 
 			+ KEY_Musique + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
 			+ NAME_Musique + " TEXT, " 
-			+ NB_MESURE + " INTEGER"
+			+ NB_MESURE + " INTEGER, "
+			+ TEMPO + " INTEGER"
 			+ ");";
 
 	//Creation table catalogue
