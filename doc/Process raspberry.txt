@@ -1,0 +1,8 @@
+Prérequis : Apporter un chargeur micro usb
+Etape 1 : connecter la matrice de led sur le Hat
+Etape 2 : Brancher la raspberry sur le secteur
+Etape 3 : se connecter au wifi "Maestro" dès qu'il est disponible
+Etape 4 : se connecter en ssh à l'adresse "169.254.183.18" , nom utilisateur "pi", password "raspberry"
+Etape 5 : "sudo su"
+Etape 6 : "cd rpi-rgb-led-matrix-master"
+Etape 7 : ecrire le code dans un .py et faire python <nomfichier>.py pour lancer
