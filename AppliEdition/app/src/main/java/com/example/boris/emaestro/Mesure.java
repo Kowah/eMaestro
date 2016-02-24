@@ -1,0 +1,37 @@
+package com.example.boris.emaestro;
+
+
+import android.widget.ImageButton;
+
+public class Mesure {
+    private int id;
+    private int tempo;
+    private int tempsMesure;
+    private String unite;
+
+    public Mesure( int id, int tempo, int tempsMesure, String unite){
+        this.id = id;
+        this.tempo = tempo;
+        this.tempsMesure = tempsMesure;
+        this.unite = unite;
+
+    }
+//TODO gestion des events
+
+    public void setId(int newId){
+        this.id = newId;
+    }
+    public int getId(){return id;}
+
+    public void setTempo(int newTempo){
+        this.tempo = newTempo;
+    }
+    public void setTempsMesure(int newTempsMesure){
+        this.tempsMesure = newTempsMesure;
+    }
+    public void setUnite(String newUnite){
+        this.unite = newUnite
+        ;
+    }
+
+}
