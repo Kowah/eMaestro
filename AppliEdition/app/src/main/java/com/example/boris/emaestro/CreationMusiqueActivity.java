@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,24 +25,32 @@ public class CreationMusiqueActivity extends Activity {
     String EXTRA_PULSATION="pulsation";
     String EXTRA_UNITE="unite";
     String EXTRA_TPSPARMESURE="tpsParMesure";
+    String EXTRA_DRAGACTIF="false";
     //variable pour tempo, tps par mesure
     String unite="";
     String tpsParMesure="";
     Spinner tpsParMesureSpinner,  uniteSpinner;
-
+   Button drag;
+    boolean dragActive ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
-
+        dragActive = false;
        final EditText pulsation = (EditText) findViewById(R.id.pulsation);
       final  EditText nomPartition = (EditText) findViewById(R.id.nom);
       final  EditText nbMesure = (EditText) findViewById(R.id.nbMesure);
-
+        drag = (Button) findViewById(R.id.drag);
         uniteSpinner = (Spinner) findViewById(R.id.uniteTempo);
         tpsParMesureSpinner = (Spinner) findViewById(R.id.tempsParMesure);
         Button loginButton = (Button) findViewById(R.id.creer);
 
+        drag.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dragActive = ! dragActive;
+            }
+        });
         // Spinner Drop down elements
         List<String> uniteList = new ArrayList<String>();
         uniteList.add("ronde");
@@ -76,7 +85,7 @@ public class CreationMusiqueActivity extends Activity {
             public void onClick(View v) {
 
                 EXTRA_UNITE = uniteSpinner.getSelectedItem().toString();
-                EXTRA_TPSPARMESURE= tpsParMesureSpinner.getSelectedItem().toString();
+                EXTRA_TPSPARMESURE = tpsParMesureSpinner.getSelectedItem().toString();
 
                 Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
                 intent.putExtra(EXTRA_NOMPARTITION, nomPartition.getText().toString());
@@ -84,6 +93,14 @@ public class CreationMusiqueActivity extends Activity {
                 intent.putExtra(EXTRA_PULSATION, pulsation.getText().toString());
                 intent.putExtra(EXTRA_TPSPARMESURE, tpsParMesure);
                 intent.putExtra(EXTRA_UNITE, unite);
+                if (dragActive) {
+                    Toast.makeText(CreationMusiqueActivity.this, "je suis activé", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                    intent.putExtra(EXTRA_DRAGACTIF, "true");
+                } else {
+                    Toast.makeText(CreationMusiqueActivity.this, "je suis pas activé",Toast.LENGTH_SHORT).show();
+                            intent.putExtra(EXTRA_DRAGACTIF, "false");
+                }
+
                 if (unite.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir l'unité de tmps", Toast.LENGTH_SHORT).show();
                 } else if (tpsParMesure.length() <= 0) {
@@ -99,7 +116,6 @@ public class CreationMusiqueActivity extends Activity {
                 }
             }
         });
-
 
 
         //x : unite du tempo (x = _ par minute)

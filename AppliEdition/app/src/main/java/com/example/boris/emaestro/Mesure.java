@@ -8,12 +8,14 @@ public class Mesure {
     private int tempo;
     private int tempsMesure;
     private String unite;
+    boolean selectionne;
 
     public Mesure( int id, int tempo, int tempsMesure, String unite){
         this.id = id;
         this.tempo = tempo;
         this.tempsMesure = tempsMesure;
         this.unite = unite;
+        selectionne = false;
 
     }
 //TODO gestion des events
@@ -33,6 +35,12 @@ public class Mesure {
     public void setUnite(String newUnite){
         this.unite = newUnite
         ;
+    }
+    public void toggleSelec(){
+        selectionne = ! selectionne;
+    }
+    public boolean getSelec(){
+        return selectionne;
     }
 
 }

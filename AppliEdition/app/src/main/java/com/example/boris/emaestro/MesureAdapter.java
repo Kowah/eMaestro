@@ -40,6 +40,14 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
 
         MesureViewHolder viewHolder = (MesureViewHolder) convertView.getTag();
         Mesure mesure = partition.getMesure(position);
+        //Cadre jaune de selection
+        //necessaire ici aussi car le recyclage des vues modifiait l'affichage des mesures selectionnees
+        if(mesure.getSelec()) {
+            convertView.findViewById(R.id.selection).setAlpha(0.7f);
+        }else{
+            convertView.findViewById(R.id.selection).setAlpha(0.0f);
+        }
+
         if(viewHolder == null){
             viewHolder = new MesureViewHolder();
             viewHolder.id = (TextView) convertView.findViewById(R.id.id);
@@ -79,7 +87,7 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                   labelEvent = event.getClipData().getDescription().getLabel().toString();
                     switch(labelEvent) {
                         case "tempo":
-                            View layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_tempo, null);
+                            View layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_tempo_drag, null);
                             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
                             final EditText finTempo = (EditText) layout.findViewById(R.id.mesureFin);
                             new AlertDialog.Builder(getContext())
@@ -97,7 +105,6 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                                         }
                                         else if(mesureFin<mesureDebut) {
                                             Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie est située avant la mesure de début choisie", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-
                                         }
                                         else {
                                             partition.setTempo(mesureDebut, mesureFin, newTempo);

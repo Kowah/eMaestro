@@ -15,6 +15,10 @@ public class Partition {
 
     List<Mesure> partition;
 
+    public Partition(){
+        partition = new ArrayList<>();
+    }
+
     public Partition(String nbMesure,String tempo,String tpsParMesure,String unite){
         int id=1;
         int nbM = Integer.parseInt(nbMesure);
@@ -29,9 +33,15 @@ public class Partition {
     }
 
     public List<Mesure> getListMesures(){ return partition;}
+
     public Mesure getMesure(int id){ return partition.get(id);}
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
         for(int i=mesureDebut-1;i<mesureFin;i++){
+            partition.get(i).setTempo(tempo);
+        }
+    }
+    public void setTempo(List<Integer> l,int tempo){
+        for(int i=0;i<l.size();i++){
             partition.get(i).setTempo(tempo);
         }
     }
