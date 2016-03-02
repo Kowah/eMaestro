@@ -26,6 +26,10 @@ public class CreationMusiqueActivity extends Activity {
     String EXTRA_UNITE="unite";
     String EXTRA_TPSPARMESURE="tpsParMesure";
     String EXTRA_DRAGACTIF="false";
+
+    EditText pulsation;
+    EditText nomPartition;
+    EditText nbMesure;
     //variable pour tempo, tps par mesure
     String unite="";
     String tpsParMesure="";
@@ -37,14 +41,14 @@ public class CreationMusiqueActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
         dragActive = false;
-       final EditText pulsation = (EditText) findViewById(R.id.pulsation);
-      final  EditText nomPartition = (EditText) findViewById(R.id.nom);
-      final  EditText nbMesure = (EditText) findViewById(R.id.nbMesure);
+        pulsation = (EditText) findViewById(R.id.pulsation);
+        nomPartition = (EditText) findViewById(R.id.nom);
+        nbMesure = (EditText) findViewById(R.id.nbMesure);
         drag = (Button) findViewById(R.id.drag);
         uniteSpinner = (Spinner) findViewById(R.id.uniteTempo);
         tpsParMesureSpinner = (Spinner) findViewById(R.id.tempsParMesure);
         Button loginButton = (Button) findViewById(R.id.creer);
-
+        //choix entre drag et selection
         drag.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
