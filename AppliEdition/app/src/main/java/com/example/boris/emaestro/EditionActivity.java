@@ -1,10 +1,17 @@
 package com.example.boris.emaestro;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +19,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
@@ -40,13 +49,29 @@ public class EditionActivity  extends Activity {
 
     //grilleMesure
     GridView mGridView;
-    List<Mesure> mesures;
+    Partition partition;
+
+    //Drag
+    ImageView mTempo;
+
+    ImageView mNuance;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edition_mesures);
+
+        //<drag
+        LinearLayout menu =(LinearLayout) findViewById(R.id.menu);
+
+
+        mTempo = (ImageView) menu.findViewById(R.id.tempo);
+        mNuance = (ImageView) menu.findViewById(R.id.nuance);
+
+        mTempo.setOnTouchListener(new BoutonListener("tempo"));
+        mNuance.setOnTouchListener(new BoutonListener("nuance"));
+        //drag>
 
         //gestion grille mesure
         GridLayout mesuresGrid =(GridLayout) findViewById(R.id.mesures);
@@ -60,13 +85,13 @@ public class EditionActivity  extends Activity {
         EXTRA_UNITE=intent.getStringExtra(EXTRA_UNITE);
         EXTRA_TPSPARMESURE=intent.getStringExtra(EXTRA_TPSPARMESURE);
 
-        mesures = genererMesure(EXTRA_NBMESURE,EXTRA_PULSATION,EXTRA_TPSPARMESURE,EXTRA_UNITE);
-        MesureAdapter adapter = new MesureAdapter(EditionActivity.this,mesures);
+        partition = new Partition(EXTRA_NBMESURE,EXTRA_PULSATION,EXTRA_TPSPARMESURE,EXTRA_UNITE);
+        MesureAdapter adapter = new MesureAdapter(EditionActivity.this,partition);
         mGridView.setAdapter(adapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getApplicationContext(), String.valueOf(mesures.get(position).getId()), Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                Toast.makeText(getApplicationContext(), String.valueOf(partition.getListMesures().get(position).getTempo()), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -83,20 +108,32 @@ public class EditionActivity  extends Activity {
 
 
     }
-    private List<Mesure> genererMesure(String nb,String tempo,String tpsParMesure,String unite){
-        List<Mesure> mesuresL;
-        int id=1;
-        int nbM = (int)Integer.parseInt(nb);
-        int tempoM = 0;//(int)Integer.parseInt(tempo);
-        int tpsParMesureM = 0;//(int)Integer.parseInt(tpsParMesure);
 
-        mesuresL = new ArrayList<Mesure>()  ;
-        for(int i=0;i<nbM;i++){
-            mesuresL.add(new Mesure(id,tempoM,tpsParMesureM,unite));
-            id++;
+
+
+
+    //<Drag
+    private final class BoutonListener implements View.OnTouchListener {
+        private String typeEvent;
+        public BoutonListener(String type){
+            super();
+            typeEvent = type;
         }
-        return mesuresL;
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                String mType="";
+                ClipData data = ClipData.newPlainText(typeEvent, mType);//donne un label au clipdata
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
+
+
+    //Drag>
 
 
     private TextWatcher textWatcher = new TextWatcher() {

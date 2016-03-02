@@ -34,12 +34,22 @@
         android:text="clean"
         android:layout_below="@id/envoie"
         />
+
     <include android:id="@+id/mesures"
         layout="@layout/grille_mesure"
         android:layout_height="500dp"
         android:layout_width="800dp"
         android:layout_alignParentRight="true"
         />
+    <include android:id="@+id/menu"
+        layout="@layout/barre_menu"
+        android:layout_height="60dp"
+        android:layout_width="800dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/mesure"
+        android:layout_toEndOf="@+id/mesure"
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp" />
     <TextView
         android:id="@+id/result"
         android:layout_width="200px"
@@ -54,6 +64,7 @@
         android:layout_alignBottom="@+id/mesures"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="53dp" />
+        android:layout_marginBottom="53dp"
+        />
 
 </RelativeLayout>

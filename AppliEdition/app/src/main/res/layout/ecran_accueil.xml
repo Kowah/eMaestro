@@ -29,7 +29,7 @@
         android:layout_height="50dp"
         android:background="@drawable/telecommande"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+         />
 
 
 </RelativeLayout>

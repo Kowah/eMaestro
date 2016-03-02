@@ -8,6 +8,12 @@
         android:layout_width="80dp"
         android:layout_height="50dp"
         android:background="@drawable/mesure"/>
+    <ImageView
+        android:id="@+id/filtre"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:alpha=".75"
+        android:background="@color/green"/>
 
     <TextView
         android:id="@+id/id"

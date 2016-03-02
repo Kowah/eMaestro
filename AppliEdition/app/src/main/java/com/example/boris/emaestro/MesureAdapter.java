@@ -1,22 +1,34 @@
 package com.example.boris.emaestro;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.text.InputType;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 public class MesureAdapter extends ArrayAdapter<Mesure> {
+    String labelEvent;// pour drop
+    int newTempo, mesureFin,mesureDebut;// changement de tempo
+    int newNuance; // changement de nuance
+    Partition partition;
 
 
-    //mesures est la liste des models à afficher
-    public MesureAdapter(Context context, List<Mesure> mesures) {
-        super(context, 0, mesures);
+    //partition est la liste des models à afficher
+    public MesureAdapter(Context context, Partition partition) {
+        super(context, 0, partition.getListMesures());
+        this.partition = partition;
     }
 
     @Override
@@ -27,25 +39,116 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         }
 
         MesureViewHolder viewHolder = (MesureViewHolder) convertView.getTag();
+        Mesure mesure = partition.getMesure(position);
         if(viewHolder == null){
             viewHolder = new MesureViewHolder();
             viewHolder.id = (TextView) convertView.findViewById(R.id.id);
-           // viewHolder.m = (ImageView) convertView.findViewById(R.id.m);
             convertView.setTag(viewHolder);
         }
-
-        //getItem(position) va récupérer l'item [position] de la List<Mesure> mesures
-        Mesure mesure = getItem(position);
-
         //il ne reste plus qu'à remplir notre vue
         viewHolder.id.setText(String.valueOf(mesure.getId()));
         //Si on veut modifier le background viewHolder.m.setBackground(Drawable.createFromPath("@drawable/mesure"));
-
+        convertView.setOnDragListener(new MesureDragListener(viewHolder));
         return convertView;
     }
 
     private class MesureViewHolder{
         public TextView id;
-       // public ImageView m;
+    }
+//drag Listener
+    private class MesureDragListener implements View.OnDragListener {
+        private MesureViewHolder viewHolder;
+
+    public MesureDragListener(MesureViewHolder a){
+        viewHolder = a;
+    }
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int action = event.getAction();
+
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    //TODO appliquer le bon effet
+                  labelEvent = event.getClipData().getDescription().getLabel().toString();
+                    switch(labelEvent) {
+                        case "tempo":
+                            View layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_tempo, null);
+                            final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
+                            final EditText finTempo = (EditText) layout.findViewById(R.id.mesureFin);
+                            new AlertDialog.Builder(getContext())
+                                .setTitle("Changement de tempo")
+                                .setView(layout)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        newTempo = Integer.parseInt(editTempo.getText().toString());
+                                        mesureFin = Integer.parseInt(finTempo.getText().toString());
+                                        mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
+                                        //TODO ajouter evenement dans bdd
+                                        if (mesureFin > partition.getListMesures().size()) {
+                                            Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie n'existe pas", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+
+                                        }
+                                        else if(mesureFin<mesureDebut) {
+                                            Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie est située avant la mesure de début choisie", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+
+                                        }
+                                        else {
+                                            partition.setTempo(mesureDebut, mesureFin, newTempo);
+                                            Toast.makeText(getContext(), "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                                        }
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                                break;
+                        case "nuance" :
+                            /* layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_nuance, null);
+                             final EditText finNuance = (EditText) layout.findViewById(R.id.mesureFin);
+                             new AlertDialog.Builder(getContext())
+                                    .setTitle("Changement de Nuance")
+                                    .setView(layout)
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            newNuance = Integer.parseInt(editTempo.getText().toString());
+                                           mesureFin = Integer.parseInt(finTempo.getText().toString());
+                                            mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
+                                            //TODO ajouter evenement dans bdd
+                                            if (mesureFin > partition.getListMesures().size()) {
+                                                Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie n'existe pas", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+
+                                            } else {
+                                                partition.setTempo(mesureDebut, mesureFin, newTempo);
+                                                Toast.makeText(getContext(), "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // do nothing
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();*/
+                            break;
+
+                    }
+                case DragEvent.ACTION_DRAG_ENDED:
+                default:
+                    break;
+            }
+            return true;
+        }
     }
 }

@@ -41,7 +41,7 @@
         android:layout_width="fill_parent"
         android:layout_height="100px"
         android:hint="@string/mesure"
-        android:inputType="textMultiLine"
+        android:inputType="number"
         android:lines="5"
         android:layout_below="@id/nombreMesure"/>
         />
@@ -63,7 +63,7 @@
         android:layout_width="200px"
         android:layout_height="100px"
         android:hint="pulsation"
-        android:inputType="textMultiLine"
+        android:inputType="number"
         android:lines="5"
         android:layout_below="@id/textPulsation"
         />
@@ -77,16 +77,14 @@
     android:text="Unite :"
     android:textSize="@dimen/normal_text_size"
         android:textColor="@android:color/black"
-    android:layout_below="@id/textPulsation"
-    android:layout_toEndOf="@id/pulsation"
+    android:layout_below="@id/pulsation"
         />
 
     <Spinner
         android:id="@+id/uniteTempo"
         android:layout_width="250px"
         android:layout_height="100px"
-        android:layout_below="@id/textPulsation"
-        android:layout_toEndOf="@id/uniteNote"/>
+        android:layout_below="@id/uniteNote"/>
     <TextView
 
         android:id="@+id/infoMesure"
@@ -96,22 +94,14 @@
         android:text="mesure par défaut :"
         android:textSize="@dimen/normal_text_size"
         android:textColor="@android:color/black"
-        android:layout_below="@id/pulsation"
+        android:layout_below="@id/uniteTempo"
         />
     <Spinner
         android:id="@+id/tempsParMesure"
         android:layout_width="250px"
         android:layout_height="100px"
 
-        android:layout_below="@id/pulsation"
-        android:layout_toEndOf="@id/infoMesure"/>
-
-    <Spinner
-        android:id="@+id/uniteTempsMesure"
-        android:layout_width="match_parent"
-        android:layout_height="100px"
-        android:layout_below="@id/pulsation"
-        android:layout_toEndOf="@id/tempsParMesure"/>
+        android:layout_below="@id/infoMesure"/>
 
 
 

@@ -26,6 +26,7 @@ public class Mesure {
     public void setTempo(int newTempo){
         this.tempo = newTempo;
     }
+    public int getTempo(){return tempo;}
     public void setTempsMesure(int newTempsMesure){
         this.tempsMesure = newTempsMesure;
     }
