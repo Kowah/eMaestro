@@ -3,5 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="green">#33E533</color>
+
+    <color name="fortississimmo">#FF0000</color>
+    <color name="fortissimo">#FFA500</color>
+    <color name="forte">#FFFF00</color>
+    <color name="mezzoforte">#FFFF99</color>
+    <color name="neutre">#00FF00</color>
+    <color name="mezzopiano">#33FFFF</color>
+    <color name="piano">#008B8B</color>
+    <color name="pianissimo">#0000FF</color>
+    <color name="pianississimo">#800080</color>
+
 </resources>

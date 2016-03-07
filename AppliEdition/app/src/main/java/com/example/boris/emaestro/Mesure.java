@@ -6,8 +6,10 @@ import android.widget.ImageButton;
 public class Mesure {
     private int id;
     private int tempo;
+    private String nuance;
     private int tempsMesure;
     private String unite;
+
     boolean selectionne;
 
     public Mesure( int id, int tempo, int tempsMesure, String unite){
@@ -15,6 +17,7 @@ public class Mesure {
         this.tempo = tempo;
         this.tempsMesure = tempsMesure;
         this.unite = unite;
+        this.nuance = "neutre";
         selectionne = false;
 
     }
@@ -28,6 +31,10 @@ public class Mesure {
     public void setTempo(int newTempo){
         this.tempo = newTempo;
     }
+    public String getNuance(){
+        return nuance;
+    }
+    public void setNuance(String newNuance){ this.nuance = newNuance;}
     public int getTempo(){return tempo;}
     public void setTempsMesure(int newTempsMesure){
         this.tempsMesure = newTempsMesure;

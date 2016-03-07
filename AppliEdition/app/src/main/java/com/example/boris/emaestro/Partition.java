@@ -41,8 +41,23 @@ public class Partition {
         }
     }
     public void setTempo(List<Integer> l,int tempo){
+        Integer j;
         for(int i=0;i<l.size();i++){
-            partition.get(i).setTempo(tempo);
+            j = l.get(i).intValue();
+            partition.get(j-1).setTempo(tempo);
+        }
+    }
+
+    public void setNuance(List<Integer> l,String nuance){
+        Integer j;
+        for(int i=0;i<l.size();i++){
+            j = l.get(i).intValue();
+            partition.get(j-1).setNuance(nuance);
+        }
+    }
+    public void unselectAll(){
+        for(int i=0;i<partition.size();i++){
+            partition.get(i).selectionne=false;
         }
     }
 }

@@ -34,12 +34,15 @@ public class CreationMusiqueActivity extends Activity {
     String unite="";
     String tpsParMesure="";
     Spinner tpsParMesureSpinner,  uniteSpinner;
-   Button drag;
+
+
+    Button drag;
     boolean dragActive ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
+
         dragActive = false;
         pulsation = (EditText) findViewById(R.id.pulsation);
         nomPartition = (EditText) findViewById(R.id.nom);
@@ -48,14 +51,22 @@ public class CreationMusiqueActivity extends Activity {
         uniteSpinner = (Spinner) findViewById(R.id.uniteTempo);
         tpsParMesureSpinner = (Spinner) findViewById(R.id.tempsParMesure);
         Button loginButton = (Button) findViewById(R.id.creer);
-        //choix entre drag et selection
+
+        //Boutonn choix entre drag et selection
         drag.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 dragActive = ! dragActive;
+                if(dragActive){
+                    drag.setText("Désactiver le drag n drop");
+
+                }else{
+                    drag.setText("Activer le drag n drop");
+                }
             }
         });
-        // Spinner Drop down elements
+
+        // Spinner Unité du tempo
         List<String> uniteList = new ArrayList<String>();
         uniteList.add("ronde");
         uniteList.add("blanche");
@@ -71,17 +82,18 @@ public class CreationMusiqueActivity extends Activity {
             tpsMesure.add(String.valueOf(i));
         }
 
-        // Creating adapter for spinner
+        // Adapter pour le spinner, pour l'affichage
         ArrayAdapter<String> dataAdapterUnite = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,uniteList );
         ArrayAdapter<String> dataAdapterTpsParMesure = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,tpsMesure);
 
-        // Drop down layout style - list view with radio button
+        // Drop down layout style - affichage "amélioré"
         dataAdapterUnite.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dataAdapterTpsParMesure.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
         uniteSpinner.setAdapter(dataAdapterUnite);
         tpsParMesureSpinner.setAdapter(dataAdapterTpsParMesure);
+
         //button listener pour création
         loginButton.setOnClickListener(new OnClickListener() {
 
@@ -90,18 +102,19 @@ public class CreationMusiqueActivity extends Activity {
 
                 EXTRA_UNITE = uniteSpinner.getSelectedItem().toString();
                 EXTRA_TPSPARMESURE = tpsParMesureSpinner.getSelectedItem().toString();
-
+                // permet le passage de message dans un changement d'activité (startActivity)
                 Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
                 intent.putExtra(EXTRA_NOMPARTITION, nomPartition.getText().toString());
                 intent.putExtra(EXTRA_NBMESURE, nbMesure.getText().toString());
                 intent.putExtra(EXTRA_PULSATION, pulsation.getText().toString());
                 intent.putExtra(EXTRA_TPSPARMESURE, tpsParMesure);
                 intent.putExtra(EXTRA_UNITE, unite);
+
                 if (dragActive) {
-                    Toast.makeText(CreationMusiqueActivity.this, "je suis activé", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                    Toast.makeText(CreationMusiqueActivity.this, "Edition par drag and drop", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                     intent.putExtra(EXTRA_DRAGACTIF, "true");
                 } else {
-                    Toast.makeText(CreationMusiqueActivity.this, "je suis pas activé",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreationMusiqueActivity.this, "Edition par selection",Toast.LENGTH_SHORT).show();
                             intent.putExtra(EXTRA_DRAGACTIF, "false");
                 }
 
@@ -122,7 +135,7 @@ public class CreationMusiqueActivity extends Activity {
         });
 
 
-        //x : unite du tempo (x = _ par minute)
+        //listener pour choix de l'unite
         uniteSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
@@ -136,7 +149,7 @@ public class CreationMusiqueActivity extends Activity {
             }
         });
 
-        //x   tps par mesure (x /_)
+        //listener pour nbre de temps par mesure
         tpsParMesureSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override

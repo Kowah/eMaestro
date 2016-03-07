@@ -5,35 +5,6 @@
     android:layout_height="fill_parent" >
 
 
-    <EditText
-        android:id="@+id/nom"
-        android:layout_width="300px"
-        android:layout_height="100px"
-        android:inputType="textMultiLine"
-        android:lines="5"
-        />
-    <EditText
-        android:id="@+id/mesure"
-        android:layout_width="300px"
-        android:layout_height="100px"
-        android:inputType="textMultiLine"
-        android:lines="5"
-        android:layout_below="@id/nom"/>
-
-    <Button
-        android:id="@+id/envoie"
-        android:layout_width="200px"
-        android:layout_height="100px"
-        android:text="envoyer"
-        android:layout_below="@id/mesure"
-        />
-    <Button
-        android:id="@+id/clean"
-        android:layout_width="200px"
-        android:layout_height="100px"
-        android:text="clean"
-        android:layout_below="@id/envoie"
-        />
 
     <include android:id="@+id/mesures"
         layout="@layout/grille_mesure"

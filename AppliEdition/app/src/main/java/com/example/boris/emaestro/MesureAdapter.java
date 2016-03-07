@@ -40,13 +40,56 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
 
         MesureViewHolder viewHolder = (MesureViewHolder) convertView.getTag();
         Mesure mesure = partition.getMesure(position);
+
+        //MAJ nuance
+        switch(mesure.getNuance()){
+            case "fortississimo":
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.fortississimmo));
+                break;
+            case "fortissimo":
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.fortissimo));
+                break;
+            case "forte":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.forte));
+                break;
+            case "mezzoforte":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.mezzoforte));
+                break;
+            case "neutre":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.neutre));
+                break;
+            case "mezzopiano":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.mezzopiano));
+                break;
+            case "piano":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.piano));
+                break;
+            case "pianissimo":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.pianissimo));
+                break;
+            case "pianississimo":
+
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.pianississimo));
+                break;
+
+        };
         //Cadre jaune de selection
         //necessaire ici aussi car le recyclage des vues modifiait l'affichage des mesures selectionnees
+
         if(mesure.getSelec()) {
             convertView.findViewById(R.id.selection).setAlpha(0.7f);
+
         }else{
             convertView.findViewById(R.id.selection).setAlpha(0.0f);
         }
+        //on met a jour l'id de la view de la mesure
+        ((TextView)convertView.findViewById(R.id.id)).setText(String.valueOf(mesure.getId()));
 
         if(viewHolder == null){
             viewHolder = new MesureViewHolder();
@@ -63,6 +106,7 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
     private class MesureViewHolder{
         public TextView id;
     }
+
 //drag Listener
     private class MesureDragListener implements View.OnDragListener {
         private MesureViewHolder viewHolder;
@@ -83,7 +127,7 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                 case DragEvent.ACTION_DRAG_EXITED:
                     break;
                 case DragEvent.ACTION_DROP:
-                    //TODO appliquer le bon effet
+                    //TODO appliquer le bon effet pour chaque bouton
                   labelEvent = event.getClipData().getDescription().getLabel().toString();
                     switch(labelEvent) {
                         case "tempo":
