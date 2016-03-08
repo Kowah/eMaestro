@@ -113,6 +113,7 @@ public class EditionActivity  extends Activity {
         EXTRA_DRAGACTIF = intent.getStringExtra(EXTRA_DRAGACTIF);
 
         if( EXTRA_DRAGACTIF.equals("true")){
+            //drag
             mSelection.setVisibility(View.INVISIBLE); // on affiche pas le bouton de selection
             mSupprimerSelection.setVisibility((View.INVISIBLE));
             mTempo.setOnTouchListener((new BoutonListener("tempo")));
