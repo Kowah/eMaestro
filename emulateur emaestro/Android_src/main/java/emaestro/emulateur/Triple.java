@@ -1,4 +1,4 @@
-package emaestro.testtelecommande;
+package emaestro.emulateur;
 public class Triple<L,M,R> {
 
 	  private final L left;

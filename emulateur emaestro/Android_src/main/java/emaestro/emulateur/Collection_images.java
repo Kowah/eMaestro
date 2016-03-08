@@ -1,4 +1,4 @@
-package emaestro.testtelecommande;
+package emaestro.emulateur;
 import java.util.HashMap;
 import java.util.Map;
 

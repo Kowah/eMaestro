@@ -1,4 +1,4 @@
-package emaestro.testtelecommande;
+package emaestro.emulateur;
 import android.app.Activity;
 
 import java.util.ArrayList;
@@ -6,12 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import database.MaestroBDD;
+
 public class Chargeur_partition {
 
 	private final Activity mainActivity;
+	private final MaestroBDD bdd;
 
-	Chargeur_partition(Activity main){
+	Chargeur_partition(Activity main, MaestroBDD bdd){
 		mainActivity = main;
+		this.bdd = bdd;
 	}
 
 	private int id_partition_chargee; //pour savoir quelle partition est en memoire, c'est l'id_musique de cette derniere dans la bdd
@@ -55,8 +59,8 @@ public class Chargeur_partition {
 			int infos_size = 0;
 			int nb_temps = 0;
 			List<Triple<Integer, Integer, Integer>> infos = new ArrayList<Triple<Integer, Integer, Integer>>();
-			mesure_fin = LecteurBDD.getMesureFin(id_musique);
-			infos = LecteurBDD.getInfosMusique(id_musique);
+			mesure_fin = bdd.selectMesureFin(id_musique);
+			infos = bdd.selectAllVariationMesures(id_musique);
 			infos_size = infos.size();
 			for(int i = 0; i < infos_size; i++){
 				triple_temp = infos.get(i);

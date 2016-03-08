@@ -1,4 +1,4 @@
-package emaestro.testtelecommande;
+package emaestro.emulateur;
 public class Pair<L,R> {
 	
 	private final L left;
