@@ -25,7 +25,7 @@ public class VariationTempsDAO extends EvenementDBDAO {
     }
 
     public long save(VariationTemps varTemps){
-        ContentValues values = new ContentValues();
+        ContentValues values = new ContentValues(); 
         values.put(DataBaseHelper.IDMusique, varTemps.getIDmusique());
         values.put(DataBaseHelper.MESURE_DEBUT, varTemps.getMesure_debut());
         values.put(DataBaseHelper.TEMPS_PAR_MESURE, varTemps.getTemps_par_mesure());
