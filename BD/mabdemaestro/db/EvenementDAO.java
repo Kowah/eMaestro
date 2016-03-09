@@ -1,4 +1,4 @@
-package fr.istic.univ_rennes1.diengadama.mabdemaestro.db;
+package com.example.guillaume.debug.db;
 
 
 import android.content.ContentValues;
@@ -6,13 +6,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.example.guillaume.debug.to.Evenement;
+import com.example.guillaume.debug.to.Musique;
+import com.example.guillaume.debug.to.Symboles;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import fr.istic.univ_rennes1.diengadama.mabdemaestro.to.Evenement;
-import fr.istic.univ_rennes1.diengadama.mabdemaestro.to.Musique;
-import fr.istic.univ_rennes1.diengadama.mabdemaestro.to.Symboles;
+
 
 //import android.database.sqlite.SQLiteQueryBuilder;
 

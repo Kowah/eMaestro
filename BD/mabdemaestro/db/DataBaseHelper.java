@@ -1,17 +1,20 @@
-package fr.istic.univ_rennes1.diengadama.mabdemaestro.db;
+package com.example.guillaume.debug.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "BDeMaestro";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 //LES TABLES
 	public static final String EVENEMENT_TABLE = "evenement";
 	public static final String MUSIQUE_TABLE = "musique";
 	public static final String SYMBOLE_TABLE = "symboles";
+	public static final String VarTemps_Table = "VarTemps";
+	public static final String VarIntensite_Table = "VarIntensite";
 
 	//Colonnes de la table musique
 	public static final String KEY_Musique = "id_musique";
@@ -20,6 +23,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	public static final String NB_PULSATION = "nb_pulsation";
 	public static final String UNITE_PULSATION = "unite_pulsation";
 	public static final String NB_TEMPS_MESURE = "nb_temps_mesure";
+
+	//Colonnes de la table variation temps
+	public static String IDVarTemps = "iDVarTemps";
+	public static String IDMusique = "iDMusique";
+	public static String MESURE_DEBUT = "mesure_debut";
+	public static String TEMPS_PAR_MESURE = "temps_par_mesure";
+	public static String TEMPO = "tempo";
+
+	//Colones de la table variation intensite
+	public static final String IDIntensite = "id_intensite";
+	//public static final String IDMusique = "id_musique";
+	//public static final String MESURE_DEBUT = "mesure_debut";
+	public static final String TEMPS_DEBUT = "temps_debut";
+	public static final String NB_TEMPS = "nbtemps";
+	public static final String INTENTSITE = "intensite";
 
 	//LES COLONNES DES TABLES
 	public static final String ID_COLUMN = "id";
@@ -59,21 +77,41 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 			+ MUSIQUE_TABLE + "(id) " + ")";
 	*/
 //Creation table musique
-	private static final String CREATE_MUSIQUE_TABLE =
-		           "CREATE TABLE " + MUSIQUE_TABLE + " ("
-	               + KEY_Musique + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-		           + NAME_Musique + " TEXT, "
-	               + NB_MESURE + " INTEGER, "
-				   + NB_PULSATION + " INTEGER, "
-				   + UNITE_PULSATION + " INTEGER, "
-				   + NB_TEMPS_MESURE + " INTEGER"
-	               + ");";//CREATION DE LA TABLE MUSIQUE
+	private static final String CREATE_VarTemps_TABLE =
+		           "CREATE TABLE " + VarTemps_Table + " ("
+	               + IDVarTemps + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+		           + IDMusique + " INTEGER, "
+	               + MESURE_DEBUT + " INTEGER, "
+				   + TEMPS_PAR_MESURE + " INTEGER, "
+				   + TEMPO + " INTEGER "
+	               + ");";
 
+	//Creation table Variation temps
+	private static final String CREATE_MUSIQUE_TABLE =
+			"CREATE TABLE " + MUSIQUE_TABLE + " ("
+					+ KEY_Musique + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ NAME_Musique + " TEXT, "
+					+ NB_MESURE + " INTEGER, "
+					+ NB_PULSATION + " INTEGER, "
+					+ UNITE_PULSATION + " INTEGER, "
+					+ NB_TEMPS_MESURE + " INTEGER"
+					+ ");";
+	//Creation de la table variation intensite
+	private static final String CREATE_VarIntensite_Table =
+			"CREATE TABLE " + VarIntensite_Table + " ("
+					+ IDIntensite + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ IDMusique + " INTEGER, "
+					+ MESURE_DEBUT + " INTEGER, "
+					+ TEMPS_DEBUT + " INTEGER, "
+					+ NB_TEMPS + " INTEGER, "
+					+ INTENTSITE + " INTEGER"
+					+ ");";
 	//CREATION DE LA TABLE SYMBOLE
 	/*public static final String CREATE_SYMBOLE_TABLE = "CREATE TABLE "
 			+ SYMBOLE_TABLE + "(" + ID_COLUMNS + " INTEGER PRIMARY KEY,"
 			+ NAME_COLUMNS + ")";
 			*/
+	/*
 //L'instance de notre base de données
 	private static DataBaseHelper instance;
 //Fonction qui retourne l'instance en cours1
@@ -82,8 +120,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 			instance = new DataBaseHelper(context);
 		return instance;
 	}
+	*/
 //Contructeur
-	private DataBaseHelper(Context context) {
+	public DataBaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -99,6 +138,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(CREATE_MUSIQUE_TABLE);
+		db.execSQL(CREATE_VarTemps_TABLE);
+		db.execSQL(CREATE_VarIntensite_Table);
 	//	db.execSQL(CREATE_SYMBOLE_TABLE);
 	//	db.execSQL(CREATE_EVENEMENT_TABLE);
 	}

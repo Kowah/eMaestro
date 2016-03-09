@@ -1,14 +1,15 @@
-package fr.istic.univ_rennes1.diengadama.mabdemaestro.db;
+package com.example.guillaume.debug.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.example.guillaume.debug.to.Symboles;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.istic.univ_rennes1.diengadama.mabdemaestro.to.Symboles;
 
 public class SymbolesDAO extends EvenementDBDAO {
 
