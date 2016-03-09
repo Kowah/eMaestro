@@ -1,18 +1,19 @@
 package BDD.db;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import BDD.to.Evenement;
+import BDD.to.Musique;
+import BDD.to.Symboles;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import BDD.to.Evenement;
-import BDD.to.Musique;
-import BDD.to.Symboles;
+
 
 //import android.database.sqlite.SQLiteQueryBuilder;
 

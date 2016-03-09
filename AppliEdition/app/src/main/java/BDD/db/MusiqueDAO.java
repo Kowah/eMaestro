@@ -5,16 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import BDD.to.Musique;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import BDD.to.Evenement;
-import BDD.to.Musique;
-import BDD.to.Symboles;
+
 
 public class MusiqueDAO extends EvenementDBDAO {
 
-	private static final String WHERE_ID_EQUALS = DataBaseHelper.ID_COLUMN
+	private static final String WHERE_ID_EQUALS = DataBaseHelper.KEY_Musique
 			+ " =?";
 
 	public MusiqueDAO(Context context) {
@@ -48,10 +48,44 @@ public class MusiqueDAO extends EvenementDBDAO {
 
 	public int deleteMusic(Musique Musique) {
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
-				WHERE_ID_EQUALS, new String[] { Musique.getId() + "" });
+				WHERE_ID_EQUALS, new String[]{Musique.getId() + ""});
 	}
 
+	public Musique getMusique(int id){
+		String query = "SELECT * FROM "
+				+ DataBaseHelper.MUSIQUE_TABLE
+				+" WHERE " + DataBaseHelper.KEY_Musique + "= ?";
+		Log.d("query", query);
+		Cursor cursor = database.rawQuery(query, new String[] {Integer.toString(id)});
+		Musique musique = new Musique();
+		if(cursor.moveToFirst()) {
+			musique.setId(cursor.getInt(0));
+			musique.setName(cursor.getString(1));
+			musique.setNb_mesure(cursor.getInt(2));
+			musique.setNb_pulsation(cursor.getInt(3));
+			musique.setUnite_pulsation(cursor.getInt(4));
+			musique.setNb_temps_mesure(cursor.getInt(5));
+			}
+		return musique;
+		}
 
+	public Musique getMusiqueN(String name){
+		String query = "SELECT * FROM "
+				+ DataBaseHelper.MUSIQUE_TABLE
+				+" WHERE " + DataBaseHelper.NAME_Musique + "= ?";
+		Log.d("query", query);
+		Cursor cursor = database.rawQuery(query, new String[] {name});
+		Musique musique = new Musique();
+		if(cursor.moveToFirst()) {
+			musique.setId(cursor.getInt(0));
+			musique.setName(cursor.getString(1));
+			musique.setNb_mesure(cursor.getInt(2));
+			musique.setNb_pulsation(cursor.getInt(3));
+			musique.setUnite_pulsation(cursor.getInt(4));
+			musique.setNb_temps_mesure(cursor.getInt(5));
+		}
+		return musique;
+	}
 	// METHOD 1
 	// Uses rawQuery() to query multiple tables
 	public ArrayList<Musique> getMusiques() {

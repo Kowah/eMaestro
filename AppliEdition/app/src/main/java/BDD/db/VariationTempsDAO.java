@@ -1,20 +1,22 @@
 package BDD.db;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 import BDD.to.Musique;
 import BDD.to.VariationTemps;
+
+import java.util.ArrayList;
+
 
 /**
  * Created by guillaume on 01/03/16.
  */
 public class VariationTempsDAO extends EvenementDBDAO {
 
-    private static final String WHERE_ID_EQUALS = DataBaseHelper.ID_COLUMN
+    private static final String WHERE_ID_EQUALS = DataBaseHelper.IDVarTemps
             + " =?";
 
     public VariationTempsDAO(Context context) {
@@ -56,14 +58,13 @@ public class VariationTempsDAO extends EvenementDBDAO {
 
     public ArrayList<VariationTemps> getVariationsTemps(Musique musique) {
         ArrayList<VariationTemps> variationsT = new ArrayList<>();
-        String[] musiqueID = new String[]{String.valueOf(musique.getId())};
         final String query = "SELECT * FROM "
                 + DataBaseHelper.VarTemps_Table
-                + " WHERE " + DataBaseHelper.IDMusique +"="+ musiqueID + ";";
+                + " WHERE " + DataBaseHelper.IDMusique +"= ?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, null);
+        Cursor cursor = database.rawQuery(query, new String[] {Integer.toString(musique.getId())});
         while (cursor.moveToNext()) {
             VariationTemps varTemps = new VariationTemps();
             varTemps.setIdVarTemps(cursor.getInt(0));

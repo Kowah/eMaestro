@@ -4,12 +4,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import BDD.to.Musique;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "BDeMaestro";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 //LES TABLES
 	public static final String EVENEMENT_TABLE = "evenement";
 	public static final String MUSIQUE_TABLE = "musique";
@@ -112,6 +111,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 			+ SYMBOLE_TABLE + "(" + ID_COLUMNS + " INTEGER PRIMARY KEY,"
 			+ NAME_COLUMNS + ")";
 			*/
+	/*
 //L'instance de notre base de données
 	private static DataBaseHelper instance;
 //Fonction qui retourne l'instance en cours1
@@ -120,6 +120,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 			instance = new DataBaseHelper(context);
 		return instance;
 	}
+	*/
 //Contructeur
 	public DataBaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -1,14 +1,14 @@
 package BDD.db;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import BDD.to.Symboles;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import BDD.to.Symboles;
 
 public class SymbolesDAO extends EvenementDBDAO {
 

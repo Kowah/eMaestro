@@ -5,11 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 import BDD.to.Musique;
 import BDD.to.VariationIntensite;
-import BDD.to.VariationTemps;
+import java.util.ArrayList;
+
+
 
 /**
  * Created by guillaume on 01/03/16.
