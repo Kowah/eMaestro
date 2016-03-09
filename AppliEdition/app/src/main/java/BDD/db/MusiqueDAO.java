@@ -21,6 +21,9 @@ public class MusiqueDAO extends EvenementDBDAO {
 		super(context);
 	}
 
+	public void clean(){
+		database.delete(DataBaseHelper.MUSIQUE_TABLE, null, null);
+	}
 	public long save(Musique Musique) {
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.NAME_Musique, Musique.getName());

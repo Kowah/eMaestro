@@ -44,7 +44,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
 
 
         //on met a jour l'id de la view de la mesure
-       // ((TextView)convertView.findViewById(R.id.id)).setText(String.valueOf(mesure.getId()));
+        ((TextView)convertView.findViewById(R.id.id)).setText(musique.getName());
 
         if(viewHolder == null){
             viewHolder = new CatalogueViewHolder();
