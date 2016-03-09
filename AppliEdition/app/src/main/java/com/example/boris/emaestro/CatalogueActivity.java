@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import BDD.to.Musique;
 
 public class CatalogueActivity extends AppCompatActivity {
     CatalogueAdapter adapter;
-    GridView mGridView;
+    ListView mListView;
     List<Musique> catalogue = new ArrayList<>();
     MusiqueDAO bddMusique = new MusiqueDAO(this);
 
@@ -30,12 +31,12 @@ public class CatalogueActivity extends AppCompatActivity {
         setContentView(R.layout.musique_catalogue);
         bddMusique.open();
         catalogue = bddMusique.getMusiques();
-        mGridView = (GridView) findViewById(R.id.gridView);
+        mListView = (ListView) findViewById(R.id.listView);
 
         adapter = new CatalogueAdapter(this,catalogue);
-        mGridView.setAdapter(adapter);
+        mListView.setAdapter(adapter);
 
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                         //TODO afficher un popup proposant l'edition, suppression, ajout dans liste de lecture

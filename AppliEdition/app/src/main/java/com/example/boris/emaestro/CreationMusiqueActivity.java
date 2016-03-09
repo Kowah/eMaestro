@@ -152,7 +152,7 @@ public class CreationMusiqueActivity extends Activity {
                 } else {
 
                     Musique musiqueDejaPresente = bddMusique.getMusique(nomPartition);
-                    if (musiqueDejaPresente.getName().equals(nomPartition)) {
+                    if (!musiqueDejaPresente.getName().equals(nomPartition)) {
                         //on ajoute la musique dans la BDD
                         //TODO switch unite ("blanche", "noir" etc) avec des int*
 

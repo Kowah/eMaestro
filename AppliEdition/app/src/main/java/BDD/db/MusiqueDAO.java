@@ -75,7 +75,7 @@ public class MusiqueDAO extends EvenementDBDAO {
 				+" WHERE " + DataBaseHelper.NAME_Musique + "= ?";
 		Log.d("query", query);
 		Cursor cursor = database.rawQuery(query, new String[] {name});
-		Musique musique = new Musique();
+		Musique musique = new Musique("",-1,-1,-1,-1);
 		if(cursor.moveToFirst()) {
 			musique.setId(cursor.getInt(0));
 			musique.setName(cursor.getString(1));
