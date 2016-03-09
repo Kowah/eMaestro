@@ -1,4 +1,4 @@
-package com.example.guillaume.debug.to;
+package BDD.to;
 
 /**
  * Created by GalsenPro on 25/01/2016.

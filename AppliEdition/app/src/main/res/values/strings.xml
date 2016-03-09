@@ -8,5 +8,6 @@
     <string name="mesure">Nombre de mesures</string>
     <string name="nomPartition">Nom de la partition</string>
     <string name="nomAutre">a</string>
+    <string name="title_activity_catalogue">CatalogueActivity</string>
 
 </resources>

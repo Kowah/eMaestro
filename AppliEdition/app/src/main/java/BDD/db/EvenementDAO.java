@@ -1,4 +1,4 @@
-package com.example.guillaume.debug.db;
+package BDD.db;
 
 
 import android.content.ContentValues;
@@ -6,9 +6,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.example.guillaume.debug.to.Evenement;
-import com.example.guillaume.debug.to.Musique;
-import com.example.guillaume.debug.to.Symboles;
+import BDD.to.Evenement;
+import BDD.to.Musique;
+import BDD.to.Symboles;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

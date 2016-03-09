@@ -1,4 +1,4 @@
-package com.example.guillaume.debug.db;
+package BDD.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

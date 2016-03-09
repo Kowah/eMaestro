@@ -1,15 +1,17 @@
-package com.example.guillaume.debug.db;
+package BDD.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.example.guillaume.debug.to.Musique;
-import com.example.guillaume.debug.to.VariationIntensite;
+import BDD.to.Musique;
+import BDD.to.VariationIntensite;
 
 import java.util.ArrayList;
 
+import BDD.db.DataBaseHelper;
+import BDD.db.EvenementDBDAO;
 
 
 /**
