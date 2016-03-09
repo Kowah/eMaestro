@@ -61,7 +61,7 @@ public class VariationIntensiteDAO extends EvenementDBDAO {
                 WHERE_ID_EQUALS, new String[] { musique.getId() + "" });
     }
 
-    public ArrayList<VariationIntensite> getVariationsTemps(Musique musique) {
+    public ArrayList<VariationIntensite> getVariationsIntensite(Musique musique) {
         ArrayList<VariationIntensite> variationsI = new ArrayList<>();
         final String query = "SELECT * FROM "
                 + DataBaseHelper.VarIntensite_Table
