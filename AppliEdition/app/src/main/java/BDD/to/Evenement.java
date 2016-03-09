@@ -1,4 +1,4 @@
-package BDD.to;
+package com.example.guillaume.debug.to;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,5 @@
-package BDD.db;
+package com.example.guillaume.debug.db;
+
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class EvenementDBDAO {
 
 	protected SQLiteDatabase database;
-	private BDD.db.DataBaseHelper dbHelper;
+	private com.example.guillaume.debug.db.DataBaseHelper dbHelper;
 	private Context mContext;
 
 	public EvenementDBDAO(Context context) {

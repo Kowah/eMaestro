@@ -1,11 +1,11 @@
-package BDD.db;
+package com.example.guillaume.debug.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import BDD.to.Musique;
+import com.example.guillaume.debug.to.Musique;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class MusiqueDAO extends EvenementDBDAO {
 
 	public int deleteMusic(Musique Musique) {
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
-				WHERE_ID_EQUALS, new String[]{Musique.getId() + ""});
+				WHERE_ID_EQUALS, new String[] { Musique.getId() + "" });
 	}
 
 	public Musique getMusique(int id){

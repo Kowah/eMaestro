@@ -1,10 +1,11 @@
-package BDD.db;
+package com.example.guillaume.debug.db;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import BDD.to.Symboles;
+import com.example.guillaume.debug.to.Symboles;
 
 import java.util.ArrayList;
 import java.util.List;

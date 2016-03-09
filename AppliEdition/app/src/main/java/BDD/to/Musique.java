@@ -1,4 +1,5 @@
-package BDD.to;
+package com.example.guillaume.debug.to;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -51,7 +52,6 @@ public class Musique implements Parcelable {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -59,7 +59,6 @@ public class Musique implements Parcelable {
     public int getNb_mesure(){
         return this.nb_mesure;
     }
-
     public void setNb_mesure(int nb_mesure){
         this.nb_mesure = nb_mesure;
     }
@@ -72,16 +71,17 @@ public class Musique implements Parcelable {
     }
 
     public int getUnite_pulsation(){
-        return this.nb_pulsation;
+        return this.unite_pulsation;
     }
     public void setUnite_pulsation(int unite_pulsation){
         this.unite_pulsation = unite_pulsation;
     }
+
     public int getNb_temps_mesure(){
         return this.nb_temps_mesure;
     }
     public void setNb_temps_mesure(int nb_temps_mesure){
-        this.nb_mesure = nb_temps_mesure;
+        this.nb_temps_mesure = nb_temps_mesure;
     }
 
     @Override
