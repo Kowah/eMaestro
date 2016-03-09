@@ -153,9 +153,7 @@ public class CreationMusiqueActivity extends Activity {
 
                     Musique musiqueDejaPresente = bddMusique.getMusique(nomPartition);
                     if (!musiqueDejaPresente.getName().equals(nomPartition)) {
-                        //on ajoute la musique dans la BDD
-                        //TODO switch unite ("blanche", "noir" etc) avec des int*
-
+                        //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
                         long err = bddMusique.save(new Musique(nomPartition, Integer.parseInt(nbMesure), Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
                        if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
@@ -164,7 +162,6 @@ public class CreationMusiqueActivity extends Activity {
                         }
                     } else {
                        Toast.makeText(getApplicationContext(), "La partition "+nomPartition+ " existe déjà", Toast.LENGTH_SHORT).show();
-
                     }
                 }
             }
