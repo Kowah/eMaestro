@@ -40,6 +40,11 @@ public class Partition {
             partition.get(i).setTempo(tempo);
         }
     }
+    public void setNuance(int mesureDebut, int mesureFin, String nuance){
+        for(int i=mesureDebut-1;i<mesureFin;i++){
+            partition.get(i).setNuance(nuance);
+        }
+    }
     public void setTempo(List<Integer> l,int tempo){
         Integer j;
         for(int i=0;i<l.size();i++){

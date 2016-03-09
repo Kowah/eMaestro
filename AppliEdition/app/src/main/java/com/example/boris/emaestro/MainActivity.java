@@ -1,5 +1,6 @@
 package com.example.boris.emaestro;
 
+import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity {
 		nouveau.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+
 				Intent intent = new Intent(MainActivity.this, CreationMusiqueActivity.class);
 				startActivity(intent);
 			}

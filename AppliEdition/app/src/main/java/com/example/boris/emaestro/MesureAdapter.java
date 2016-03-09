@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,14 +22,16 @@ import java.util.List;
 public class MesureAdapter extends ArrayAdapter<Mesure> {
     String labelEvent;// pour drop
     int newTempo, mesureFin,mesureDebut;// changement de tempo
-    int newNuance; // changement de nuance
+    String newNuance; // changement de nuance
     Partition partition;
+    ArrayAdapter<String> nuanceAdapter;
 
 
     //partition est la liste des models à afficher
-    public MesureAdapter(Context context, Partition partition) {
+    public MesureAdapter(Context context, Partition partition, ArrayAdapter<String> nuanceAdapter) {
         super(context, 0, partition.getListMesures());
         this.partition = partition;
+        this.nuanceAdapter = nuanceAdapter;
     }
 
     @Override
@@ -134,14 +137,15 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                             View layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_tempo_drag, null);
                             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
                             final EditText finTempo = (EditText) layout.findViewById(R.id.mesureFin);
+
+                            mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
                             new AlertDialog.Builder(getContext())
-                                .setTitle("Changement de tempo")
+                                .setTitle("Changement de tempo à partir de la mesure n° "+mesureDebut)
                                 .setView(layout)
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         newTempo = Integer.parseInt(editTempo.getText().toString());
                                         mesureFin = Integer.parseInt(finTempo.getText().toString());
-                                        mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
                                         //TODO ajouter evenement dans bdd
                                         if (mesureFin > partition.getListMesures().size()) {
                                             Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie n'existe pas", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
@@ -165,23 +169,26 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                                 .show();
                                 break;
                         case "nuance" :
-                            /* layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_nuance, null);
-                             final EditText finNuance = (EditText) layout.findViewById(R.id.mesureFin);
+                             layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_nuance_drag, null);
+                             final Spinner nuance = (Spinner) layout.findViewById(R.id.nuance);
+                            nuance.setAdapter(nuanceAdapter);
+                            final EditText finNuance = (EditText) layout.findViewById(R.id.mesureFin);
+                            mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
                              new AlertDialog.Builder(getContext())
-                                    .setTitle("Changement de Nuance")
+                                    .setTitle("Changement de Nuance à partir de la mesure n° "+mesureDebut)
                                     .setView(layout)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
-                                            newNuance = Integer.parseInt(editTempo.getText().toString());
-                                           mesureFin = Integer.parseInt(finTempo.getText().toString());
-                                            mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
+                                            newNuance = nuance.getSelectedItem().toString();
+                                           mesureFin = Integer.parseInt(finNuance.getText().toString());
+
                                             //TODO ajouter evenement dans bdd
                                             if (mesureFin > partition.getListMesures().size()) {
                                                 Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie n'existe pas", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
 
                                             } else {
-                                                partition.setTempo(mesureDebut, mesureFin, newTempo);
-                                                Toast.makeText(getContext(), "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                                                partition.setNuance(mesureDebut, mesureFin, newNuance);
+                                                Toast.makeText(getContext(), "la nuance des mesures [" + mesureDebut + "," + mesureFin + "] = " + newNuance, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                                             }
                                         }
                                     })
@@ -191,7 +198,7 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                                         }
                                     })
                                     .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();*/
+                                    .show();
                             break;
 
                     }

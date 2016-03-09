@@ -42,7 +42,6 @@ public class CreationMusiqueActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
-
         dragActive = false;
         pulsation = (EditText) findViewById(R.id.pulsation);
         nomPartition = (EditText) findViewById(R.id.nom);
