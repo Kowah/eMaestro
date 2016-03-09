@@ -96,6 +96,7 @@ public class EditionActivity  extends Activity {
         nuanceList.add("piano");
         nuanceList.add("pianissimo");
         nuanceList.add("pianississimo");
+
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,nuanceList );
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -128,7 +129,7 @@ public class EditionActivity  extends Activity {
         }
 
         partition = new Partition(EXTRA_NBMESURE,EXTRA_PULSATION,EXTRA_TPSPARMESURE,EXTRA_UNITE);
-        adapter = new MesureAdapter(EditionActivity.this,partition);
+        adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
         mGridView.setAdapter(adapter);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -164,6 +165,7 @@ public class EditionActivity  extends Activity {
             super();
             typeEvent = type;
         }
+
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 String mType="";
@@ -206,7 +208,7 @@ public class EditionActivity  extends Activity {
 
             partition.unselectAll();
             mesuresSelec.clear();
-            adapter = new MesureAdapter(EditionActivity.this,partition);
+            adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
             mGridView.setAdapter(adapter);
 
 
@@ -280,7 +282,7 @@ public class EditionActivity  extends Activity {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             partition.setNuance(mesuresSelec, nuance);
-                            adapter = new MesureAdapter(EditionActivity.this,partition);
+                            adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
                             mGridView.setAdapter(adapter);
                             //  Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
 
