@@ -1,12 +1,13 @@
-package BDD.db;
+package com.example.guillaume.debug.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import BDD.to.Musique;
-import BDD.to.VariationIntensite;
+import com.example.guillaume.debug.to.Musique;
+import com.example.guillaume.debug.to.VariationIntensite;
+
 import java.util.ArrayList;
 
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  */
 public class VariationIntensiteDAO extends EvenementDBDAO {
 
-    private static final String WHERE_ID_EQUALS = DataBaseHelper.ID_COLUMN
+    private static final String WHERE_ID_EQUALS = DataBaseHelper.IDIntensite
             + " =?";
 
     public VariationIntensiteDAO(Context context) {
@@ -60,14 +61,13 @@ public class VariationIntensiteDAO extends EvenementDBDAO {
 
     public ArrayList<VariationIntensite> getVariationsTemps(Musique musique) {
         ArrayList<VariationIntensite> variationsI = new ArrayList<>();
-        String[] musiqueID = new String[]{String.valueOf(musique.getId())};
         final String query = "SELECT * FROM "
                 + DataBaseHelper.VarIntensite_Table
-                + " WHERE " + DataBaseHelper.IDMusique +"="+ musiqueID + ";";
+                + " WHERE " + DataBaseHelper.IDMusique +"=? ;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, null);
+        Cursor cursor = database.rawQuery(query, new String[] {Integer.toString(musique.getId())});
         while (cursor.moveToNext()) {
             VariationIntensite varIntensite = new VariationIntensite();
             varIntensite.setIdVarIntensite(cursor.getInt(0));
