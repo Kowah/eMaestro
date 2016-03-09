@@ -69,7 +69,7 @@ public class MusiqueDAO extends EvenementDBDAO {
 		return musique;
 		}
 
-	public Musique getMusiqueN(String name){
+	public Musique getMusique(String name){
 		String query = "SELECT * FROM "
 				+ DataBaseHelper.MUSIQUE_TABLE
 				+" WHERE " + DataBaseHelper.NAME_Musique + "= ?";
