@@ -1,11 +1,14 @@
 from threading import Thread
 import time
+import Image
+import ImageDraw
+from rgbmatrix import Adafruit_RGBmatrix
 
 class Telecommande(Thread):
     
-    
     def __init__(self):
         Thread.__init__(self)
+	self.matrix = Adafruit_RGBmatrix(32,2)
         self.message=''
         
     def setMessage(self,msg):
@@ -23,7 +26,10 @@ class Telecommande(Thread):
         count = 1
         while self.message == 'PLAY':
             filename = '4_'+str(count)+'.png'
-            print filename
+	    self.matrix.Clear()
+            image = Image.open(filename)
+	    image.load()
+	    self.matrix.SetImage(image.im.id,0,0)
             count = (count % 4)+1
             time.sleep(1)
     

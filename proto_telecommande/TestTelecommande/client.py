@@ -2,8 +2,8 @@ import socket
 import time
 
 
-hote = "localhost"
-port = 15555
+hote = "192.168.103.1"
+port = 8192
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.connect((hote, port))
