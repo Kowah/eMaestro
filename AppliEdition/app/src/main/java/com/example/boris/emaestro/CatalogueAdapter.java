@@ -1,30 +1,50 @@
 package com.example.boris.emaestro;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import BDD.db.MusiqueDAO;
+import BDD.db.VariationIntensiteDAO;
+import BDD.db.VariationTempsDAO;
 import BDD.to.Catalogue;
 import BDD.to.Musique;
+import BDD.to.VariationIntensite;
+import BDD.to.VariationTemps;
 
 /**
  * Created by Boris on 09/03/2016.
  */
 public class CatalogueAdapter extends ArrayAdapter<Musique> {
 
+    final String EXTRA_NOMPARTITION="vide";
+    final String EXTRA_NBMESURE="nbMesure";
+    final String EXTRA_PULSATION="pulsation";
+    final String EXTRA_UNITE="unite";
+    final String EXTRA_TPSPARMESURE="tpsParMesure";
+    final String EXTRA_DRAGACTIF="drag";
+    final String EXTRA_ID_PARTITION="new";
+
     String labelEvent;// pour drop
     int newTempo, mesureFin,mesureDebut;// changement de tempo
     String newNuance; // changement de nuance
     Partition partition;
-
-   List<Musique> catalogue;
-
-
+    List<Musique> catalogue;
+    Button editer;
+    Button supprimer;
+    Button jouer;
+    VariationTempsDAO bddTempsVar;
+    VariationIntensiteDAO bddIntensiteVar;
+    List<VariationIntensite> IntensiteList;
+    List <VariationTemps> TempsList;
     //partition est la liste des models à afficher
     public CatalogueAdapter(Context context, List<Musique> catalogue) {
         super(context, 0, catalogue);
@@ -39,22 +59,37 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
         }
 
         CatalogueViewHolder viewHolder = (CatalogueViewHolder) convertView.getTag();
-         Musique musique = catalogue.get(position);
+         final Musique musique = catalogue.get(position);
 
 
 
         //on met a jour l'id de la view de la mesure
         ((TextView)convertView.findViewById(R.id.id)).setText(musique.getName());
+        editer = (Button)convertView.findViewById(R.id.editer);
+        editer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+
+                Intent intent = new Intent(getContext(), EditionActivity.class);
+                intent.putExtra(EXTRA_NOMPARTITION,musique.getName() );
+                intent.putExtra(EXTRA_NBMESURE, String.valueOf(musique.getNb_mesure()));
+                intent.putExtra(EXTRA_PULSATION, String.valueOf(musique.getNb_pulsation()));
+                intent.putExtra(EXTRA_TPSPARMESURE,String.valueOf( musique.getNb_temps_mesure()));
+                intent.putExtra(EXTRA_UNITE, String.valueOf(musique.getUnite_pulsation()));
+                intent.putExtra(EXTRA_ID_PARTITION,String.valueOf(musique.getId()));
+                Toast.makeText(getContext(), "id musique" + String.valueOf(musique.getId()), Toast.LENGTH_SHORT).show();
+
+                intent.putExtra(EXTRA_DRAGACTIF, "false");
+
+                getContext().startActivity(intent);
+            }
+        });
         if(viewHolder == null){
             viewHolder = new CatalogueViewHolder();
             viewHolder.nom = (TextView) convertView.findViewById(R.id.id);
             convertView.setTag(viewHolder);
         }
-        //il ne reste plus qu'à remplir notre vue
-       // viewHolder.id.setText(String.valueOf(mesure.getId()));
-        //Si on veut modifier le background viewHolder.m.setBackground(Drawable.createFromPath("@drawable/mesure"));
-      //TODO  convertView.setOnClickListener
         return convertView;
     }
 

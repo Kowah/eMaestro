@@ -25,7 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.db.MusiqueDAO;
+import BDD.db.VariationIntensiteDAO;
+import BDD.db.VariationTempsDAO;
 import BDD.to.Musique;
+import BDD.to.VariationIntensite;
+import BDD.to.VariationTemps;
 
 public class EditionActivity  extends Activity {
 
@@ -35,11 +39,17 @@ public class EditionActivity  extends Activity {
     String EXTRA_PULSATION="pulsation";
     String EXTRA_UNITE="unite";
     String EXTRA_TPSPARMESURE="nbTpsMesure";
-    String EXTRA_DRAGACTIF="false";
-
-    //BDD
+    String EXTRA_DRAGACTIF="drag";
+    String EXTRA_ID_PARTITION="new";
+    //BDD + recup des données de la musique
     final MusiqueDAO bddMusique = new MusiqueDAO(this);
+    final VariationIntensiteDAO bddIntensite = new VariationIntensiteDAO(this);
+    final VariationTempsDAO bddTemps = new VariationTempsDAO(this);
     Musique partitionCourante;
+    int idMusique;
+    List<VariationTemps> varTempsList;
+    List<VariationIntensite> varIntensiteList;
+
 
     ArrayList<Integer> mesuresSelec;
     LinearLayout menu; // view du menu
@@ -59,6 +69,7 @@ public class EditionActivity  extends Activity {
     Spinner mNuanceSpinner;
     ArrayAdapter<String> dataAdapterNuance;
     String nuance;
+
     //selection
     boolean selectionOn;
 
@@ -68,7 +79,10 @@ public class EditionActivity  extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edition_mesures);
         context = EditionActivity.this;
-
+        // on ouvre bdd
+        bddMusique.open();
+        bddIntensite.open();
+        bddTemps.open();
         //modification par selection
         mesuresSelec = new ArrayList<>();
         selectionOn =false;
@@ -106,9 +120,21 @@ public class EditionActivity  extends Activity {
         EXTRA_UNITE=intent.getStringExtra(EXTRA_UNITE);
         EXTRA_TPSPARMESURE=intent.getStringExtra(EXTRA_TPSPARMESURE);
         EXTRA_DRAGACTIF = intent.getStringExtra(EXTRA_DRAGACTIF);
-
+        EXTRA_ID_PARTITION = intent.getStringExtra(EXTRA_ID_PARTITION);
         //on recupere l'instance dans la bdd de la partition qu'on edite
      //   partitionCourante = bddMusique.getMusique(EXTRA_NOMPARTITION);
+        idMusique= Integer.parseInt(EXTRA_ID_PARTITION);
+        partition = new Partition(EXTRA_NBMESURE,EXTRA_PULSATION,EXTRA_TPSPARMESURE,EXTRA_UNITE);
+        if(idMusique>-1){
+          //on recupère les données associées à la musique
+            Toast.makeText(getApplicationContext(), "chargement musique", Toast.LENGTH_SHORT).show();
+
+            varIntensiteList = bddIntensite.getVariationsIntensite(bddMusique.getMusique(idMusique));
+            varTempsList = bddTemps.getVariationsTemps(bddMusique.getMusique(idMusique));//TODO pb : toujours vide
+
+            //on met ajour tempo et intensite
+            partition.setTempo(varTempsList);
+        }
 
         if( EXTRA_DRAGACTIF.equals("true")){
             //drag
@@ -125,7 +151,10 @@ public class EditionActivity  extends Activity {
             mNuance.setOnClickListener( NuanceListener);
         }
 
-        partition = new Partition(EXTRA_NBMESURE,EXTRA_PULSATION,EXTRA_TPSPARMESURE,EXTRA_UNITE);
+
+
+       // partition.setNuance(varIntensiteList);
+
         adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
         mGridView.setAdapter(adapter);
 
@@ -220,6 +249,8 @@ public class EditionActivity  extends Activity {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
+             final int mesureDebut =mesuresSelec.get(0).intValue();
+             final int mesureFin =mesuresSelec.get(mesuresSelec.size()-1).intValue();
             new AlertDialog.Builder(context)
                     .setTitle("Changement de tempo")
                     .setView(layout)
@@ -227,8 +258,11 @@ public class EditionActivity  extends Activity {
                         public void onClick(DialogInterface dialog, int which) {
                             int newTempo = Integer.parseInt(editTempo.getText().toString());
                             //TODO ajouter evenement dans bdd
-                            partition.setTempo(mesuresSelec,newTempo);
-                            Toast.makeText(context, "le tempo des mesures [" + mesuresSelec.get(0).intValue() + "," + mesuresSelec.get(mesuresSelec.size()-1).intValue() + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                            partition.setTempo(mesuresSelec, newTempo);
+                            Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                            idMusique=bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
+                            long t =bddTemps.save(new VariationTemps(idMusique, mesureDebut, mesureFin, 1, newTempo));
+                            Toast.makeText(getApplicationContext(), "Lmidr r, e"+ t, Toast.LENGTH_SHORT).show();
 
                         }
                     })

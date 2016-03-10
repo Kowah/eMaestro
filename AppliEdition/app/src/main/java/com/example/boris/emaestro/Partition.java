@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import BDD.to.VariationIntensite;
+import BDD.to.VariationTemps;
+
 /**
  * Created by Boris on 02/03/2016.
  */
@@ -51,6 +54,30 @@ public class Partition {
             j = l.get(i).intValue();
             partition.get(j-1).setTempo(tempo);
         }
+    }
+    public void setTempo(List<VariationTemps> l){
+        VariationTemps vT;
+        VariationTemps vTnext;
+        int mesureFin;
+        int i;
+        for(i =0; i<l.size();i++){
+            vT = l.get(i);
+            if(i+1<l.size()){
+                //si ya dautre event, alors changmeent de tempo se fait jusqu'à l'arrivée ce celui ci
+                mesureFin = l.get(i+1).getMesure_debut()-1;
+            }
+            else{
+                //sinon jusqu'à la fin de la partition
+                mesureFin = this.partition.size()-1;
+            }
+            this.setTempo(vT.getMesure_debut()-1,mesureFin,vT.getTempo());
+
+        }
+
+    }
+
+    public void setNuance(List<VariationIntensite> l){
+    //TODO
     }
 
     public void setNuance(List<Integer> l,String nuance){

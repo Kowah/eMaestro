@@ -29,7 +29,8 @@ public class CreationMusiqueActivity extends Activity {
     final String EXTRA_PULSATION="pulsation";
     final String EXTRA_UNITE="unite";
     final String EXTRA_TPSPARMESURE="tpsParMesure";
-    final String EXTRA_DRAGACTIF="false";
+    final String EXTRA_DRAGACTIF="drag";
+    final String EXTRA_ID_PARTITION="new";
 
     EditText pulsation;
     EditText nomPartitionE;
@@ -130,6 +131,7 @@ public class CreationMusiqueActivity extends Activity {
                 intent.putExtra(EXTRA_PULSATION, nbPulsation);
                 intent.putExtra(EXTRA_TPSPARMESURE, tpsParMesure);
                 intent.putExtra(EXTRA_UNITE, unite);
+                intent.putExtra(EXTRA_ID_PARTITION,"-1");
 
                 if (dragActive) {
                     Toast.makeText(CreationMusiqueActivity.this, "Edition par drag and drop", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
