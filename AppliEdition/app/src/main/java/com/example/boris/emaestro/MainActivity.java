@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import BDD.db.MusiqueDAO;
+
 public class MainActivity extends Activity {
 
 	@Override
@@ -34,8 +36,8 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//TODO recherche dans catalogue à faire
-			//	Intent intent = new Intent(MainActivity.this, CatalogueActivity.class);
-			//	startActivity(intent);
+				Intent intent = new Intent(MainActivity.this, CatalogueActivity.class);
+				startActivity(intent);
 			}
 		});
 

@@ -3,8 +3,7 @@ import time
 
 
 hote = "192.168.103.1"
-port = 8192
-
+port = 15555
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.connect((hote, port))
 print "Connection on {}".format(port)

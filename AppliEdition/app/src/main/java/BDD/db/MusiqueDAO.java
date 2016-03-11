@@ -21,6 +21,9 @@ public class MusiqueDAO extends EvenementDBDAO {
 		super(context);
 	}
 
+	public void clean(){
+		database.delete(DataBaseHelper.MUSIQUE_TABLE, null, null);
+	}
 	public long save(Musique Musique) {
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.NAME_Musique, Musique.getName());
@@ -48,7 +51,7 @@ public class MusiqueDAO extends EvenementDBDAO {
 
 	public int deleteMusic(Musique Musique) {
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
-				WHERE_ID_EQUALS, new String[]{Musique.getId() + ""});
+				WHERE_ID_EQUALS, new String[] { Musique.getId() + "" });
 	}
 
 	public Musique getMusique(int id){
@@ -69,13 +72,13 @@ public class MusiqueDAO extends EvenementDBDAO {
 		return musique;
 		}
 
-	public Musique getMusiqueN(String name){
+	public Musique getMusique(String name){
 		String query = "SELECT * FROM "
 				+ DataBaseHelper.MUSIQUE_TABLE
 				+" WHERE " + DataBaseHelper.NAME_Musique + "= ?";
 		Log.d("query", query);
 		Cursor cursor = database.rawQuery(query, new String[] {name});
-		Musique musique = new Musique();
+		Musique musique = new Musique("",-1,-1,-1,-1);
 		if(cursor.moveToFirst()) {
 			musique.setId(cursor.getInt(0));
 			musique.setName(cursor.getString(1));

@@ -18,23 +18,33 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.db.MusiqueDAO;
+import BDD.to.*;
+import BDD.to.Musique;
+
 public class CreationMusiqueActivity extends Activity {
 
-    String EXTRA_NOMPARTITION="vide";
-    String EXTRA_NBMESURE="nbMesure";
-    String EXTRA_PULSATION="pulsation";
-    String EXTRA_UNITE="unite";
-    String EXTRA_TPSPARMESURE="tpsParMesure";
-    String EXTRA_DRAGACTIF="false";
+    final String EXTRA_NOMPARTITION="vide";
+    final String EXTRA_NBMESURE="nbMesure";
+    final String EXTRA_PULSATION="pulsation";
+    final String EXTRA_UNITE="unite";
+    final String EXTRA_TPSPARMESURE="tpsParMesure";
+    final String EXTRA_DRAGACTIF="false";
 
     EditText pulsation;
-    EditText nomPartition;
-    EditText nbMesure;
-    //variable pour tempo, tps par mesure
+    EditText nomPartitionE;
+    EditText nbMesureE;
+
     String unite="";
+    String nomPartition="";
+    String nbMesure="";
+    String nbPulsation="";
     String tpsParMesure="";
+
     Spinner tpsParMesureSpinner,  uniteSpinner;
 
+    //BDD
+    final MusiqueDAO bddMusique = new MusiqueDAO(this);
 
     Button drag;
     boolean dragActive ;
@@ -42,10 +52,11 @@ public class CreationMusiqueActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
+        bddMusique.open();
         dragActive = false;
         pulsation = (EditText) findViewById(R.id.pulsation);
-        nomPartition = (EditText) findViewById(R.id.nom);
-        nbMesure = (EditText) findViewById(R.id.nbMesure);
+        nomPartitionE = (EditText) findViewById(R.id.nom);
+        nbMesureE = (EditText) findViewById(R.id.nbMesure);
         drag = (Button) findViewById(R.id.drag);
         uniteSpinner = (Spinner) findViewById(R.id.uniteTempo);
         tpsParMesureSpinner = (Spinner) findViewById(R.id.tempsParMesure);
@@ -76,6 +87,8 @@ public class CreationMusiqueActivity extends Activity {
         uniteList.add("noire pointée");
         uniteList.add("croche pointée");
 
+
+
         List<String> tpsMesure = new ArrayList<String>();
         for(int i=1;i<=16;i++){
             tpsMesure.add(String.valueOf(i));
@@ -98,14 +111,23 @@ public class CreationMusiqueActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-
-                EXTRA_UNITE = uniteSpinner.getSelectedItem().toString();
-                EXTRA_TPSPARMESURE = tpsParMesureSpinner.getSelectedItem().toString();
+                nbMesure= nbMesureE.getText().toString();
+                unite = uniteSpinner.getSelectedItem().toString();
+                switch(unite){
+                    case "ronde": unite ="1";
+                        break;
+                    default:unite="1";
+                        break;
+                    //TODO faire les autres cas
+                };
+                tpsParMesure = tpsParMesureSpinner.getSelectedItem().toString();
+                nbPulsation= pulsation.getText().toString();
+                nomPartition = nomPartitionE.getText().toString();
                 // permet le passage de message dans un changement d'activité (startActivity)
                 Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
-                intent.putExtra(EXTRA_NOMPARTITION, nomPartition.getText().toString());
-                intent.putExtra(EXTRA_NBMESURE, nbMesure.getText().toString());
-                intent.putExtra(EXTRA_PULSATION, pulsation.getText().toString());
+                intent.putExtra(EXTRA_NOMPARTITION,nomPartition );
+                intent.putExtra(EXTRA_NBMESURE, nbMesure);
+                intent.putExtra(EXTRA_PULSATION, nbPulsation);
                 intent.putExtra(EXTRA_TPSPARMESURE, tpsParMesure);
                 intent.putExtra(EXTRA_UNITE, unite);
 
@@ -113,8 +135,8 @@ public class CreationMusiqueActivity extends Activity {
                     Toast.makeText(CreationMusiqueActivity.this, "Edition par drag and drop", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                     intent.putExtra(EXTRA_DRAGACTIF, "true");
                 } else {
-                    Toast.makeText(CreationMusiqueActivity.this, "Edition par selection",Toast.LENGTH_SHORT).show();
-                            intent.putExtra(EXTRA_DRAGACTIF, "false");
+                    Toast.makeText(CreationMusiqueActivity.this, "Edition par selection", Toast.LENGTH_SHORT).show();
+                    intent.putExtra(EXTRA_DRAGACTIF, "false");
                 }
 
                 if (unite.length() <= 0) {
@@ -128,7 +150,19 @@ public class CreationMusiqueActivity extends Activity {
                 } else if (nomPartition.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir un nom de partition", Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivity(intent);
+
+                    Musique musiqueDejaPresente = bddMusique.getMusique(nomPartition);
+                    if (!musiqueDejaPresente.getName().equals(nomPartition)) {
+                        //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
+                        long err = bddMusique.save(new Musique(nomPartition, Integer.parseInt(nbMesure), Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
+                       if (err == -1) {
+                            Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
+                       } else {
+                            startActivity(intent);
+                        }
+                    } else {
+                       Toast.makeText(getApplicationContext(), "La partition "+nomPartition+ " existe déjà", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

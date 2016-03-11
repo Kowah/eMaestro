@@ -6,29 +6,17 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -36,6 +24,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.db.MusiqueDAO;
+import BDD.to.Musique;
 
 public class EditionActivity  extends Activity {
 
@@ -46,6 +36,10 @@ public class EditionActivity  extends Activity {
     String EXTRA_UNITE="unite";
     String EXTRA_TPSPARMESURE="nbTpsMesure";
     String EXTRA_DRAGACTIF="false";
+
+    //BDD
+    final MusiqueDAO bddMusique = new MusiqueDAO(this);
+    Musique partitionCourante;
 
     ArrayList<Integer> mesuresSelec;
     LinearLayout menu; // view du menu
@@ -112,6 +106,9 @@ public class EditionActivity  extends Activity {
         EXTRA_UNITE=intent.getStringExtra(EXTRA_UNITE);
         EXTRA_TPSPARMESURE=intent.getStringExtra(EXTRA_TPSPARMESURE);
         EXTRA_DRAGACTIF = intent.getStringExtra(EXTRA_DRAGACTIF);
+
+        //on recupere l'instance dans la bdd de la partition qu'on edite
+     //   partitionCourante = bddMusique.getMusique(EXTRA_NOMPARTITION);
 
         if( EXTRA_DRAGACTIF.equals("true")){
             //drag
@@ -223,7 +220,6 @@ public class EditionActivity  extends Activity {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-            final EditText finTempo = (EditText) layout.findViewById(R.id.mesureFin);
             new AlertDialog.Builder(context)
                     .setTitle("Changement de tempo")
                     .setView(layout)
@@ -232,7 +228,7 @@ public class EditionActivity  extends Activity {
                             int newTempo = Integer.parseInt(editTempo.getText().toString());
                             //TODO ajouter evenement dans bdd
                             partition.setTempo(mesuresSelec,newTempo);
-                              //  Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                            Toast.makeText(context, "le tempo des mesures [" + mesuresSelec.get(0).intValue() + "," + mesuresSelec.get(mesuresSelec.size()-1).intValue() + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
 
                         }
                     })
@@ -243,6 +239,7 @@ public class EditionActivity  extends Activity {
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
+
         }
     };
 
