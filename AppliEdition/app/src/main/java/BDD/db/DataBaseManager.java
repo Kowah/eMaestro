@@ -28,6 +28,7 @@ public class DataBaseManager {
 		database.delete(DataBaseHelper.MUSIQUE_TABLE,null,null);
 		database.delete(DataBaseHelper.VarIntensite_Table,null,null);
 		database.delete(DataBaseHelper.VarTemps_Table,null,null);
+		database.delete(DataBaseHelper.CATALOGUE_TABLE,null,null);
 	}
 	public void close() {
 		dbHelper.close();

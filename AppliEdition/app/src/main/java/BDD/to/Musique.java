@@ -26,6 +26,7 @@ public class Musique implements Parcelable {
     }
 
     public Musique(String name, int nb_mesure, int nb_pulsation, int unite_pulsation, int nb_temps_mesure) {
+        this.id = -1;
         this.name = name;
         this.nb_mesure = nb_mesure;
         this.nb_pulsation = nb_pulsation;

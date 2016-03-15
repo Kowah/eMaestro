@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.SQLException;
+
+import BDD.db.CatalogueDAO;
 import BDD.db.MusiqueDAO;
 
 public class MainActivity extends Activity {
@@ -20,6 +23,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		CatalogueDAO bdd = new CatalogueDAO(this);
+		bdd.open();
+		bdd.synchronizer();
 		setContentView(R.layout.ecran_accueil);
 		final ImageButton nouveau = (ImageButton) findViewById(R.id.nouveau);
 		nouveau.setOnClickListener(new OnClickListener() {
