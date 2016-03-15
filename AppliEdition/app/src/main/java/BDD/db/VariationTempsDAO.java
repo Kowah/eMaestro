@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import BDD.db.EvenementDBDAO;
 import BDD.to.Musique;
 import BDD.to.VariationTemps;
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by guillaume on 01/03/16.
  */
-public class VariationTempsDAO extends EvenementDBDAO {
+public class VariationTempsDAO extends DataBaseManager {
 
     private static final String WHERE_ID_EQUALS = DataBaseHelper.IDVarTemps
             + " =?";
@@ -65,17 +64,19 @@ public class VariationTempsDAO extends EvenementDBDAO {
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[] {Integer.toString(musique.getId())});
-        while (cursor.moveToNext()) {
-            VariationTemps varTemps = new VariationTemps();
-            varTemps.setIdVarTemps(cursor.getInt(0));
-            varTemps.setMusique(cursor.getInt(1));
-            varTemps.setMesure_debut(cursor.getInt(2));
-            varTemps.setTemps_par_mesure(cursor.getInt(3));
-            varTemps.setTempo(cursor.getInt(4));
+        if(musique != null) {
+            Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+            while (cursor.moveToNext()) {
+                VariationTemps varTemps = new VariationTemps();
+                varTemps.setIdVarTemps(cursor.getInt(0));
+                varTemps.setMusique(cursor.getInt(1));
+                varTemps.setMesure_debut(cursor.getInt(2));
+                varTemps.setTemps_par_mesure(cursor.getInt(3));
+                varTemps.setTempo(cursor.getInt(4));
 
 
-            variationsT.add(varTemps);
+                variationsT.add(varTemps);
+            }
         }
         return variationsT;
     }

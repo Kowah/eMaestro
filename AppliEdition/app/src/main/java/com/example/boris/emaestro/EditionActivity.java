@@ -24,6 +24,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.db.DataBaseManager;
 import BDD.db.MusiqueDAO;
 import BDD.db.VariationIntensiteDAO;
 import BDD.db.VariationTempsDAO;
@@ -83,6 +84,7 @@ public class EditionActivity  extends Activity {
         bddMusique.open();
         bddIntensite.open();
         bddTemps.open();
+
         //modification par selection
         mesuresSelec = new ArrayList<>();
         selectionOn =false;
@@ -249,8 +251,12 @@ public class EditionActivity  extends Activity {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-             final int mesureDebut =mesuresSelec.get(0).intValue();
-             final int mesureFin =mesuresSelec.get(mesuresSelec.size()-1).intValue();
+            //FIXME: Attention, si aucune mesure selectionné, ca plante (mesuresSelec.size() = 0)
+            //if(mesuresSelec.size()>0) {
+                final int mesureDebut = mesuresSelec.get(0).intValue();
+                final int mesureFin = mesuresSelec.get(mesuresSelec.size() - 1).intValue();
+            //}
+
             new AlertDialog.Builder(context)
                     .setTitle("Changement de tempo")
                     .setView(layout)
@@ -261,7 +267,9 @@ public class EditionActivity  extends Activity {
                             partition.setTempo(mesuresSelec, newTempo);
                             Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                             idMusique=bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
-                            long t =bddTemps.save(new VariationTemps(idMusique, mesureDebut, mesureFin, 1, newTempo));
+                            //idMusique=bddMusique.getMusique("debug").getId();
+                            //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
+                            long t =bddTemps.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo));
                             Toast.makeText(getApplicationContext(), "Lmidr r, e"+ t, Toast.LENGTH_SHORT).show();
 
                         }

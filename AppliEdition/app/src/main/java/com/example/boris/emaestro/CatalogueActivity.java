@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.db.DataBaseManager;
 import BDD.db.MusiqueDAO;
 import BDD.db.VariationTempsDAO;
 import BDD.to.Catalogue;
@@ -37,10 +38,11 @@ public class CatalogueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.musique_catalogue);
         bddMusique.open();
-        //b.open();
+        b.open();
         catalogue = bddMusique.getMusiques();
         mListView = (ListView) findViewById(R.id.listView);
         for (int i =0; i <catalogue.size();i++){
+            System.out.println(catalogue.get(i).getName());
             Toast.makeText(getApplicationContext(), "chargement musique "+  String.valueOf(catalogue.get(i).getId())+" nb variations temps :"+b.getVariationsTemps(catalogue.get(i)).size(), Toast.LENGTH_SHORT).show();
 
         }

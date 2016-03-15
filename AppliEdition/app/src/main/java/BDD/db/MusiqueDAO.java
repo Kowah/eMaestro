@@ -8,11 +8,9 @@ import android.util.Log;
 import BDD.to.Musique;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
-
-public class MusiqueDAO extends EvenementDBDAO {
+public class MusiqueDAO extends DataBaseManager {
 
 	private static final String WHERE_ID_EQUALS = DataBaseHelper.KEY_Musique
 			+ " =?";

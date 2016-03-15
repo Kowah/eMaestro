@@ -38,6 +38,7 @@ public class Partition {
     public List<Mesure> getListMesures(){ return partition;}
 
     public Mesure getMesure(int id){ return partition.get(id);}
+
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
         for(int i=mesureDebut-1;i<mesureFin;i++){
             partition.get(i).setTempo(tempo);
@@ -70,7 +71,9 @@ public class Partition {
                 //sinon jusqu'à la fin de la partition
                 mesureFin = this.partition.size()-1;
             }
-            this.setTempo(vT.getMesure_debut()-1,mesureFin,vT.getTempo());
+            //FIXME : Attention i commencait a -1 si selection de la premiere mesure
+            //this.setTempo(vT.getMesure_debut()-1,mesureFin,vT.getTempo());
+            this.setTempo(vT.getMesure_debut(),mesureFin,vT.getTempo());
 
         }
 

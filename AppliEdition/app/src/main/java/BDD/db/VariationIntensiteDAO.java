@@ -10,14 +10,8 @@ import BDD.to.VariationIntensite;
 
 import java.util.ArrayList;
 
-import BDD.db.DataBaseHelper;
-import BDD.db.EvenementDBDAO;
 
-
-/**
- * Created by guillaume on 01/03/16.
- */
-public class VariationIntensiteDAO extends EvenementDBDAO {
+public class VariationIntensiteDAO extends DataBaseManager {
 
     private static final String WHERE_ID_EQUALS = DataBaseHelper.IDIntensite
             + " =?";
