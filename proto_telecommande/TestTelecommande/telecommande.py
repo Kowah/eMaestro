@@ -5,11 +5,11 @@ import ImageDraw
 from rgbmatrix import Adafruit_RGBmatrix
 
 class Telecommande(threading.Thread):
-    
+
     def __init__(self):
         threading.Thread.__init__(self)
-	self.matrix = Adafruit_RGBmatrix(32,2)
         self.message=''
+	self.matrix = None
         
     def setMessage(self,msg):
         self.message=msg
@@ -30,6 +30,7 @@ class Telecommande(threading.Thread):
             image = Image.open(filename)
 	    image.load()
 	    self.matrix.SetImage(image.im.id,0,0)
+	    print filename
             count = (count % 4)+1
             time.sleep(1)
     
@@ -38,5 +39,5 @@ class Telecommande(threading.Thread):
         self.setMessage('')
              
     def quit(self):
+	print "End"
 	self.matrix.Clear()     
-	threading.Thread.exit()
