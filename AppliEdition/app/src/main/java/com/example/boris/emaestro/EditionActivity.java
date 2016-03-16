@@ -35,13 +35,13 @@ import BDD.to.VariationTemps;
 public class EditionActivity  extends Activity {
 
 
-    String EXTRA_NOMPARTITION="vide";
-    String EXTRA_NBMESURE="nbMesure";
-    String EXTRA_PULSATION="pulsation";
-    String EXTRA_UNITE="unite";
-    String EXTRA_TPSPARMESURE="nbTpsMesure";
-    String EXTRA_DRAGACTIF="drag";
-    String EXTRA_ID_PARTITION="new";
+    String EXTRA_NOMPARTITION = "vide";
+    String EXTRA_NBMESURE = "nbMesure";
+    String EXTRA_PULSATION = "pulsation";
+    String EXTRA_UNITE = "unite";
+    String EXTRA_TPSPARMESURE = "nbTpsMesure";
+    String EXTRA_DRAGACTIF = "drag";
+    String EXTRA_ID_PARTITION = "idMusique";
     //BDD + recup des données de la musique
     final MusiqueDAO bddMusique = new MusiqueDAO(this);
     final VariationIntensiteDAO bddIntensite = new VariationIntensiteDAO(this);
@@ -51,6 +51,8 @@ public class EditionActivity  extends Activity {
     List<VariationTemps> varTempsList;
     List<VariationIntensite> varIntensiteList;
 
+    int mesureDebut;
+    int mesureFin;
 
     ArrayList<Integer> mesuresSelec;
     LinearLayout menu; // view du menu
@@ -64,7 +66,7 @@ public class EditionActivity  extends Activity {
     ImageView mTempo;
     ImageView mNuance;
     ImageView mSelection;
-    ImageView  mSupprimerSelection;
+    ImageView mSupprimerSelection;
 
     //modif nuance
     Spinner mNuanceSpinner;
@@ -87,10 +89,10 @@ public class EditionActivity  extends Activity {
 
         //modification par selection
         mesuresSelec = new ArrayList<>();
-        selectionOn =false;
+        selectionOn = false;
 
         //Barre de menu
-        menu =(LinearLayout) findViewById(R.id.menu);
+        menu = (LinearLayout) findViewById(R.id.menu);
         mTempo = (ImageView) menu.findViewById(R.id.tempo);
         mNuance = (ImageView) menu.findViewById(R.id.nuance);
         mSelection = (ImageView) menu.findViewById(R.id.selection);
@@ -107,38 +109,41 @@ public class EditionActivity  extends Activity {
         nuanceList.add("pianissimo");
         nuanceList.add("pianississimo");
 
-        dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,nuanceList );
+        dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         //gestion grille mesure
-        GridLayout mesuresGrid =(GridLayout) findViewById(R.id.mesures);
+        GridLayout mesuresGrid = (GridLayout) findViewById(R.id.mesures);
         mGridView = (GridView) mesuresGrid.findViewById(R.id.gridView);
         Intent intent = getIntent();
+
         if (intent != null) {
             //TODO insertion dans la bdd de la musique à partir des infos rentré par l'utilisateur
         }
-        EXTRA_NBMESURE=intent.getStringExtra(EXTRA_NBMESURE);
-        EXTRA_PULSATION=intent.getStringExtra(EXTRA_PULSATION);
-        EXTRA_UNITE=intent.getStringExtra(EXTRA_UNITE);
-        EXTRA_TPSPARMESURE=intent.getStringExtra(EXTRA_TPSPARMESURE);
+        EXTRA_NOMPARTITION = intent.getStringExtra(EXTRA_NOMPARTITION);
+        EXTRA_NBMESURE = intent.getStringExtra(EXTRA_NBMESURE);
+        EXTRA_PULSATION = intent.getStringExtra(EXTRA_PULSATION);
+        EXTRA_UNITE = intent.getStringExtra(EXTRA_UNITE);
+        EXTRA_TPSPARMESURE = intent.getStringExtra(EXTRA_TPSPARMESURE);
         EXTRA_DRAGACTIF = intent.getStringExtra(EXTRA_DRAGACTIF);
         EXTRA_ID_PARTITION = intent.getStringExtra(EXTRA_ID_PARTITION);
         //on recupere l'instance dans la bdd de la partition qu'on edite
-     //   partitionCourante = bddMusique.getMusique(EXTRA_NOMPARTITION);
-        idMusique= Integer.parseInt(EXTRA_ID_PARTITION);
-        partition = new Partition(EXTRA_NBMESURE,EXTRA_PULSATION,EXTRA_TPSPARMESURE,EXTRA_UNITE);
-        if(idMusique>-1){
-          //on recupère les données associées à la musique
+        //   partitionCourante = bddMusique.getMusique(EXTRA_NOMPARTITION);
+        idMusique = Integer.parseInt(EXTRA_ID_PARTITION);
+        partition = new Partition(EXTRA_NBMESURE, EXTRA_PULSATION, EXTRA_TPSPARMESURE, EXTRA_UNITE);
+        if (idMusique > -1) {
+            //on recupère les données associées à la musique
             Toast.makeText(getApplicationContext(), "chargement musique", Toast.LENGTH_SHORT).show();
 
             varIntensiteList = bddIntensite.getVariationsIntensite(bddMusique.getMusique(idMusique));
-            varTempsList = bddTemps.getVariationsTemps(bddMusique.getMusique(idMusique));//TODO pb : toujours vide
+            varTempsList = bddTemps.getVariationsTemps(bddMusique.getMusique(idMusique));
 
             //on met ajour tempo et intensite
             partition.setTempo(varTempsList);
+            partition.setNuance(varIntensiteList);
         }
 
-        if( EXTRA_DRAGACTIF.equals("true")){
+        if (EXTRA_DRAGACTIF.equals("true")) {
             //drag
             mSelection.setVisibility(View.INVISIBLE); // on affiche pas le bouton de selection
             mSupprimerSelection.setVisibility((View.INVISIBLE));
@@ -150,14 +155,13 @@ public class EditionActivity  extends Activity {
             mTempo.setOnClickListener(TempoListener);
             mSelection.setOnClickListener(SelectionListener);
             mSupprimerSelection.setOnClickListener(SupprimerSelectionListener);
-            mNuance.setOnClickListener( NuanceListener);
+            mNuance.setOnClickListener(NuanceListener);
         }
 
 
 
-       // partition.setNuance(varIntensiteList);
 
-        adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
+        adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
         mGridView.setAdapter(adapter);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,21 +186,20 @@ public class EditionActivity  extends Activity {
         });
 
 
-
-
     }
 
     //<listener pour Drag
     private final class BoutonListener implements View.OnTouchListener {
         private String typeEvent;
-        public BoutonListener(String type){
+
+        public BoutonListener(String type) {
             super();
             typeEvent = type;
         }
 
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                String mType="";
+                String mType = "";
                 ClipData data = ClipData.newPlainText(typeEvent, mType);//donne un label au clipdata
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                 view.startDrag(data, shadowBuilder, view, 0);
@@ -216,27 +219,25 @@ public class EditionActivity  extends Activity {
     //debut selection
     private OnClickListener SelectionListener = new OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             //change l'image en fonction de letat de selectionOn
-            if(selectionOn){
-                ((ImageView)v.findViewById(R.id.selection)).setBackgroundResource(R.drawable.selection_off);
-            }else{
-                ((ImageView)v.findViewById(R.id.selection)).setBackgroundResource(R.drawable.selection_on);
+            if (selectionOn) {
+                ((ImageView) v.findViewById(R.id.selection)).setBackgroundResource(R.drawable.selection_off);
+            } else {
+                ((ImageView) v.findViewById(R.id.selection)).setBackgroundResource(R.drawable.selection_on);
             }
             //on passe a l'état contraire
-            selectionOn =!selectionOn;
+            selectionOn = !selectionOn;
         }
     };
-//supprimer selection
+    //supprimer selection
     private OnClickListener SupprimerSelectionListener = new OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
 
             partition.unselectAll();
             mesuresSelec.clear();
-            adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
+            adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
             mGridView.setAdapter(adapter);
 
 
@@ -246,57 +247,61 @@ public class EditionActivity  extends Activity {
     //tempo
     private OnClickListener TempoListener = new OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-            //FIXME: Attention, si aucune mesure selectionné, ca plante (mesuresSelec.size() = 0)
-            //if(mesuresSelec.size()>0) {
-                final int mesureDebut = mesuresSelec.get(0).intValue();
-                final int mesureFin = mesuresSelec.get(mesuresSelec.size() - 1).intValue();
-            //}
+            if (mesuresSelec.size() > 0) {
+                mesureDebut = mesuresSelec.get(0).intValue();
+                mesureFin = mesuresSelec.get(mesuresSelec.size() - 1).intValue();
+                new AlertDialog.Builder(context)
+                        .setTitle("Changement de tempo")
+                        .setView(layout)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                int newTempo = Integer.parseInt(editTempo.getText().toString());
+                                //TODO ajouter evenement dans bdd
+                                partition.setTempo(mesuresSelec, newTempo);
+                                Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+                                idMusique = bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
+                                //idMusique=bddMusique.getMusique("debug").getId();
+                                //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
+                                long t = bddTemps.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo));
+                                if(mesureDebut != 0) {
+                                    //Ajout de l'evenement de fin de variation
+                                    int oldTempo = partition.getMesure(mesureDebut - 1).getTempo();
+                                    long t2 = bddTemps.save(new VariationTemps(idMusique, mesureFin, 1, oldTempo));
+                                }
+                                Toast.makeText(getApplicationContext(), "Lmidr r, e" + t, Toast.LENGTH_SHORT).show();
 
-            new AlertDialog.Builder(context)
-                    .setTitle("Changement de tempo")
-                    .setView(layout)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            int newTempo = Integer.parseInt(editTempo.getText().toString());
-                            //TODO ajouter evenement dans bdd
-                            partition.setTempo(mesuresSelec, newTempo);
-                            Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-                            idMusique=bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
-                            //idMusique=bddMusique.getMusique("debug").getId();
-                            //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
-                            long t =bddTemps.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo));
-                            Toast.makeText(getApplicationContext(), "Lmidr r, e"+ t, Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            } else {
+                Toast.makeText(context, "Merci de sélectionner des mesures", Toast.LENGTH_SHORT).show();
 
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            }
+
 
         }
     };
 
 
-
-//nuance
+    //nuance
     private OnClickListener NuanceListener = new OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_nuance, null);
 
             //nuance selection
-            mNuanceSpinner = (Spinner)layout.findViewById(R.id.nuance);
+            mNuanceSpinner = (Spinner) layout.findViewById(R.id.nuance);
 
             // attaching data adapter to spinner
             mNuanceSpinner.setAdapter(dataAdapterNuance);
@@ -307,7 +312,7 @@ public class EditionActivity  extends Activity {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     // On selecting a spinner item
                     nuance = parent.getItemAtPosition(position).toString();
-                    nuance = nuance.replace(" ","");
+                    nuance = nuance.replace(" ", "");
 
                 }
 
@@ -315,32 +320,41 @@ public class EditionActivity  extends Activity {
                     // TODO Auto-generated method stub
                 }
             });
-            new AlertDialog.Builder(context)
-                    .setTitle("Changement de nuance")
-                    .setView(layout)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            partition.setNuance(mesuresSelec, nuance);
-                            adapter = new MesureAdapter(EditionActivity.this,partition,dataAdapterNuance);
-                            mGridView.setAdapter(adapter);
-                            //  Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
 
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            if (mesuresSelec.size() > 0) {
+                mesureDebut = mesuresSelec.get(0).intValue();
+
+                new AlertDialog.Builder(context)
+                        .setTitle("Changement de nuance")
+                        .setView(layout)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                partition.setNuance(mesuresSelec, nuance);
+                                adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
+                                mGridView.setAdapter(adapter);
+                                idMusique = bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
+                               long t = bddIntensite.save(new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/));
+
+                                //  Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            } else {
+                Toast.makeText(context, "Merci de sélectionner des mesures", Toast.LENGTH_SHORT).show();
+
+            }
         }
-    };
-
-
 //selection>
 
-    }
+    };
+}
 
 
 

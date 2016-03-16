@@ -30,7 +30,7 @@ public class CreationMusiqueActivity extends Activity {
     final String EXTRA_UNITE="unite";
     final String EXTRA_TPSPARMESURE="tpsParMesure";
     final String EXTRA_DRAGACTIF="drag";
-    final String EXTRA_ID_PARTITION="new";
+    final String EXTRA_ID_PARTITION="idMusique";
 
     EditText pulsation;
     EditText nomPartitionE;
