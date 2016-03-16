@@ -1,27 +1,27 @@
-from threading import Thread
+import threading
 import time
 import Image
 import ImageDraw
 from rgbmatrix import Adafruit_RGBmatrix
 
-class Telecommande(Thread):
-    
+class Telecommande(threading.Thread):
+
     def __init__(self):
-        Thread.__init__(self)
-	self.matrix = Adafruit_RGBmatrix(32,2)
+        threading.Thread.__init__(self)
         self.message=''
+	self.matrix = None
         
     def setMessage(self,msg):
         self.message=msg
         
     def run(self):
-        while self.message != 'QUIT':
-            
-            if self.message == 'PLAY':
-                self.play()
-            elif self.message == 'PAUSE':
-                self.pause()
-    
+	while self.message != 'QUIT':
+		if self.message == 'PLAY':
+			self.play()
+		elif self.message == 'PAUSE':
+			self.pause()
+	self.quit()
+
     def play(self):
         count = 1
         while self.message == 'PLAY':
@@ -30,19 +30,14 @@ class Telecommande(Thread):
             image = Image.open(filename)
 	    image.load()
 	    self.matrix.SetImage(image.im.id,0,0)
+	    print filename
             count = (count % 4)+1
             time.sleep(1)
     
     def pause(self):
-        print 'black.png'
+        print "PAUSE"
         self.setMessage('')
-        
-    def traiterMessage(self,msg):
-        self.setMessage(msg)
-        print 'Telecommande recoit '+msg
-        switch = {
-                  "PLAY":self.play,
-                  "PAUSE":self.pause
-                  }
-        fun = switch.get(msg, lambda: None)
-        fun()
+             
+    def quit(self):
+	print "End"
+	self.matrix.Clear()     
