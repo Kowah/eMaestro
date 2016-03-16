@@ -31,5 +31,12 @@
         android:layout_alignParentTop="true"
          />
 
+    <Button
+        android:id="@+id/emulateur"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@id/chercher"
+        />
+
 
 </RelativeLayout>

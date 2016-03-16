@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 
 import BDD.db.CatalogueDAO;
 import BDD.db.MusiqueDAO;
+import emulateur.EmulateurActivity;
 
 public class MainActivity extends Activity {
 
@@ -40,6 +42,15 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				//TODO recherche dans catalogue à faire
 				Intent intent = new Intent(MainActivity.this, CatalogueActivity.class);
+				startActivity(intent);
+			}
+		});
+
+		final Button emulateur = (Button) findViewById(R.id.emulateur);
+		emulateur.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, EmulateurActivity.class);
 				startActivity(intent);
 			}
 		});
