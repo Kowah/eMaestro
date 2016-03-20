@@ -45,7 +45,7 @@ public class Partition {
         }
     }
     public void setNuance(int mesureDebut, int mesureFin, String nuance){
-        for(int i=mesureDebut-1;i<mesureFin;i++){
+        for(int i=mesureDebut;i<mesureFin;i++){
             partition.get(i).setNuance(nuance);
         }
     }
@@ -58,29 +58,116 @@ public class Partition {
     }
     public void setTempo(List<VariationTemps> l){
         VariationTemps vT;
-        VariationTemps vTnext;
         int mesureFin;
         int i;
         for(i =0; i<l.size();i++){
             vT = l.get(i);
             if(i+1<l.size()){
-                //si ya dautre event, alors changmeent de tempo se fait jusqu'à l'arrivée ce celui ci
+                //si ya dautre event, alors changmeent de tempo se fait jusqu'à jusqu'à l'arrivée du prochain
                 mesureFin = l.get(i+1).getMesure_debut()-1;
             }
             else{
                 //sinon jusqu'à la fin de la partition
-                mesureFin = this.partition.size()-1;
+                mesureFin = this.partition.size();
             }
-            //FIXME : Attention i commencait a -1 si selection de la premiere mesure
-            //this.setTempo(vT.getMesure_debut()-1,mesureFin,vT.getTempo());
-            this.setTempo(vT.getMesure_debut(),mesureFin,vT.getTempo());
+
+            this.setTempo(vT.getMesure_debut(), mesureFin, vT.getTempo());
 
         }
 
     }
 
     public void setNuance(List<VariationIntensite> l){
-    //TODO
+
+        VariationIntensite vT;
+        int mesureFin;
+        int i;
+        String nuance;
+        for(i =0; i<l.size();i++){
+            vT = l.get(i);
+            if(i+1<l.size()){
+                //si ya dautre event, alors changmeent de nuance se fait jusqu'à l'arrivée du prochain
+                mesureFin = l.get(i+1).getMesureDebut()-1;
+            }
+            else{
+                //sinon jusqu'à la fin de la partition
+                mesureFin = this.partition.size();
+            }
+            nuance= convertNuanceIntStr(vT.getIntensite());
+            this.setNuance(vT.getMesureDebut(), mesureFin, nuance);
+
+        }
+    }
+
+    public String convertNuanceIntStr(int n) {
+        String s;
+        switch (n) {
+            case 0:
+                s = "fortississimo";
+                break;
+            case 1:
+                s = "fortissimo";
+                break;
+            case 2:
+                s = "forte";
+                break;
+            case 3:
+                s = "mezzoforte";
+                break;
+            case 4:
+                s = "mezzopiano";
+                break;
+            case 5:
+                s = "piano";
+                break;
+            case 6:
+                s = "pianissimo";
+                break;
+            case 7:
+                s = "pianississimo";
+                break;
+            default:
+                s = "neutre";
+                break;
+
+        }
+        return s;
+    }
+    public int convertNuanceStrInt(String n) {
+        int s;
+        switch (n) {
+            case "fortississimo":
+                s = 0;
+                break;
+            case "fortissimo":
+                s = 1;
+                break;
+            case "forte":
+                s = 2;
+                break;
+            case "mezzoforte":
+                s = 3;
+                break;
+            case "mezzopiano":
+                s = 4;
+                break;
+            case "piano":
+                s = 5;
+                break;
+            case "pianissimo":
+                s = 6;
+                break;
+            case "pianississimo":
+                s = 7;
+                break;
+            default:
+                s = -10;
+                break;
+
+        }
+        return s;
+
+
     }
 
     public void setNuance(List<Integer> l,String nuance){

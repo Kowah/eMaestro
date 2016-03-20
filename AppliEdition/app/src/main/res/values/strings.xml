@@ -9,5 +9,7 @@
     <string name="nomPartition">Nom de la partition</string>
     <string name="nomAutre">a</string>
     <string name="title_activity_catalogue">CatalogueActivity</string>
+    <string name="title_activity_lecture">LectureActivity</string>
 
+    <string name="title_activity_emulateur">EmulateurActivity</string>
 </resources>

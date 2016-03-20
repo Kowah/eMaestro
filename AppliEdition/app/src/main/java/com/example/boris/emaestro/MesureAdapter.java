@@ -53,7 +53,6 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.fortissimo));
                 break;
             case "forte":
-
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.forte));
                 break;
             case "mezzoforte":

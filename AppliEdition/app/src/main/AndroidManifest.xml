@@ -35,6 +35,20 @@
             android:label="@string/title_activity_catalogue"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name="emulateur.LectureActivity"
+            android:label="@string/title_activity_lecture"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <activity
+            android:name="emulateur.EmulateurActivity"
+            android:label="@string/title_activity_emulateur"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+
+
         <uses-permission android:name="android.permission.INTERNET"/>
     </application>
 

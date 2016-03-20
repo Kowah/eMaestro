@@ -17,16 +17,10 @@
         android:layout_height="60dp"
         android:layout_width="800dp"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/mesure"
-        android:layout_toEndOf="@+id/mesure"
+        
         android:layout_marginLeft="60dp"
         android:layout_marginStart="60dp" />
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="200px"
-        android:layout_height="100px"
-        android:layout_below="@id/clean"
-        />
+ 
 
     <ImageView
         android:layout_width="wrap_content"

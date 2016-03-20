@@ -29,7 +29,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
     final String EXTRA_UNITE="unite";
     final String EXTRA_TPSPARMESURE="tpsParMesure";
     final String EXTRA_DRAGACTIF="drag";
-    final String EXTRA_ID_PARTITION="new";
+    final String EXTRA_ID_PARTITION="idMusique";
 
     String labelEvent;// pour drop
     int newTempo, mesureFin,mesureDebut;// changement de tempo
