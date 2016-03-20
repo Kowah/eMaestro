@@ -15,13 +15,11 @@ import util.Triple;
 public class Chargeur_partition {
 
 	private final Activity mainActivity;
-	MusiqueDAO bddMusique ;
-	VariationTempsDAO bddTemps ;
+	DataBaseManager bdd ;
 
-	Chargeur_partition(Activity main, MusiqueDAO bddMusique, VariationTempsDAO bddTemps){
+	Chargeur_partition(Activity main, DataBaseManager bdd){
 		mainActivity = main;
-		this.bddMusique = bddMusique;
-		this.bddTemps = bddTemps;
+		this.bdd = bdd;
 	}
 
 	private int id_partition_chargee; //pour savoir quelle partition est en memoire, c'est l'id_musique de cette derniere dans la bdd
@@ -67,8 +65,8 @@ public class Chargeur_partition {
 			int nb_temps = 0;
 			//List<Triple<Integer, Integer, Integer>> infos = new ArrayList<Triple<Integer, Integer, Integer>>();
 
-			List<VariationTemps> infos = bddTemps.getVariationsTemps(bddMusique.getMusique(id_musique));
-			mesure_fin = bddMusique.getMusique(id_musique).getNb_mesure();
+			List<VariationTemps> infos = bdd.getVariationsTemps(bdd.getMusique(id_musique));
+			mesure_fin = bdd.getMusique(id_musique).getNb_mesure();
 			//TODO traiter la liste des variations temps
 			/*		infos_size = infos.size();
 			for(int i = 0; i < infos_size; i++){

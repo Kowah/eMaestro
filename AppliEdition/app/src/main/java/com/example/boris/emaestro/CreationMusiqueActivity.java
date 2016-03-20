@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-import BDD.db.MusiqueDAO;
 import BDD.to.*;
 import BDD.to.Musique;
 

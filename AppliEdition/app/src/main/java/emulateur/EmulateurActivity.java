@@ -15,8 +15,8 @@ import com.example.boris.emaestro.R;
 
 import java.util.ArrayList;
 
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationTempsDAO;
+
+import BDD.db.DataBaseManager;
 import BDD.to.Musique;
 import util.Pair;
 
@@ -28,8 +28,7 @@ public class EmulateurActivity extends Activity {
 
 
     int idMusique=-1;
-    MusiqueDAO bddMusique ;
-    VariationTempsDAO bddTemps ;
+    DataBaseManager bdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +36,8 @@ public class EmulateurActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emulateur);
 
-
-        bddMusique = new MusiqueDAO(this);
-        bddMusique.open();
-        bddTemps = new VariationTempsDAO(this);
-        bddTemps.open();
-
+        bdd = new DataBaseManager(this);
+        bdd.open();
 
         initSpinnerMusique();
 
@@ -50,14 +45,13 @@ public class EmulateurActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        bddMusique.close();
-        bddTemps.close();
+        bdd.close();
         super.onDestroy();
     }
 
     private void initSpinnerMusique() {
 
-        final ArrayList<Musique> listMusique = bddMusique.getMusiques();
+        final ArrayList<Musique> listMusique = bdd.getMusiques();
 
         final ArrayAdapter<Musique> arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, listMusique);
@@ -99,7 +93,7 @@ public class EmulateurActivity extends Activity {
 
     public void jouer(View view) {
         if(idMusique != -1) {//Si un morceau a ete choisi
-            int mesureFinMusique =  bddMusique.getMusique(idMusique).getNb_mesure();
+            int mesureFinMusique =  bdd.getMusique(idMusique).getNb_mesure();
             EditText editMesureDebut = (EditText)findViewById(R.id.editMesureDebut);
             EditText editMesureFin = (EditText)findViewById(R.id.editMesureFin);
             int mesureDebut = Integer.parseInt(editMesureDebut.getText().toString());

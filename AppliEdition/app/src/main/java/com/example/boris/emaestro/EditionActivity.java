@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationIntensiteDAO;
-import BDD.db.VariationTempsDAO;
 import BDD.to.Musique;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
@@ -253,7 +250,7 @@ public class EditionActivity  extends Activity {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-<<<<<<< HEAD
+
             if (mesuresSelec.size() > 0) {
                 mesureDebut = mesuresSelec.get(0).intValue();
                 mesureFin = mesuresSelec.get(mesuresSelec.size() - 1).intValue();
@@ -333,8 +330,8 @@ public class EditionActivity  extends Activity {
                                 partition.setNuance(mesuresSelec, nuance);
                                 adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
                                 mGridView.setAdapter(adapter);
-                                idMusique = bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
-                               long t = bddIntensite.save(new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/));
+                                idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
+                               long t = bdd.save(new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/));
 
                                 //  Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
 

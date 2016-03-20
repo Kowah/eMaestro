@@ -7,16 +7,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationTempsDAO;
+
+import BDD.db.DataBaseManager;
+
 import BDD.to.Musique;
 
 public class CatalogueActivity extends Activity {
     CatalogueAdapter adapter;
     ListView mListView;
     List<Musique> catalogue = new ArrayList<>();
-    //MusiqueDAO bddMusique = new MusiqueDAO(this);
-    //VariationTempsDAO b = new VariationTempsDAO(this);
     DataBaseManager bdd = new DataBaseManager(this);
     Context context = this;
     @Override
