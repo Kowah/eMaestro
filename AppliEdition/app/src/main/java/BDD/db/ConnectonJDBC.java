@@ -9,7 +9,11 @@ public class ConnectonJDBC {
     //static reference to itself
     private static final ConnectonJDBC instance = new ConnectonJDBC();
     //://ip;port/base_name
-    private static final String URL = "jdbc:mysql://192.168.0.11:3306/test";
+    //private static final String URL = "jdbc:mysql://192.168.0.11:3306/test";
+    private static final String URL = "jdbc:mysql://192.168.103.1:3306/emaestro";
+
+    //192.168.103.1
+    //private static final String URL = "jdbc:mysql://148.60.13.86:3306/test";
     private static final String USER = "android";
     private static final String PASSWORD = "mdp";
     public static final String DRIVER_CLASS = "com.mysql.jdbc.Driver";

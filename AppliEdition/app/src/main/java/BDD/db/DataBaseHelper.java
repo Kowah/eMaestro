@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "BDeMaestro";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 5;
 //LES TABLES
 	public static final String EVENEMENT_TABLE = "evenement";
 	public static final String MUSIQUE_TABLE = "musique";
@@ -20,7 +20,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	//Colonnes de la table musique
 	public static final String KEY_Musique = "id_musique";
 	public static final String NAME_Musique = "name";
-	public static final String NB_MESURE = "nb_mesure";
+	public static final String NB_MESURE = "nb_mesures";
 	public static final String NB_PULSATION = "nb_pulsation";
 	public static final String UNITE_PULSATION = "unite_pulsation";
 	public static final String NB_TEMPS_MESURE = "nb_temps_mesure";
@@ -30,8 +30,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	//public static final String KEY_Musique = "id_musique";
 
 	//Colonnes de la table variation temps
-	public static String IDVarTemps = "iDVarTemps";
-	public static String IDMusique = "iDMusique";
+	public static String IDVarTemps = "idVarTemps";
+	public static String IDMusique = "id_musique";
 	public static String MESURE_DEBUT = "mesure_debut";
 	public static String TEMPS_PAR_MESURE = "temps_par_mesure";
 	public static String TEMPO = "tempo";

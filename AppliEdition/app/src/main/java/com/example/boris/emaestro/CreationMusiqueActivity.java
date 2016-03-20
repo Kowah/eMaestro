@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.db.DataBaseManager;
 import BDD.db.MusiqueDAO;
 import BDD.to.*;
 import BDD.to.Musique;
@@ -45,7 +46,8 @@ public class CreationMusiqueActivity extends Activity {
     Spinner tpsParMesureSpinner,  uniteSpinner;
 
     //BDD
-    final MusiqueDAO bddMusique = new MusiqueDAO(this);
+    //final MusiqueDAO bddMusique = new MusiqueDAO(this);
+    DataBaseManager bdd = new DataBaseManager(this);
 
     Button drag;
     boolean dragActive ;
@@ -53,7 +55,8 @@ public class CreationMusiqueActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
-        bddMusique.open();
+        //bddMusique.open();
+        bdd.open();
         dragActive = false;
         pulsation = (EditText) findViewById(R.id.pulsation);
         nomPartitionE = (EditText) findViewById(R.id.nom);
@@ -153,10 +156,10 @@ public class CreationMusiqueActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir un nom de partition", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    Musique musiqueDejaPresente = bddMusique.getMusique(nomPartition);
+                    Musique musiqueDejaPresente = bdd.getMusique(nomPartition);
                     if (!musiqueDejaPresente.getName().equals(nomPartition)) {
                         //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
-                        long err = bddMusique.save(new Musique(nomPartition, Integer.parseInt(nbMesure), Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
+                        long err = bdd.save(new Musique(nomPartition, Integer.parseInt(nbMesure), Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
                        if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
                        } else {

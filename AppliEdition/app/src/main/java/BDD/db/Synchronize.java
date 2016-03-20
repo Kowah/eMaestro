@@ -20,6 +20,8 @@ public class Synchronize implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Start the races");
+
         String queryMusic = "Insert into " + DataBaseHelper.MUSIQUE_TABLE + " ("
                 + DataBaseHelper.NAME_Musique + ","
                 + DataBaseHelper.NB_MESURE + ","
@@ -31,7 +33,9 @@ public class Synchronize implements Runnable {
         if (co == null) {
             System.out.println("Hello World");
         } else {
-            for (Musique m : musiques) {
+            System.out.println("Succesfull");
+            //for (Musique m : musiques) {
+                Musique m = new Musique("debug",11,12,13,14);
                 PreparedStatement st = null;
                 try {
                     st = co.prepareStatement(queryMusic);
@@ -44,7 +48,7 @@ public class Synchronize implements Runnable {
                 } catch (SQLException e) {
                     e.printStackTrace();
 
-                }
+              //  }
             }
         }
     }

@@ -51,9 +51,15 @@ public class CatalogueDAO extends DataBaseManager {
             if(m.getId() > 0){
                 values.put(DataBaseHelper.NAME_Musique, m.getId());
 
-                database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values);
+                if(database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values) < 0){
+                    System.err.println("Erreur lors de l'insertion de données dans ala table catalogue");
+                    return -1;
+                }
             }
-            return -1;
+            else{
+                System.err.println("Erreur, musique avec un identifiant invalide a enregistrer");
+                return -1;
+            }
         }
         return 0;
     }

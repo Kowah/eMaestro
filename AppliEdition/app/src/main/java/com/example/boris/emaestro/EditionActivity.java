@@ -43,9 +43,10 @@ public class EditionActivity  extends Activity {
     String EXTRA_DRAGACTIF="drag";
     String EXTRA_ID_PARTITION="new";
     //BDD + recup des données de la musique
-    final MusiqueDAO bddMusique = new MusiqueDAO(this);
-    final VariationIntensiteDAO bddIntensite = new VariationIntensiteDAO(this);
-    final VariationTempsDAO bddTemps = new VariationTempsDAO(this);
+    //final MusiqueDAO bddMusique = new MusiqueDAO(this);
+    //final VariationIntensiteDAO bddIntensite = new VariationIntensiteDAO(this);
+    //inal VariationTempsDAO bddTemps = new VariationTempsDAO(this);
+    DataBaseManager bdd = new DataBaseManager(this);
     Musique partitionCourante;
     int idMusique;
     List<VariationTemps> varTempsList;
@@ -81,9 +82,10 @@ public class EditionActivity  extends Activity {
         setContentView(R.layout.edition_mesures);
         context = EditionActivity.this;
         // on ouvre bdd
-        bddMusique.open();
-        bddIntensite.open();
-        bddTemps.open();
+        //bddMusique.open();
+        //bddIntensite.open();
+        //bddTemps.open();
+        bdd.open();
 
         //modification par selection
         mesuresSelec = new ArrayList<>();
@@ -131,8 +133,8 @@ public class EditionActivity  extends Activity {
           //on recupère les données associées à la musique
             Toast.makeText(getApplicationContext(), "chargement musique", Toast.LENGTH_SHORT).show();
 
-            varIntensiteList = bddIntensite.getVariationsIntensite(bddMusique.getMusique(idMusique));
-            varTempsList = bddTemps.getVariationsTemps(bddMusique.getMusique(idMusique));//TODO pb : toujours vide
+            varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
+            varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));//TODO pb : toujours vide
 
             //on met ajour tempo et intensite
             partition.setTempo(varTempsList);
@@ -266,11 +268,11 @@ public class EditionActivity  extends Activity {
                             //TODO ajouter evenement dans bdd
                             partition.setTempo(mesuresSelec, newTempo);
                             Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-                            idMusique=bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
+                            idMusique=bdd.getMusique(EXTRA_NOMPARTITION).getId();
                             //idMusique=bddMusique.getMusique("debug").getId();
                             //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
-                            long t =bddTemps.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo));
-                            Toast.makeText(getApplicationContext(), "Lmidr r, e"+ t, Toast.LENGTH_SHORT).show();
+                            long t =bdd.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo));
+                            Toast.makeText(getApplicationContext(), "Lmidr r, e"+ EXTRA_NOMPARTITION, Toast.LENGTH_SHORT).show();
 
                         }
                     })

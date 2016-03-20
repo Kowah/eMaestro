@@ -12,9 +12,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationIntensiteDAO;
-import BDD.db.VariationTempsDAO;
+import BDD.db.DataBaseManager;
 import BDD.to.Catalogue;
 import BDD.to.Musique;
 import BDD.to.VariationIntensite;
@@ -41,8 +39,9 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
     Button editer;
     Button supprimer;
     Button jouer;
-    VariationTempsDAO bddTempsVar;
-    VariationIntensiteDAO bddIntensiteVar;
+    //VariationTempsDAO bddTempsVar;
+    //VariationIntensiteDAO bddIntensiteVar;
+    DataBaseManager bdd;
     List<VariationIntensite> IntensiteList;
     List <VariationTemps> TempsList;
     //partition est la liste des models à afficher
