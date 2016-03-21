@@ -23,9 +23,11 @@ public class CatalogueDAO extends DataBaseManager {
 
     private static final String WHERE_ID_EQUALS = DataBaseHelper.KEY_Musique
             + " =?";
+    Context context;
 
     public CatalogueDAO(Context context) {
         super(context);
+        this.context = context;
     }
     public void clean(){
         database.delete(DataBaseHelper.CATALOGUE_TABLE, null, null);
@@ -66,7 +68,7 @@ public class CatalogueDAO extends DataBaseManager {
 
     public long save(long id) {
             ContentValues values = new ContentValues();
-            values.put(DataBaseHelper.NAME_Musique, id);
+            values.put(DataBaseHelper.KEY_Musique, id);
 
             return database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values);
     }
@@ -75,9 +77,9 @@ public class CatalogueDAO extends DataBaseManager {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.NAME_Musique, Musique.getName());
         values.put(DataBaseHelper.NB_MESURE, Musique.getNb_mesure());
-        values.put(DataBaseHelper.NB_PULSATION, Musique.getNb_pulsation());
-        values.put(DataBaseHelper.UNITE_PULSATION, Musique.getUnite_pulsation());
-        values.put(DataBaseHelper.NB_TEMPS_MESURE, Musique.getNb_temps_mesure());
+        //values.put(DataBaseHelper.NB_PULSATION, Musique.getNb_pulsation());
+        //values.put(DataBaseHelper.UNITE_PULSATION, Musique.getUnite_pulsation());
+        //values.put(DataBaseHelper.NB_TEMPS_MESURE, Musique.getNb_temps_mesure());
         long result = database.update(DataBaseHelper.MUSIQUE_TABLE, values,
                 WHERE_ID_EQUALS,
                 new String[] { String.valueOf(Musique.getId()) });
@@ -101,9 +103,9 @@ public class CatalogueDAO extends DataBaseManager {
             musique.setId(cursor.getInt(0));
             musique.setName(cursor.getString(1));
             musique.setNb_mesure(cursor.getInt(2));
-            musique.setNb_pulsation(cursor.getInt(3));
-            musique.setUnite_pulsation(cursor.getInt(4));
-            musique.setNb_temps_mesure(cursor.getInt(5));
+            //musique.setNb_pulsation(cursor.getInt(3));
+            //musique.setUnite_pulsation(cursor.getInt(4));
+            //musique.setNb_temps_mesure(cursor.getInt(5));
         }
         return musique;
     }
@@ -120,15 +122,17 @@ public class CatalogueDAO extends DataBaseManager {
         Log.d("query", query);
         Cursor cursor = database.rawQuery(query, null);
         Cursor curMusique;
+
         while (cursor.moveToNext()) {
             curMusique = database.rawQuery(queryMusique, new String[]{Integer.toString(cursor.getInt(0))});
+            curMusique.moveToFirst();
             Musique musique = new Musique();
             musique.setId(curMusique.getInt(0));
             musique.setName(curMusique.getString(1));
             musique.setNb_mesure(curMusique.getInt(2));
-            musique.setNb_pulsation(curMusique.getInt(3));
-            musique.setUnite_pulsation(curMusique.getInt(4));
-            musique.setNb_temps_mesure(curMusique.getInt(5));
+            //musique.setNb_pulsation(curMusique.getInt(3));
+            //musique.setUnite_pulsation(curMusique.getInt(4));
+            //musique.setNb_temps_mesure(curMusique.getInt(5));
 
             musiques.add(musique);
         }
@@ -139,7 +143,7 @@ public class CatalogueDAO extends DataBaseManager {
         List<Musique> musiques = this.getMusiques();
         List<VariationTemps> variationTemps;
         List<VariationIntensite> variationIntensites;
-        Thread t = new Thread(new Synchronize(musiques));
+        Thread t = new Thread(new Synchronize(musiques, context));
         t.start();
         /*
         String queryMusic = "Insert into "+ DataBaseHelper.MUSIQUE_TABLE  + " ("

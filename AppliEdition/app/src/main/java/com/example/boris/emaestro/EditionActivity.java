@@ -265,12 +265,12 @@ public class EditionActivity  extends Activity {
                                 Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                                 idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
                                 //idMusique=bddMusique.getMusique("debug").getId();
-                                //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
-                                long t = bdd.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo));
+                                //TODO: Ajouter unite mesure a la place de -1;
+                                long t = bdd.save(new VariationTemps(idMusique, mesureDebut, 1, newTempo,-1));
                                 if(mesureDebut != 0) {
                                     //Ajout de l'evenement de fin de variation
                                     int oldTempo = partition.getMesure(mesureDebut - 1).getTempo();
-                                    long t2 = bdd.save(new VariationTemps(idMusique, mesureFin, 1, oldTempo));
+                                    long t2 = bdd.save(new VariationTemps(idMusique, mesureFin, 1, oldTempo,-1));
                                 }
                                 Toast.makeText(getApplicationContext(), "Lmidr r, e" + t, Toast.LENGTH_SHORT).show();
 

@@ -7,31 +7,25 @@ public class Musique implements Parcelable {
     private int id;
     private String name;
     private int nb_mesure;
-    private int nb_pulsation;
-    private int unite_pulsation;
-    private int nb_temps_mesure;
+
+
 
     public Musique() {
         super();
     }
 
-    public Musique(int id, String name, int nb_mesure, int nb_pulsation, int unite_pulsation, int nb_temps_mesure) {
+    public Musique(int id, String name, int nb_mesure) {
         super();
         this.id = id;
         this.name = name;
         this.nb_mesure = nb_mesure;
-        this.nb_pulsation = nb_pulsation;
-        this.unite_pulsation = unite_pulsation;
-        this.nb_temps_mesure = nb_temps_mesure;
+
     }
 
-    public Musique(String name, int nb_mesure, int nb_pulsation, int unite_pulsation, int nb_temps_mesure) {
+    public Musique(String name, int nb_mesure) {
         this.id = -1;
         this.name = name;
         this.nb_mesure = nb_mesure;
-        this.nb_pulsation = nb_pulsation;
-        this.unite_pulsation = unite_pulsation;
-        this.nb_temps_mesure = nb_temps_mesure;
     }
 
     private Musique(Parcel in) {
@@ -39,9 +33,6 @@ public class Musique implements Parcelable {
         this.id = in.readInt();
         this.name = in.readString();
         this.nb_mesure = in.readInt();
-        this.nb_pulsation = in.readInt();
-        this.unite_pulsation = in.readInt();
-        this.nb_temps_mesure = in.readInt();
     }
 
     public int getId() {return id;}
@@ -62,27 +53,6 @@ public class Musique implements Parcelable {
     }
     public void setNb_mesure(int nb_mesure){
         this.nb_mesure = nb_mesure;
-    }
-
-    public int getNb_pulsation(){
-        return this.nb_pulsation;
-    }
-    public void setNb_pulsation(int nb_pulsation){
-        this.nb_pulsation = nb_pulsation;
-    }
-
-    public int getUnite_pulsation(){
-        return this.unite_pulsation;
-    }
-    public void setUnite_pulsation(int unite_pulsation){
-        this.unite_pulsation = unite_pulsation;
-    }
-
-    public int getNb_temps_mesure(){
-        return this.nb_temps_mesure;
-    }
-    public void setNb_temps_mesure(int nb_temps_mesure){
-        this.nb_temps_mesure = nb_temps_mesure;
     }
 
     @Override

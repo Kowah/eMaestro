@@ -73,9 +73,9 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                 Intent intent = new Intent(getContext(), EditionActivity.class);
                 intent.putExtra(EXTRA_NOMPARTITION,musique.getName() );
                 intent.putExtra(EXTRA_NBMESURE, String.valueOf(musique.getNb_mesure()));
-                intent.putExtra(EXTRA_PULSATION, String.valueOf(musique.getNb_pulsation()));
-                intent.putExtra(EXTRA_TPSPARMESURE,String.valueOf( musique.getNb_temps_mesure()));
-                intent.putExtra(EXTRA_UNITE, String.valueOf(musique.getUnite_pulsation()));
+                //intent.putExtra(EXTRA_PULSATION, String.valueOf(musique.getNb_pulsation()));
+                //intent.putExtra(EXTRA_TPSPARMESURE,String.valueOf( musique.getNb_temps_mesure()));
+                //intent.putExtra(EXTRA_UNITE, String.valueOf(musique.getUnite_pulsation()));
                 intent.putExtra(EXTRA_ID_PARTITION,String.valueOf(musique.getId()));
                 Toast.makeText(getContext(), "id musique" + String.valueOf(musique.getId()), Toast.LENGTH_SHORT).show();
 

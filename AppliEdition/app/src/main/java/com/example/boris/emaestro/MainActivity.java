@@ -18,6 +18,8 @@ import java.sql.SQLException;
 
 import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
+import BDD.to.Musique;
+import BDD.to.VariationTemps;
 import emulateur.EmulateurActivity;
 
 public class MainActivity extends Activity {
@@ -26,9 +28,22 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ecran_accueil);
-		//CatalogueDAO db =new CatalogueDAO(this);
-		//db.open();;
-		//db.synchronizer();
+		/*
+		CatalogueDAO db =new CatalogueDAO(this);
+		DataBaseManager bdd = new DataBaseManager(this);
+		bdd.open();
+
+		bdd.save(new Musique(1,"Test1",2));
+		bdd.save(new Musique(2,"Test2",3));
+		bdd.save((new VariationTemps(1,2,3,4,5)));
+		bdd.save((new VariationTemps(2,1,4,4,4)));
+		bdd.save((new VariationTemps(1,2,9,9,9)));
+
+		db.open();;
+		db.save(1);
+		db.save(2);
+		db.synchronizer();
+		*/
 		final ImageButton nouveau = (ImageButton) findViewById(R.id.nouveau);
 		nouveau.setOnClickListener(new OnClickListener() {
 			@Override
