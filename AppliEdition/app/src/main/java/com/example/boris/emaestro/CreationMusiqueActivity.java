@@ -54,7 +54,7 @@ public class CreationMusiqueActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
-        //bddMusique.open();
+
         bdd.open();
         dragActive = false;
         pulsation = (EditText) findViewById(R.id.pulsation);
@@ -114,26 +114,29 @@ public class CreationMusiqueActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                nbMesure= nbMesureE.getText().toString();
+                nbMesure = nbMesureE.getText().toString();
                 unite = uniteSpinner.getSelectedItem().toString();
-                switch(unite){
-                    case "ronde": unite ="1";
+                switch (unite) {
+                    case "ronde":
+                        unite = "1";
                         break;
-                    default:unite="1";
+                    default:
+                        unite = "1";
                         break;
                     //TODO faire les autres cas
-                };
+                }
+                ;
                 tpsParMesure = tpsParMesureSpinner.getSelectedItem().toString();
-                nbPulsation= pulsation.getText().toString();
+                nbPulsation = pulsation.getText().toString();
                 nomPartition = nomPartitionE.getText().toString();
                 // permet le passage de message dans un changement d'activité (startActivity)
                 Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
-                intent.putExtra(EXTRA_NOMPARTITION,nomPartition );
+                intent.putExtra(EXTRA_NOMPARTITION, nomPartition);
                 intent.putExtra(EXTRA_NBMESURE, nbMesure);
                 intent.putExtra(EXTRA_PULSATION, nbPulsation);
                 intent.putExtra(EXTRA_TPSPARMESURE, tpsParMesure);
                 intent.putExtra(EXTRA_UNITE, unite);
-                intent.putExtra(EXTRA_ID_PARTITION,"-1");
+                intent.putExtra(EXTRA_ID_PARTITION, "-1");
 
                 if (dragActive) {
                     Toast.makeText(CreationMusiqueActivity.this, "Edition par drag and drop", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
@@ -158,14 +161,20 @@ public class CreationMusiqueActivity extends Activity {
                     Musique musiqueDejaPresente = bdd.getMusique(nomPartition);
                     if (!musiqueDejaPresente.getName().equals(nomPartition)) {
                         //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
-                        long err = bdd.save(new Musique(nomPartition, Integer.parseInt(nbMesure)));//, Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
-                       if (err == -1) {
+                        int id = bdd.getMusiques().size()+1;
+                           //TODO: seulement trois champs pour musique
+                        long err = bdd.save(new Musique(id,nomPartition, Integer.parseInt(nbMesure)));//, Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
+                        //on crée les  eventVarTemps et eventVarIntensite initiaux
+                        bdd.save(new VariationIntensite(id,-1,0,0,0));//TODO que signifie nb_temps ?
+                        bdd.save(new VariationTemps(id,0,Integer.parseInt(tpsParMesure),Integer.parseInt(nbPulsation), -1));//TODO : Gerer l'unite pulsation
+
+                        if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
-                       } else {
+                        } else {
                             startActivity(intent);
                         }
                     } else {
-                       Toast.makeText(getApplicationContext(), "La partition "+nomPartition+ " existe déjà", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "La partition " + nomPartition + " existe déjà", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

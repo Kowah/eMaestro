@@ -1,12 +1,7 @@
 package com.example.boris.emaestro;
 
-import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
@@ -40,7 +35,7 @@ public class Partition {
     public Mesure getMesure(int id){ return partition.get(id);}
 
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
-        for(int i=mesureDebut-1;i<mesureFin;i++){
+        for(int i=mesureDebut;i<mesureFin;i++){
             partition.get(i).setTempo(tempo);
         }
     }

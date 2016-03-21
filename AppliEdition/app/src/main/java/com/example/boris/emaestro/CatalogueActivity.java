@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-
 import BDD.to.Musique;
 
 public class CatalogueActivity extends Activity {

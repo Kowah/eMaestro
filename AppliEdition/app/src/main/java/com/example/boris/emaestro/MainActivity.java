@@ -18,8 +18,10 @@ import java.sql.SQLException;
 
 import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
+
 import BDD.to.Musique;
 import BDD.to.VariationTemps;
+
 import emulateur.EmulateurActivity;
 
 public class MainActivity extends Activity {
