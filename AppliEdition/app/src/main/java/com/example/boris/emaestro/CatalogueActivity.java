@@ -7,8 +7,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationTempsDAO;
+
+import BDD.db.DataBaseManager;
 import BDD.to.Musique;
 
 public class CatalogueActivity extends Activity {

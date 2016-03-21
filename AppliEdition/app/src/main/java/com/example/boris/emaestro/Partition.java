@@ -40,7 +40,7 @@ public class Partition {
     public Mesure getMesure(int id){ return partition.get(id);}
 
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
-        for(int i=mesureDebut-1;i<mesureFin;i++){
+        for(int i=mesureDebut;i<mesureFin;i++){
             partition.get(i).setTempo(tempo);
         }
     }

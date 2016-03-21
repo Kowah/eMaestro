@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,9 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationIntensiteDAO;
-import BDD.db.VariationTempsDAO;
+
 import BDD.to.Musique;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
@@ -42,10 +41,6 @@ public class EditionActivity  extends Activity {
     String EXTRA_TPSPARMESURE = "nbTpsMesure";
     String EXTRA_DRAGACTIF = "drag";
     String EXTRA_ID_PARTITION = "idMusique";
-    //BDD + recup des données de la musique
-    //final MusiqueDAO bddMusique = new MusiqueDAO(this);
-    //final VariationIntensiteDAO bddIntensite = new VariationIntensiteDAO(this);
-    //inal VariationTempsDAO bddTemps = new VariationTempsDAO(this);
     DataBaseManager bdd = new DataBaseManager(this);
     Musique partitionCourante;
     int idMusique;
@@ -73,7 +68,8 @@ public class EditionActivity  extends Activity {
     Spinner mNuanceSpinner;
     ArrayAdapter<String> dataAdapterNuance;
     String nuance;
-
+    Mesure[] intervalMesureSelec = new Mesure[2];
+    int nbMesureSelec = 0;
     //selection
     boolean selectionOn;
 
@@ -83,10 +79,6 @@ public class EditionActivity  extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edition_mesures);
         context = EditionActivity.this;
-        // on ouvre bdd
-        //bddMusique.open();
-        //bddIntensite.open();
-        //bddTemps.open();
         bdd.open();
 
         //modification par selection
@@ -145,6 +137,7 @@ public class EditionActivity  extends Activity {
             partition.setNuance(varIntensiteList);
         }
 
+
         if (EXTRA_DRAGACTIF.equals("true")) {
             //drag
             mSelection.setVisibility(View.INVISIBLE); // on affiche pas le bouton de selection
@@ -175,19 +168,54 @@ public class EditionActivity  extends Activity {
                 //Edition par selection
                 if (EXTRA_DRAGACTIF.equals("false") && selectionOn) {
 
-                    m.toggleSelec();
-                    if (m.getSelec()) {
-                        v.findViewById(R.id.selection).setAlpha(0.7f);
-                        mesuresSelec.add(new Integer(m.getId()));
-                    } else {
-                        v.findViewById(R.id.selection).setAlpha(0.0f);
-                        mesuresSelec.remove(new Integer(m.getId()));
-                    }
+                  selectionHandler(m,v);
+
                 }
             }
         });
 
 
+    }
+
+
+    private void selectionHandler(Mesure m,View v){
+        if(nbMesureSelec<2){
+            intervalMesureSelec[nbMesureSelec]=m;
+            nbMesureSelec++;
+            if(nbMesureSelec==2){
+                afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1],v);
+            }
+           // System.out.println("selection de mesure n : "+nbMesureSelec);
+
+        }else{
+            intervalMesureSelec[0]=intervalMesureSelec[1];
+            intervalMesureSelec[1]=m;
+            SupprimerSelection(true);
+            afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1],v);
+        }
+
+
+    }
+    private void afficheSelection(Mesure mDebut, Mesure mFin,View v){
+        Mesure temp;
+        if(mDebut.getId()>mFin.getId()){
+            temp = mFin;
+            mFin=mDebut;
+            mDebut=temp;
+        }
+        int debut =  partition.partition.indexOf(mDebut);
+        int fin = partition.partition.indexOf(mFin);
+        for( int i =debut; i<=fin; i++){
+            temp =partition.partition.get(i);
+            temp.toggleSelec();
+            if (temp.getSelec()) {
+                mesuresSelec.add(new Integer(temp.getId()));
+            } else {
+                mesuresSelec.remove(new Integer(temp.getId()));
+            }
+        }
+        adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
+        mGridView.setAdapter(adapter);
     }
 
     //<listener pour Drag
@@ -237,14 +265,23 @@ public class EditionActivity  extends Activity {
         @Override
         public void onClick(View v) {
 
-            partition.unselectAll();
-            mesuresSelec.clear();
+            SupprimerSelection(false);
             adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
             mGridView.setAdapter(adapter);
 
 
         }
     };
+
+    private void SupprimerSelection(boolean miseAJourSelection){
+        if(!miseAJourSelection){
+            nbMesureSelec=0;
+            intervalMesureSelec = new Mesure[2];
+        }
+        partition.unselectAll();
+        mesuresSelec.clear();
+
+    }
 
     //tempo
     private OnClickListener TempoListener = new OnClickListener() {
@@ -253,7 +290,7 @@ public class EditionActivity  extends Activity {
 
             View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
             final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-<<<<<<< HEAD
+
             if (mesuresSelec.size() > 0) {
                 mesureDebut = mesuresSelec.get(0).intValue();
                 mesureFin = mesuresSelec.get(mesuresSelec.size() - 1).intValue();
@@ -333,8 +370,9 @@ public class EditionActivity  extends Activity {
                                 partition.setNuance(mesuresSelec, nuance);
                                 adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
                                 mGridView.setAdapter(adapter);
-                                idMusique = bddMusique.getMusique(EXTRA_NOMPARTITION).getId();
-                               long t = bddIntensite.save(new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/));
+                                idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
+
+                               long t = bdd.save(new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/));
 
                                 //  Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
 
