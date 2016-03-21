@@ -168,7 +168,7 @@ public class EditionActivity  extends Activity {
                 //Edition par selection
                 if (EXTRA_DRAGACTIF.equals("false") && selectionOn) {
 
-                  selectionHandler(m,v);
+                  selectionHandler(m);
 
                 }
             }
@@ -178,12 +178,12 @@ public class EditionActivity  extends Activity {
     }
 
 
-    private void selectionHandler(Mesure m,View v){
+    private void selectionHandler(Mesure m){
         if(nbMesureSelec<2){
             intervalMesureSelec[nbMesureSelec]=m;
             nbMesureSelec++;
             if(nbMesureSelec==2){
-                afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1],v);
+                afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1]);
             }
            // System.out.println("selection de mesure n : "+nbMesureSelec);
 
@@ -191,12 +191,12 @@ public class EditionActivity  extends Activity {
             intervalMesureSelec[0]=intervalMesureSelec[1];
             intervalMesureSelec[1]=m;
             SupprimerSelection(true);
-            afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1],v);
+            afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1]);
         }
 
 
     }
-    private void afficheSelection(Mesure mDebut, Mesure mFin,View v){
+    private void afficheSelection(Mesure mDebut, Mesure mFin){
         Mesure temp;
         if(mDebut.getId()>mFin.getId()){
             temp = mFin;
