@@ -31,7 +31,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-
 import BDD.to.Musique;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
@@ -130,7 +129,8 @@ public class EditionActivity  extends Activity {
         //on recupere l'instance dans la bdd de la partition qu'on edite
         //   partitionCourante = bddMusique.getMusique(EXTRA_NOMPARTITION);
         idMusique = Integer.parseInt(EXTRA_ID_PARTITION);
-        partition = new Partition(EXTRA_NBMESURE, EXTRA_PULSATION, EXTRA_TPSPARMESURE, EXTRA_UNITE);
+       // partition = new Partition(EXTRA_NBMESURE, EXTRA_PULSATION, EXTRA_TPSPARMESURE, EXTRA_UNITE);
+        partition = new Partition(EXTRA_NBMESURE);
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
         if (idMusique > -1) {
@@ -337,14 +337,16 @@ public class EditionActivity  extends Activity {
                                 partition.setTempo(mesuresSelec, newTempo);
                                 Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                                 idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
+
                                 //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
-                                long t = bdd.save(new VariationTemps(idMusique, mesureDebut-1, 1, newTempo));
+                           //     long t = bdd.save(new VariationTemps(idMusique, mesureDebut-1, 1, newTempo));
                                 if(mesureDebut != 0) {
                                     //Ajout de l'evenement de fin de variation
                                     int oldTempo = partition.getMesure(mesureDebut - 1).getTempo();
-                                    long t2 = bdd.save(new VariationTemps(idMusique, mesureFin+1, 1, oldTempo));
+                                 //   long t2 = bdd.save(new VariationTemps(idMusique, mesureFin+1, 1, oldTempo));
+
                                 }
-                                Toast.makeText(getApplicationContext(), "Lmidr r, e" + t, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "Lmidr r, e" + t, Toast.LENGTH_SHORT).show();
 
                                 varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
 

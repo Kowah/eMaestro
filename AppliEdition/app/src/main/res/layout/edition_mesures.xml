@@ -20,6 +20,12 @@
         
         android:layout_marginLeft="60dp"
         android:layout_marginStart="60dp" />
+
+    <TextView
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:id ="@+id/debug"
+        android:text="debug"/>
  
 
     <ImageView

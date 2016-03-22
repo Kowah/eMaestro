@@ -161,11 +161,14 @@ public class CreationMusiqueActivity extends Activity {
                     Musique musiqueDejaPresente = bdd.getMusique(nomPartition);
                     if (!musiqueDejaPresente.getName().equals(nomPartition)) {
                         //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
-                        int id = bdd.getMusiques().size()+1; //TODO si on supprime une musique = bug
-                        long err = bdd.save(new Musique(id,nomPartition, Integer.parseInt(nbMesure), Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
+
+                        int id = bdd.getMusiques().size()+1;
+                           //TODO: seulement trois champs pour musique
+                        long err = bdd.save(new Musique(id,nomPartition, Integer.parseInt(nbMesure)));//, Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
+
                         //on crée les  eventVarTemps et eventVarIntensite initiaux
                         bdd.save(new VariationIntensite(id,-1,0,0,0));//TODO que signifie nb_temps ?
-                        bdd.save(new VariationTemps(id,0,Integer.parseInt(tpsParMesure),Integer.parseInt(nbPulsation)));
+                        bdd.save(new VariationTemps(id,0,Integer.parseInt(tpsParMesure),Integer.parseInt(nbPulsation), -1));//TODO : Gerer l'unite pulsation
 
                         if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();

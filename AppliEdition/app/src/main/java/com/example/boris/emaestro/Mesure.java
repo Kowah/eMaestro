@@ -12,11 +12,8 @@ public class Mesure {
 
     boolean selectionne;
 
-    public Mesure( int id, int tempo, int tempsMesure, String unite){
+    public Mesure( int id){
         this.id = id;
-        this.tempo = tempo;
-        this.tempsMesure = tempsMesure;
-        this.unite = unite;
         this.nuance = "neutre";
         selectionne = false;
 

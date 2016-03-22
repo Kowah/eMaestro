@@ -15,8 +15,6 @@ public class CatalogueActivity extends Activity {
     CatalogueAdapter adapter;
     ListView mListView;
     List<Musique> catalogue = new ArrayList<>();
-    //MusiqueDAO bddMusique = new MusiqueDAO(this);
-    //VariationTempsDAO b = new VariationTempsDAO(this);
     DataBaseManager bdd = new DataBaseManager(this);
     Context context = this;
     @Override

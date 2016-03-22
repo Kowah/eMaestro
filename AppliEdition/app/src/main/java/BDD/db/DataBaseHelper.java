@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "BDeMaestro";
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 8;
 //LES TABLES
 	public static final String EVENEMENT_TABLE = "evenement";
 	public static final String MUSIQUE_TABLE = "musique";
@@ -19,29 +19,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 	//Colonnes de la table musique
 	public static final String KEY_Musique = "id_musique";
-	public static final String NAME_Musique = "name";
+	public static final String NAME_Musique = "nom";
 	public static final String NB_MESURE = "nb_mesures";
 	public static final String NB_PULSATION = "nb_pulsation";
-	public static final String UNITE_PULSATION = "unite_pulsation";
-	public static final String NB_TEMPS_MESURE = "nb_temps_mesure";
 
 	//Colonnes de la table Catalogue
 	public static final String IdCatalogue = "id_catalogue";
 	//public static final String KEY_Musique = "id_musique";
 
 	//Colonnes de la table variation temps
-	public static String IDVarTemps = "idVarTemps";
-	public static String IDMusique = "id_musique";
-	public static String MESURE_DEBUT = "mesure_debut";
-	public static String TEMPS_PAR_MESURE = "temps_par_mesure";
-	public static String TEMPO = "tempo";
+	public static final String IDVarTemps = "id_variation_temps";
+	public static final String IDMusique = "id_musique";
+	public static final String MESURE_DEBUT = "mesure_debut";
+	public static final String TEMPS_PAR_MESURE = "temps_par_mesure";
+	public static final String TEMPO = "tempo";
+	public static final String UNITE_PULSATION = "unite_pulsation";
 
 	//Colones de la table variation intensite
-	public static final String IDIntensite = "id_intensite";
+	public static final String IDIntensite = "id_variation_intensite";
 	//public static final String IDMusique = "id_musique";
 	//public static final String MESURE_DEBUT = "mesure_debut";
 	public static final String TEMPS_DEBUT = "temps_debut";
-	public static final String NB_TEMPS = "nbtemps";
+	public static final String NB_TEMPS = "nb_temps";
 	public static final String INTENTSITE = "intensite";
 
 	//LES COLONNES DES TABLES
@@ -60,10 +59,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 			"CREATE TABLE " + MUSIQUE_TABLE + " ("
 					+ KEY_Musique + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ NAME_Musique + " TEXT, "
-					+ NB_MESURE + " INTEGER, "
-					+ NB_PULSATION + " INTEGER, "
-					+ UNITE_PULSATION + " INTEGER, "
-					+ NB_TEMPS_MESURE + " INTEGER"
+					+ NB_MESURE + " INTEGER "
 					+ ");";
 	//Destruction de la table musique
 	private static final String MUSIQUE_TABLE_DROP = "DROP TABLE IF EXISTS "
@@ -86,7 +82,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 					+ IDMusique + " INTEGER, "
 					+ MESURE_DEBUT + " INTEGER, "
 					+ TEMPS_PAR_MESURE + " INTEGER, "
-					+ TEMPO + " INTEGER "
+					+ TEMPO + " INTEGER, "
+					+ UNITE_PULSATION + " INTEGER "
 					+ ");";
 	//Destruction de la table VarTemps
 	private static final String VarTemps_TABLE_DROP = "DROP TABLE IF EXISTS "
@@ -156,6 +153,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onOpen(SQLiteDatabase db) {
+		System.out.println(CREATE_VarIntensite_Table);
 		super.onOpen(db);
 		if (!db.isReadOnly()) {
 			// Enable foreign key constraints

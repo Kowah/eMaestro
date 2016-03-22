@@ -15,9 +15,7 @@ import com.example.boris.emaestro.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import BDD.db.MusiqueDAO;
-import BDD.db.VariationIntensiteDAO;
-import BDD.db.VariationTempsDAO;
+import BDD.db.DataBaseManager;
 import util.Pair;
 
 /**
@@ -25,8 +23,7 @@ import util.Pair;
  */
 public class LectureActivity extends Activity {
 
-     MusiqueDAO bddMusique ;
-     VariationTempsDAO bddTemps ;
+    DataBaseManager bdd;
 
     int idMusique; //Donnees recuperees de la MainActivity
     int mesureDebut;
@@ -48,15 +45,12 @@ public class LectureActivity extends Activity {
         mesureDebut = getIntent().getIntExtra("mesureDebut",1);
         mesureFin = getIntent().getIntExtra("mesureFin",1);
 
-        bddMusique = new MusiqueDAO(this);
-        bddMusique.open();
-        bddTemps = new VariationTempsDAO(this);
-        bddTemps.open();
-
+        bdd = new DataBaseManager(this);
+        bdd.open();
 
         //chargement
 
-        Chargeur_partition chargeur = new Chargeur_partition(this,bddMusique,bddTemps);
+        Chargeur_partition chargeur = new Chargeur_partition(this,bdd);
         chargeur.charger_partition(idMusique);
 
         mapMesures = (HashMap) chargeur.get_map_mesures_temps();
@@ -217,8 +211,7 @@ public class LectureActivity extends Activity {
     @Override
     protected void onDestroy() {
         handler.removeCallbacks(runnable);
-        bddMusique.close();
-        bddTemps.close();
+        bdd.close();
         super.onDestroy();
     }
 }
