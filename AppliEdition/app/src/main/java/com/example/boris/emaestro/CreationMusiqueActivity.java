@@ -161,7 +161,7 @@ public class CreationMusiqueActivity extends Activity {
                     Musique musiqueDejaPresente = bdd.getMusique(nomPartition);
                     if (!musiqueDejaPresente.getName().equals(nomPartition)) {
                         //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
-                        int id = bdd.getMusiques().size()+1;
+                        int id = bdd.getMusiques().size()+1; //TODO si on supprime une musique = bug
                         long err = bdd.save(new Musique(id,nomPartition, Integer.parseInt(nbMesure), Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
                         //on crée les  eventVarTemps et eventVarIntensite initiaux
                         bdd.save(new VariationIntensite(id,-1,0,0,0));//TODO que signifie nb_temps ?

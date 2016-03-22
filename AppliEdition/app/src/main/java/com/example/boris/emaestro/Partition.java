@@ -1,6 +1,7 @@
 package com.example.boris.emaestro;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,12 +41,16 @@ public class Partition {
     public Mesure getMesure(int id){ return partition.get(id);}
 
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
+        //mesure de fin est inclus
         for(int i=mesureDebut;i<mesureFin;i++){
             partition.get(i).setTempo(tempo);
         }
     }
     public void setNuance(int mesureDebut, int mesureFin, String nuance){
+        //mesure de fin est inclus
         for(int i=mesureDebut;i<mesureFin;i++){
+            Log.d("Test",""+i);
+
             partition.get(i).setNuance(nuance);
         }
     }
@@ -64,7 +69,7 @@ public class Partition {
             vT = l.get(i);
             if(i+1<l.size()){
                 //si ya dautre event, alors changmeent de tempo se fait jusqu'à jusqu'à l'arrivée du prochain
-                mesureFin = l.get(i+1).getMesure_debut()-1;
+                mesureFin = l.get(i+1).getMesure_debut();//mesure juste avant le debut du prochain event
             }
             else{
                 //sinon jusqu'à la fin de la partition
@@ -87,7 +92,7 @@ public class Partition {
             vT = l.get(i);
             if(i+1<l.size()){
                 //si ya dautre event, alors changmeent de nuance se fait jusqu'à l'arrivée du prochain
-                mesureFin = l.get(i+1).getMesureDebut()-1;
+                mesureFin = l.get(i+1).getMesureDebut();//mesure juste avant le debut du prochain event
             }
             else{
                 //sinon jusqu'à la fin de la partition
@@ -161,7 +166,7 @@ public class Partition {
                 s = 7;
                 break;
             default:
-                s = -10;
+                s = -1;
                 break;
 
         }
