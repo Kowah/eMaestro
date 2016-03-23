@@ -6,10 +6,10 @@ package BDD.to;
 public class VariationIntensite {
     private int idVarIntensite;
     private int idMusique;
-    private int intensite;
-    private int tempsDebut;
     private int mesureDebut;
+    private int tempsDebut;
     private int nb_temps;
+    private int intensite;
     /**
      * Default constructor
      */

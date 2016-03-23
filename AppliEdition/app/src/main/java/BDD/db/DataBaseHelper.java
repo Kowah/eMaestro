@@ -7,15 +7,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-	private static final String DATABASE_NAME = "BDeMaestro";
-	private static final int DATABASE_VERSION = 8;
+	private static final String DATABASE_NAME = "emaestro";
+	private static final int DATABASE_VERSION = 1;
 //LES TABLES
-	public static final String EVENEMENT_TABLE = "evenement";
-	public static final String MUSIQUE_TABLE = "musique";
-	public static final String CATALOGUE_TABLE = "catalogue";
-	public static final String SYMBOLE_TABLE = "symboles";
-	public static final String VarTemps_Table = "VarTemps";
-	public static final String VarIntensite_Table = "VarIntensite";
+	public static final String EVENEMENT_TABLE = "Evenement";
+	public static final String MUSIQUE_TABLE = "Musique";
+	public static final String CATALOGUE_TABLE = "Catalogue";
+	public static final String SYMBOLE_TABLE = "Symboles";
+	public static final String VarTemps_Table = "VariationTemps";
+	public static final String VarIntensite_Table = "VariationIntensite";
 
 	//Colonnes de la table musique
 	public static final String KEY_Musique = "id_musique";

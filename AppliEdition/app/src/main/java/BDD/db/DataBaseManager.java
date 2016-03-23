@@ -49,6 +49,7 @@ public class DataBaseManager {
 
 	/******************Save****************/
 	//Permet de sauvegarder la musique passé en paramétres dans la base
+	//@return l'id dans la BDD
 	public long save(Musique Musique) {
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.NAME_Musique, Musique.getName());
@@ -60,6 +61,7 @@ public class DataBaseManager {
 		return database.insert(DataBaseHelper.MUSIQUE_TABLE, null, values);
 	}
 	//Permet de sauvegarder une Variation de temps dans la table var temps
+	//@return l'id dans la BDD
 	public long save(VariationTemps varTemps){
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.IDMusique, varTemps.getIDmusique());
@@ -71,6 +73,7 @@ public class DataBaseManager {
 		return database.insert(DataBaseHelper.VarTemps_Table, null, values);
 	}
 	//Permet de sauvegarder une variation d'intensite dans la table var_intensite
+	//@return l'id dans la BDD
 	public long save(VariationIntensite varIntensite){
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.IDMusique, varIntensite.getIdMusique());
@@ -89,9 +92,7 @@ public class DataBaseManager {
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.NAME_Musique, Musique.getName());
 		values.put(DataBaseHelper.NB_MESURE, Musique.getNb_mesure());
-		//values.put(DataBaseHelper.NB_PULSATION, Musique.getNb_pulsation());
-		//values.put(DataBaseHelper.UNITE_PULSATION, Musique.getUnite_pulsation());
-		//values.put(DataBaseHelper.NB_TEMPS_MESURE, Musique.getNb_temps_mesure());
+
 		long result = database.update(DataBaseHelper.MUSIQUE_TABLE, values,
 				WHERE_ID_MUSIQUE_EQUALS,
 				new String[] { String.valueOf(Musique.getId()) });
@@ -105,6 +106,7 @@ public class DataBaseManager {
 		values.put(DataBaseHelper.MESURE_DEBUT, varTemps.getMesure_debut());
 		values.put(DataBaseHelper.TEMPS_PAR_MESURE, varTemps.getTemps_par_mesure());
 		values.put(DataBaseHelper.TEMPO, varTemps.getTempo());
+		values.put(DataBaseHelper.UNITE_PULSATION, varTemps.getUnite_pulsation());
 		long result = database.update(DataBaseHelper.VarTemps_Table, values,
 				WHERE_ID_VARTEMPS_EQUALS,
 				new String[] { String.valueOf(varTemps.getIdVarTemps()) });
@@ -115,8 +117,8 @@ public class DataBaseManager {
 	public long update(VariationIntensite varIntensite){
 		ContentValues values = new ContentValues();
 		values.put(DataBaseHelper.IDMusique, varIntensite.getIdMusique());
-		values.put(DataBaseHelper.TEMPS_DEBUT, varIntensite.getTempsDebut());
 		values.put(DataBaseHelper.MESURE_DEBUT, varIntensite.getMesureDebut());
+		values.put(DataBaseHelper.TEMPS_DEBUT, varIntensite.getTempsDebut());
 		values.put(DataBaseHelper.NB_TEMPS, varIntensite.getnb_temps());
 		values.put(DataBaseHelper.INTENTSITE, varIntensite.getIntensite());
 		long result = database.update(DataBaseHelper.VarIntensite_Table, values,

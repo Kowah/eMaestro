@@ -6,14 +6,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectonJDBC {
-    private static String ip = "148.60.13.86";
-    //private String ip = "192.168.103.1";
+    //private static String ip = "148.60.13.86";
+
+    //private static String ip = "148.60.13.18";
+    //Maestro:
+    private static String ip = "192.168.103.1";
     private static String port = "3306";
 
     //static reference to itself
     private static final ConnectonJDBC instance = new ConnectonJDBC();
 
-    private static final String URL = "jdbc:mysql://"+ip+":"+port+"/test";
+    private static final String URL = "jdbc:mysql://"+ip+":"+port+"/emaestro";
 
     private static final String USER = "android";
     private static final String PASSWORD = "mdp";

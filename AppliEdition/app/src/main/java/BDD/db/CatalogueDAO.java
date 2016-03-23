@@ -1,16 +1,10 @@
 package BDD.db;
 
-import android.app.admin.DeviceAdminInfo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,9 +71,6 @@ public class CatalogueDAO extends DataBaseManager {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.NAME_Musique, Musique.getName());
         values.put(DataBaseHelper.NB_MESURE, Musique.getNb_mesure());
-        //values.put(DataBaseHelper.NB_PULSATION, Musique.getNb_pulsation());
-        //values.put(DataBaseHelper.UNITE_PULSATION, Musique.getUnite_pulsation());
-        //values.put(DataBaseHelper.NB_TEMPS_MESURE, Musique.getNb_temps_mesure());
         long result = database.update(DataBaseHelper.MUSIQUE_TABLE, values,
                 WHERE_ID_EQUALS,
                 new String[] { String.valueOf(Musique.getId()) });
@@ -103,9 +94,6 @@ public class CatalogueDAO extends DataBaseManager {
             musique.setId(cursor.getInt(0));
             musique.setName(cursor.getString(1));
             musique.setNb_mesure(cursor.getInt(2));
-            //musique.setNb_pulsation(cursor.getInt(3));
-            //musique.setUnite_pulsation(cursor.getInt(4));
-            //musique.setNb_temps_mesure(cursor.getInt(5));
         }
         return musique;
     }
@@ -125,16 +113,14 @@ public class CatalogueDAO extends DataBaseManager {
 
         while (cursor.moveToNext()) {
             curMusique = database.rawQuery(queryMusique, new String[]{Integer.toString(cursor.getInt(0))});
-            curMusique.moveToFirst();
-            Musique musique = new Musique();
-            musique.setId(curMusique.getInt(0));
-            musique.setName(curMusique.getString(1));
-            musique.setNb_mesure(curMusique.getInt(2));
-            //musique.setNb_pulsation(curMusique.getInt(3));
-            //musique.setUnite_pulsation(curMusique.getInt(4));
-            //musique.setNb_temps_mesure(curMusique.getInt(5));
+            if (curMusique.moveToFirst()) {
+                Musique musique = new Musique();
+                musique.setId(curMusique.getInt(0));
+                musique.setName(curMusique.getString(1));
+                musique.setNb_mesure(curMusique.getInt(2));
 
-            musiques.add(musique);
+                musiques.add(musique);
+            }
         }
         return musiques;
     }
@@ -143,31 +129,10 @@ public class CatalogueDAO extends DataBaseManager {
         List<Musique> musiques = this.getMusiques();
         List<VariationTemps> variationTemps;
         List<VariationIntensite> variationIntensites;
-        Thread t = new Thread(new Synchronize(musiques, context));
-        t.start();
-        /*
-        String queryMusic = "Insert into "+ DataBaseHelper.MUSIQUE_TABLE  + " ("
-                +DataBaseHelper.NAME_Musique+","
-                +DataBaseHelper.NB_MESURE+","
-                +DataBaseHelper.NB_PULSATION+","
-                +DataBaseHelper.UNITE_PULSATION+","
-                +DataBaseHelper.NB_TEMPS_MESURE+")"
-                +" values(?,?,?,?,?)";
-        Connection co = ConnectonJDBC.getConnection();
-        if(co == null){
-            System.out.println("Hello World");
-            return -1;
-        }
-        for(Musique m:musiques) {
-            PreparedStatement st = co.prepareStatement(queryMusic);
-            st.setString(1, m.getName());
-            st.setInt(2,m.getNb_mesure());
-            st.setInt(3,m.getNb_pulsation());
-            st.setInt(4,m.getUnite_pulsation());
-            st.setInt(5,m.getNb_temps_mesure());
-            st.execute();
-        }
-        */
+
+        Synchronize s = new Synchronize(context);
+        s.execute();
+
          return 0;
     }
 }
