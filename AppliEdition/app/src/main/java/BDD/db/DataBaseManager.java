@@ -131,7 +131,7 @@ public class DataBaseManager {
 	/***************Delete*****************/
 	//Permet de supprimer une musique de la table Musique
 	public int delete(Musique musique) {
-		database.delete(DataBaseHelper.CATALOGUE_TABLE, WHERE_ID_MUSIQUE_EQUALS, new String[] { musique.getId() + "" });
+		database.delete(DataBaseHelper.CATALOGUE_TABLE, WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
 		this.deleteVarTemps(musique);
 		this.deleteVarIntensite(musique);
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
@@ -150,6 +150,11 @@ public class DataBaseManager {
 	public int deleteVarIntensite(Musique musique){
 		return database.delete(DataBaseHelper.VarIntensite_Table,
 				WHERE_ID_MUSIQUE_EQUALS, new String[] { musique.getId() + "" });
+	}
+
+	public int delete(VariationIntensite varIntense) {
+		return database.delete(DataBaseHelper.VarIntensite_Table,
+				WHERE_ID_VARINTENSITE_EQUALS, new String[] { varIntense.getIdVarIntensite() + "" });
 	}
 
 	/****************GET*************/
