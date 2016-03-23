@@ -168,7 +168,7 @@ public class CreationMusiqueActivity extends Activity {
 
                         //on crée les  eventVarTemps et eventVarIntensite initiaux
                         bdd.save(new VariationIntensite(id,-1,0,0,0));//TODO que signifie nb_temps ?
-                        bdd.save(new VariationTemps(id,0,Integer.parseInt(tpsParMesure),Integer.parseInt(nbPulsation), -1));//TODO : Gerer l'unite pulsation
+                        bdd.save(new VariationTemps(id,0,Integer.parseInt(tpsParMesure),Integer.parseInt(nbPulsation), 1));//TODO : Gerer l'unite pulsation
 
                         if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();

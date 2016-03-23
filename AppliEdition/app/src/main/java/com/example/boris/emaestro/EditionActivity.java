@@ -260,8 +260,6 @@ public class EditionActivity  extends Activity {
             SupprimerSelection(true);
             afficheSelection(intervalMesureSelec[0], intervalMesureSelec[1]);
         }
-
-
     }
 
     //avec true, supprimer seulement les mesures selectionner mais garde l'intervalle de selection
@@ -379,23 +377,21 @@ public class EditionActivity  extends Activity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 int newTempo = Integer.parseInt(editTempo.getText().toString());
-                                //TODO ajouter evenement dans bdd
+
                                 partition.setTempo(mesuresSelec, newTempo);
                                 Toast.makeText(context, "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                                 idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
 
                                 //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
-                           //     long t = bdd.save(new VariationTemps(idMusique, mesureDebut-1, 1, newTempo));
+                                long t = bdd.save(new VariationTemps(idMusique, mesureDebut-1, 1, newTempo,1));
                                 if(mesureDebut != 0) {
                                     //Ajout de l'evenement de fin de variation
                                     int oldTempo = partition.getMesure(mesureDebut - 1).getTempo();
-                                 //   long t2 = bdd.save(new VariationTemps(idMusique, mesureFin+1, 1, oldTempo));
+                                   // long t2 = bdd.save(new VariationTemps(idMusique, mesureFin+1, 1, oldTempo,1));
 
                                 }
                                 //Toast.makeText(getApplicationContext(), "Lmidr r, e" + t, Toast.LENGTH_SHORT).show();
-
                                 varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
-
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -407,7 +403,6 @@ public class EditionActivity  extends Activity {
                         .show();
             } else {
                 Toast.makeText(context, "Merci de sélectionner des mesures", Toast.LENGTH_SHORT).show();
-
             }
         }
     };
@@ -432,11 +427,11 @@ public class EditionActivity  extends Activity {
             }else if(mesureDebut<=tempMesureDebut){
                 if(mesureFin == tempMesureDebut){//fusionnable avec else if suivant ?
                     aMettreAJour.add(temp);
-                    res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),temp.getTempsDebut(),mesureFin,temp.getnb_temps()));
+                    res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin,0));
                     eventTraite=true;
                 }
                 else if(mesureFin<tempMesureDebut){
-                    res.add(new VariationIntensite(temp2.getIdMusique(),temp2.getIntensite(),temp2.getTempsDebut(),mesureFin,temp2.getnb_temps()));
+                    res.add(new VariationIntensite(temp2.getIdMusique(),temp2.getIntensite(),1,mesureFin,0));
                     eventTraite=true;
                 }
                 else if(mesureFin>tempMesureDebut){
@@ -452,27 +447,15 @@ public class EditionActivity  extends Activity {
                 i++;
             }
             temp = varIntensiteList.get(dernierElementApresElemenCournat);
-            res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),temp.getTempsDebut(),mesureFin,temp.getnb_temps()));
+            res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin,0));
         }
         for(int j=0; j<aMettreAJour.size();j++){
             temp2 =  aMettreAJour.get(j);
-            temp2.setIntensite(nuance);
-            bdd.update(temp2);
+            bdd.delete(temp2);
         }
         return res ;
     }
 
-    private boolean eventPresentSurMemeMesure(VariationIntensite vI){
-        boolean res = false;
-        VariationIntensite tempIntens;
-        for(int i=0;i<varIntensiteList.size() && !res;i++){
-            tempIntens=varIntensiteList.get(i);
-            if(tempIntens.getMesureDebut() == vI.getMesureDebut()){
-                res =true;
-            }
-        }
-        return res;
-    }
 
     private VariationIntensite leventPresentSurMemeMesure(VariationIntensite vI){
        VariationIntensite res = new VariationIntensite();
@@ -520,30 +503,49 @@ public class EditionActivity  extends Activity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 partition.setNuance(mesuresSelec, nuance);
+                                //MAJ changement de nuance
                                 adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
                                 mGridView.setAdapter(adapter);
+
                                 idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
                                 TextView debug= (TextView) findViewById(R.id.debug);
                                 //on ajoute le nouvel event
 
-                                VariationIntensite eventIntensite = new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut-1,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/);
-                                if(eventPresentSurMemeMesure(eventIntensite)) {
+                                VariationIntensite eventIntensite = new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance),1,mesureDebut-1,0);//TODO proposer au programmeur le temps de debut
+
+                                if(varIntensiteList.indexOf(eventIntensite)!=-1) {
+                                    //si deja un event on le met a jour
+                                    VariationIntensite temp = leventPresentSurMemeMesure(eventIntensite);
+                                    if(temp.getTempsDebut() == eventIntensite.getTempsDebut()) {
+                                        //s'il commence sur le meme temps on écrase l'ancien
+                                        temp.setIntensite(eventIntensite.getIntensite());
+                                    }else{
+                                        //si pas sur meme temps, on regarde qui commence avant, on écrase l'ancien si le nouveau commence
+                                        if(temp.getTempsDebut()<eventIntensite.getTempsDebut()){
+                                            bdd.save(eventIntensite);
+                                        }else{
+                                            temp.setIntensite(eventIntensite.getIntensite());
+                                        }
+                                    }
+                                    bdd.update(temp);
                                 }else {
+                                    //sinon on le crée
                                     long t = bdd.save(eventIntensite);
                                 }
-                                if(mesureDebut-1 != 0) {
-                                    //On verifie la présence de conflits + résolution
-                                    chevaucheNuanceList=eventSuperposes(mesureDebut,mesureFin,partition.convertNuanceStrInt(nuance));
-                                        for(int i=0;i<chevaucheNuanceList.size();i++){
-                                            bdd.save(chevaucheNuanceList.get(i));
-                                        }
-                                    debug.setText(debug.getText() +"nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.getMesure(mesureDebut - 2).getNuance());//TODO gestion à l'echelle de une mesure
-                                }
-                                else{
-                                    debug.setText(debug.getText() +  "000nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.convertNuanceIntStr(-1));//TODO gestion à l'echelle de une mesure
+
+                                chevaucheNuanceList=eventSuperposes(mesureDebut,mesureFin,partition.convertNuanceStrInt(nuance));
+                                for(int i=0;i<chevaucheNuanceList.size();i++){
+                                    bdd.save(chevaucheNuanceList.get(i));
+                                    if(mesureDebut-1 != 0) {
+                                        debug.setText(debug.getText() +"nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.getMesure(mesureDebut - 2).getNuance());//TODO gestion à l'echelle de une mesure
+                                    }
+                                    else{
+                                        debug.setText(debug.getText() +  "000nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.convertNuanceIntStr(-1));//TODO gestion à l'echelle de une mesure
 
 
+                                    }
                                 }
+
                                 varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
                                 triListVarIntensite();
                             }
