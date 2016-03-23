@@ -45,6 +45,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
     List<VariationIntensite> IntensiteList;
     List <VariationTemps> TempsList;
     //partition est la liste des models à afficher
+
     public CatalogueAdapter(Context context, List<Musique> catalogue) {
         super(context, 0, catalogue);
         this.catalogue = catalogue;
@@ -84,6 +85,26 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                 getContext().startActivity(intent);
             }
         });
+        supprimer = (Button) convertView.findViewById(R.id.supprimer);
+        supprimer.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             bdd = new DataBaseManager(v.getContext());
+                                             bdd.open();
+                                             bdd.delete(musique);
+                                             bdd.close();
+                                             catalogue.remove(musique);
+
+
+                                             CatalogueAdapter adapter = new CatalogueAdapter(v.getContext(),catalogue);
+                                             CatalogueActivity.mListView.setAdapter(adapter);
+                                             //FIXME: Relance l'application pour mettre a jour la liste? Bonne idée?
+                                             //Intent intent = new Intent(v.getContext() , CatalogueActivity.class);
+                                             //v.getContext().startActivity(intent);
+                                         }
+                                     }
+        )
+                ;
         if(viewHolder == null){
             viewHolder = new CatalogueViewHolder();
             viewHolder.nom = (TextView) convertView.findViewById(R.id.id);

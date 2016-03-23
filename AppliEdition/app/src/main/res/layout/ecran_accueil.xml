@@ -33,10 +33,20 @@
 
     <Button
         android:id="@+id/emulateur"
+        android:text="Emul"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignBottom="@id/chercher"
         />
+    <Button
+        android:id="@+id/synchro"
+        android:text="Synchro"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/telecommande"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="43dp" />
 
 
 </RelativeLayout>

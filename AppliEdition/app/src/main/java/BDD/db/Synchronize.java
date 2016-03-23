@@ -34,7 +34,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        //String networkSSID = "\"wifsic-free\"";
+       /* //String networkSSID = "\"wifsic-free\"";
         String networkSSID = "\"Maestro\"";
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         boolean exist = false;
@@ -61,7 +61,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
         }
         else{
             Toast.makeText(context, "Already connected " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
-        }
+        }*/
     }
 
     @Override

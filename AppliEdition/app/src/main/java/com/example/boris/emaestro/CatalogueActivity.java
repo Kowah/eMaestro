@@ -13,7 +13,7 @@ import BDD.to.Musique;
 
 public class CatalogueActivity extends Activity {
     CatalogueAdapter adapter;
-    ListView mListView;
+    static public ListView mListView;
     List<Musique> catalogue = new ArrayList<>();
     DataBaseManager bdd = new DataBaseManager(this);
     Context context = this;

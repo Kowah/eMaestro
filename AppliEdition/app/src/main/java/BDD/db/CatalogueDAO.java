@@ -45,7 +45,7 @@ public class CatalogueDAO extends DataBaseManager {
         for(Musique m:musiques){
             ContentValues values = new ContentValues();
             if(m.getId() > 0){
-                values.put(DataBaseHelper.NAME_Musique, m.getId());
+                values.put(DataBaseHelper.KEY_Musique, m.getId());
 
                 if(database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values) < 0){
                     System.err.println("Erreur lors de l'insertion de données dans ala table catalogue");

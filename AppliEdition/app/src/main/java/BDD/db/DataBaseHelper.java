@@ -69,7 +69,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	private static final String CREATE_CATALOGUE_TABLE =
 			"CREATE TABLE " + CATALOGUE_TABLE + " ("
 					+ IdCatalogue + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ KEY_Musique + " INTEGER "
+					+ KEY_Musique + " INTEGER U"
 					+");";
 	//Destruction de la table catalogue
 	private static final String CATALOGUE_TABLE_DROP = "DROP TABLE IF EXISTS "
