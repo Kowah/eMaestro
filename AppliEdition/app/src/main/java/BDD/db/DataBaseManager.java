@@ -130,21 +130,27 @@ public class DataBaseManager {
 
 	/***************Delete*****************/
 	//Permet de supprimer une musique de la table Musique
-	public int delete(Musique Musique) {
+	public int delete(Musique musique) {
+		database.delete(DataBaseHelper.CATALOGUE_TABLE, WHERE_ID_MUSIQUE_EQUALS, new String[] { musique.getId() + "" });
+		this.deleteVarTemps(musique);
+		this.deleteVarIntensite(musique);
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
-				WHERE_ID_MUSIQUE_EQUALS, new String[] { Musique.getId() + "" });
+				WHERE_ID_MUSIQUE_EQUALS, new String[] { musique.getId() + "" });
 	}
 	//Permet de supprimer toute les variations de temps associés à une musique
 	public int deleteVarTemps(Musique musique) {
 		return database.delete(DataBaseHelper.VarTemps_Table,
-				WHERE_ID_VARTEMPS_EQUALS, new String[] { musique.getId() + "" });
+				WHERE_ID_MUSIQUE_EQUALS, new String[] { musique.getId() + "" });
 	}
 	//Permet de supprimer une variation de temps de la table VarTemps
 	public int delete(VariationTemps varTemps) {
 		return database.delete(DataBaseHelper.VarTemps_Table,
 				WHERE_ID_VARTEMPS_EQUALS, new String[] { varTemps.getIdVarTemps() + "" });
 	}
-
+	public int deleteVarIntensite(Musique musique){
+		return database.delete(DataBaseHelper.VarIntensite_Table,
+				WHERE_ID_MUSIQUE_EQUALS, new String[] { musique.getId() + "" });
+	}
 
 	/****************GET*************/
 	//Permet d'obtenir une musique à partir de son id
