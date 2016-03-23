@@ -212,17 +212,39 @@ public class EditionActivity  extends Activity {
 
 
     private void selectionHandler(Mesure m){
-        if(nbMesureSelec<2){
-            intervalMesureSelec[nbMesureSelec]=m;
+        if(nbMesureSelec==0) {
+            intervalMesureSelec[nbMesureSelec] = m;
             nbMesureSelec++;
-            if(nbMesureSelec==2){
-                afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1]);
+        }else if(nbMesureSelec == 1){
+            //on classe ordre croissant
+            if(m.getId()>=intervalMesureSelec[0].getId()){
+                intervalMesureSelec[1]=m;
             }
-           // System.out.println("selection de mesure n : "+nbMesureSelec);
+            else{
+                intervalMesureSelec[1]=intervalMesureSelec[0];
+                intervalMesureSelec[0]=m;
+            }
+            nbMesureSelec++;
+            afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1]);
 
         }else{
-            intervalMesureSelec[0]=intervalMesureSelec[1];
-            intervalMesureSelec[1]=m;
+          if(m.getId()>intervalMesureSelec[0].getId() && m.getId()-intervalMesureSelec[0].getId()<=intervalMesureSelec[1].getId()-m.getId()){
+              //t[0]<=m
+              //m-t[0]<=t[1]-m
+              intervalMesureSelec[0]=m;
+          }else if(m.getId()<=intervalMesureSelec[0].getId()){
+              //m<=t[0]
+              intervalMesureSelec[0]=m;
+            }
+            else if(m.getId()>=intervalMesureSelec[0].getId() && intervalMesureSelec[1].getId()-m.getId()<m.getId()-intervalMesureSelec[1].getId()){
+              //t[0]<m
+              //t[1]-m<m-t[0]
+              intervalMesureSelec[1]=m;
+          }
+            else{
+              //t[1]<=m
+              intervalMesureSelec[1]=m;
+          }
             SupprimerSelection(true);
             afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1]);
         }
@@ -231,11 +253,6 @@ public class EditionActivity  extends Activity {
     }
     private void afficheSelection(Mesure mDebut, Mesure mFin){
         Mesure temp;
-        if(mDebut.getId()>mFin.getId()){
-            temp = mFin;
-            mFin=mDebut;
-            mDebut=temp;
-        }
         int debut =  partition.partition.indexOf(mDebut);
         int fin = partition.partition.indexOf(mFin);
         for( int i =debut; i<=fin; i++){
@@ -307,6 +324,7 @@ public class EditionActivity  extends Activity {
     };
 
     private void SupprimerSelection(boolean miseAJourSelection){
+        //avec true, supprimer seulement les mesures selectionner mais garde l'intervalle de selection
         if(!miseAJourSelection){
             nbMesureSelec=0;
             intervalMesureSelec = new Mesure[2];
