@@ -72,6 +72,7 @@ public class MainActivity extends Activity {
 
 				CatalogueDAO bdd = new CatalogueDAO(v.getContext());
 				bdd.open();
+				bdd.clean();
 				bdd.save(m);
 				bdd.synchronizer();
 				bdd.close();

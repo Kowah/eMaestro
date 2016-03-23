@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "emaestro";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 //LES TABLES
 	public static final String EVENEMENT_TABLE = "Evenement";
 	public static final String MUSIQUE_TABLE = "Musique";
@@ -69,7 +69,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	private static final String CREATE_CATALOGUE_TABLE =
 			"CREATE TABLE " + CATALOGUE_TABLE + " ("
 					+ IdCatalogue + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ KEY_Musique + " INTEGER U"
+					+ KEY_Musique + " INTEGER UNIQUE"
 					+");";
 	//Destruction de la table catalogue
 	private static final String CATALOGUE_TABLE_DROP = "DROP TABLE IF EXISTS "
