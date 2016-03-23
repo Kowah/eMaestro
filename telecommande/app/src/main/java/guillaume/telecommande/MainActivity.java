@@ -115,6 +115,17 @@ public class MainActivity extends AppCompatActivity {
             printerServeur.write("QUIT");
             printerServeur.flush();
         }
+
+        if(socketServeur != null)
+        {
+            try {
+                socketServeur.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            setConnected(false);
+            showToast("Deconnecté");
+        }
     }
 
     @Override
