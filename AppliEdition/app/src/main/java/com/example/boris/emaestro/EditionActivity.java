@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Debug;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -74,7 +75,7 @@ public class EditionActivity  extends Activity {
     String nuance;
     Mesure[] intervalMesureSelec = new Mesure[2];
     int nbMesureSelec = 0;
-    VariationIntensite chevaucheNuance;
+    List<VariationIntensite> chevaucheNuanceList;
     //selection
     boolean selectionOn;
 
@@ -133,12 +134,16 @@ public class EditionActivity  extends Activity {
         partition = new Partition(EXTRA_NBMESURE);
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
-        if (idMusique > -1) {
+        chevaucheNuanceList = new ArrayList<>();
+        TextView debug = (TextView) findViewById(R.id.debug);
+
+
             //on recupère les données associées à la musique
             Toast.makeText(getApplicationContext(), "chargement musique", Toast.LENGTH_SHORT).show();
 
             varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
             varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
+            debug.setText("varintelist "+varIntensiteList.size());
             //On trie nos listes en ordre croissan par rapport à la mesure de debut
             triListVarIntensite();
             //triListVarTempo();
@@ -147,12 +152,11 @@ public class EditionActivity  extends Activity {
 
 
             for(int i = 0; i<varIntensiteList.size();i++){
-                TextView debug = (TextView) findViewById(R.id.debug);
                 debug.setText(debug.getText()+"\n nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut()+1) + " nuance : "+ partition.convertNuanceIntStr(varIntensiteList.get(i).getIntensite()));
 
             }
             partition.setNuance(varIntensiteList);
-        }
+
 
 
         if (EXTRA_DRAGACTIF.equals("true")) {
@@ -229,14 +233,14 @@ public class EditionActivity  extends Activity {
 
         }else{
           if(m.getId()>intervalMesureSelec[0].getId() && m.getId()-intervalMesureSelec[0].getId()<=intervalMesureSelec[1].getId()-m.getId()){
-              //t[0]<=m
+              //t[0]<m
               //m-t[0]<=t[1]-m
               intervalMesureSelec[0]=m;
           }else if(m.getId()<=intervalMesureSelec[0].getId()){
               //m<=t[0]
               intervalMesureSelec[0]=m;
             }
-            else if(m.getId()>=intervalMesureSelec[0].getId() && intervalMesureSelec[1].getId()-m.getId()<m.getId()-intervalMesureSelec[1].getId()){
+            else if(m.getId()>intervalMesureSelec[0].getId() && intervalMesureSelec[1].getId()-m.getId()<m.getId()-intervalMesureSelec[1].getId()){
               //t[0]<m
               //t[1]-m<m-t[0]
               intervalMesureSelec[1]=m;
@@ -246,7 +250,7 @@ public class EditionActivity  extends Activity {
               intervalMesureSelec[1]=m;
           }
             SupprimerSelection(true);
-            afficheSelection(intervalMesureSelec[0],intervalMesureSelec[1]);
+            afficheSelection(intervalMesureSelec[0], intervalMesureSelec[1]);
         }
 
 
@@ -386,48 +390,51 @@ public class EditionActivity  extends Activity {
 
 
 
-    private VariationIntensite eventSuperposes (int mesureDebut, int mesureFin, int nuance){
-        VariationIntensite res = new VariationIntensite();
+    private List<VariationIntensite> eventSuperposes (int mesureDebut, int mesureFin, int nuance){
+        List<VariationIntensite> res = new ArrayList<>();
         VariationIntensite temp;
-        VariationIntensite temp2;
-        int tempDebut;
+        VariationIntensite temp2=new VariationIntensite();
+        int tempMesureDebut;
         ArrayList<VariationIntensite> aMettreAJour = new ArrayList<>();
         boolean eventTraite = false;
-
-        for(int i=0; i<varIntensiteList.size() && ! eventTraite; i++){
+        int i=0;
+        int dernierElementApresElemenCournat=0;
+        for(i=0; i<varIntensiteList.size() && ! eventTraite; i++){
             temp = varIntensiteList.get(i);
-            tempDebut = temp.getMesureDebut();
-            if(tempDebut <mesureDebut && tempDebut>mesureFin){
-                //deja traité ? cas où on inclus un event dans un autre
-            }
-           else if(tempDebut>mesureDebut){
-                //si evenement temp 1 est recouvert par le nouvel evenement
-                aMettreAJour.add(temp);
-            }
-            else if( tempDebut-1 == mesureFin){
-                //event precedent est totalement recouvert par le nouvel evenement
-                for(int j=0; j<aMettreAJour.size();j++){
-                 temp2 =  aMettreAJour.get(j);
-                    temp2.setIntensite(nuance);
-                    bdd.update(temp2);
+            tempMesureDebut = temp.getMesureDebut();
 
-                }
-                aMettreAJour.clear();
-            }
-            else if(tempDebut>mesureFin) {
-               //evenement temp n'est pas entierement recouvert, on crée alors un event à la fin pour le faire continuer
-               res = new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),temp.getTempsDebut(),mesureFin+1,temp.getnb_temps());
-                for(int j=0; j<aMettreAJour.size();j++){
-                    temp2 =  aMettreAJour.get(j);
-                    temp2.setIntensite(nuance);
-                    bdd.update(temp2);
-                }
-                eventTraite=true;
-                aMettreAJour.clear();
+            if(mesureDebut>tempMesureDebut){
+                //rien besoin de faire, on passe au suivant pour savoir où commence et se termine l'event
+            }else if(mesureDebut<tempMesureDebut){
+                if(mesureFin-1 == tempMesureDebut){
 
+                    aMettreAJour.add(temp);
+                    res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),temp.getTempsDebut(),mesureFin,temp.getnb_temps()));
+                    eventTraite=true;
+                }
+                else if(mesureFin<tempMesureDebut){
+                    res.add(new VariationIntensite(temp2.getIdMusique(),temp2.getIntensite(),temp2.getTempsDebut(),mesureFin,temp2.getnb_temps()));
+                    eventTraite=true;
+                }
+                else if(mesureFin>tempMesureDebut){
+                    dernierElementApresElemenCournat=i;
+                    aMettreAJour.add(temp);
+                }
             }
+            temp2=temp;
+            }
+        if(!eventTraite){
+            if(i==0){
+                i++;
+            }
+            temp = varIntensiteList.get(dernierElementApresElemenCournat);
+            res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),temp.getTempsDebut(),mesureFin,temp.getnb_temps()));
         }
-
+        for(int j=0; j<aMettreAJour.size();j++){
+            temp2 =  aMettreAJour.get(j);
+            temp2.setIntensite(nuance);
+            bdd.update(temp2);
+        }
         return res ;
     }
     //nuance
@@ -473,32 +480,32 @@ public class EditionActivity  extends Activity {
                                 mGridView.setAdapter(adapter);
                                 idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
                                 TextView debug= (TextView) findViewById(R.id.debug);
-                                int oldNuance;// = partition.convertNuanceStrInt(partition.getMesure(mesureDebut - 2).getNuance());//on recupere nuance de la case qu'on écrase
-
+                                int oldNuance;// = partition.convertNuanceStrInt(partition.getMesure(mesureDebut - 2).getNuance());// on recupere nuance de la case qu'on écrase
+                              //on ajoute le nouvel event
                                long t = bdd.save(new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance), 1,mesureDebut-1,1/* Integer.parseInt(EXTRA_TPSPARMESURE)*/));
-
                                 if(mesureDebut-1 != 0) {
                                     //Ajout de l'evenement de fin de variation
-                                    chevaucheNuance=eventSuperposes(mesureDebut,mesureFin,partition.convertNuanceStrInt(nuance));
-                                    if(chevaucheNuance != null) {
-                                        oldNuance = chevaucheNuance.getIntensite();
+                                    chevaucheNuanceList=eventSuperposes(mesureDebut,mesureFin,partition.convertNuanceStrInt(nuance));
+                                    if(chevaucheNuanceList.size()!=0) {
+                                        for(int i=0;i<chevaucheNuanceList.size();i++){
+                                            bdd.save(chevaucheNuanceList.get(i));
+                                        }
+                                      /*  debug.setText(debug.getText() + "chevauchement /n");
+                                        oldNuance = chevaucheNuanceList.get(0).getIntensite();//TODO a faire
 
                                         if (mesureFin + 1 < partition.getListMesures().size()) {//si on va pas jusqu'au bout de la partition
                                             if (partition.convertNuanceStrInt(partition.getMesure(mesureFin).getNuance()) == oldNuance) {
                                                 //si changement de nuance inclus dans un  intervalle de mesures de  nuance differente
                                                 long t2 = bdd.save(new VariationIntensite(idMusique, oldNuance, 1, (mesureFin), 1));
-
                                             }
-
-                                        }
+                                        }*/
                                     }
-
                                     debug.setText(debug.getText() + "" +
                                             "nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.getMesure(mesureDebut - 2).getNuance());//TODO gestion à l'echelle de une mesure
                                 }
                                 else{
                                     debug.setText(debug.getText() + "" +
-                                            "nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.convertNuanceIntStr(-1));//TODO gestion à l'echelle de une mesure
+                                            "000nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.convertNuanceIntStr(-1));//TODO gestion à l'echelle de une mesure
 
 
                                 }
