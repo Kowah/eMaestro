@@ -2,6 +2,12 @@ import threading
 import time
 import Image
 import ImageDraw
+from chargeur_partition import *
+from afficheur import *
+
+
+
+
 from rgbmatrix import Adafruit_RGBmatrix
 
 class Telecommande(threading.Thread):
@@ -10,6 +16,7 @@ class Telecommande(threading.Thread):
         threading.Thread.__init__(self)
         self.message=''
 	self.matrix = None
+	count = 1
         
     def setMessage(self,msg):
         self.message=msg
@@ -23,16 +30,9 @@ class Telecommande(threading.Thread):
 	self.quit()
 
     def play(self):
-        count = 1
+	cp = Chargeur_partition(6)
         while self.message == 'PLAY':
-            filename = '4_'+str(count)+'.png'
-	    self.matrix.Clear()
-            image = Image.open(filename)
-	    image.load()
-	    self.matrix.SetImage(image.im.id,0,0)
-	    print filename
-            count = (count % 4)+1
-            time.sleep(1)
+            afficher(cp.get_liste_de_lecture(), cp.get_images_ephemeres(),self.matrix)
     
     def pause(self):
         print "PAUSE"
