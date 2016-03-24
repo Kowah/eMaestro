@@ -28,6 +28,9 @@ public class Mesure {
     public void setTempo(int newTempo){
         this.tempo = newTempo;
     }
+    public int getTempsMesure(){
+        return  tempsMesure;
+    }
     public String getNuance(){
         return nuance;
     }

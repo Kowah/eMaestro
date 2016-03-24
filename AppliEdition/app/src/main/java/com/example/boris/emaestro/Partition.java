@@ -47,7 +47,6 @@ public class Partition {
     public void setNuance(int mesureDebut, int mesureFin, String nuance){
         //mesure de fin est inclus
         for(int i=mesureDebut;i<mesureFin;i++){
-            Log.d("Test",""+i);
 
             partition.get(i).setNuance(nuance);
         }
@@ -57,6 +56,12 @@ public class Partition {
         for(int i=0;i<l.size();i++){
             j = l.get(i).intValue();
             partition.get(j-1).setTempo(tempo);
+        }
+    }
+
+    public void setNbTempsAll(int nbTemps){
+        for(int i=0;i<partition.size();i++){
+            partition.get(i).setTempsMesure(nbTemps);
         }
     }
     public void setTempo(List<VariationTemps> l){

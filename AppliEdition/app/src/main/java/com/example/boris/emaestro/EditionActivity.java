@@ -47,6 +47,7 @@ public class EditionActivity  extends Activity {
     String EXTRA_TPSPARMESURE = "nbTpsMesure";
     String EXTRA_DRAGACTIF = "drag";
     String EXTRA_ID_PARTITION = "idMusique";
+    String EXTRA_NEW_PARTITION = "new";
     int idMusique;
 
     List<VariationTemps> varTempsList;
@@ -72,11 +73,15 @@ public class EditionActivity  extends Activity {
 
     //modif nuance
     Spinner mNuanceSpinner;
+    Spinner mNuanceDebutSpinner;
     ArrayAdapter<String> dataAdapterNuance;
     String nuance;
     Mesure[] intervalMesureSelec = new Mesure[2];
     int nbMesureSelec = 0;
     List<VariationIntensite> chevaucheNuanceList;
+    int tpsDebut;
+    List<String> tempsMesure = new ArrayList<>();
+    ArrayAdapter<String> dataAdapterNuanceTpsMesure;
 
     //selection
     int mesureDebut;
@@ -141,9 +146,14 @@ public class EditionActivity  extends Activity {
             EXTRA_TPSPARMESURE = intent.getStringExtra(EXTRA_TPSPARMESURE);
             EXTRA_DRAGACTIF = intent.getStringExtra(EXTRA_DRAGACTIF);
             EXTRA_ID_PARTITION = intent.getStringExtra(EXTRA_ID_PARTITION);
+            EXTRA_NEW_PARTITION = intent.getStringExtra(EXTRA_NEW_PARTITION);
 
             idMusique = Integer.parseInt(EXTRA_ID_PARTITION);
             partition = new Partition(EXTRA_NBMESURE);
+
+            if(EXTRA_NEW_PARTITION =="true"){
+                partition.setNbTempsAll(Integer.parseInt(EXTRA_TPSPARMESURE));
+            }
 
         }else{
 
@@ -173,6 +183,7 @@ public class EditionActivity  extends Activity {
         //on met ajour tempo et intensite
         //partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
+        partition.setNbTempsAll(Integer.parseInt(EXTRA_TPSPARMESURE));
 
         if (EXTRA_DRAGACTIF.equals("true")) {
             //drag
@@ -191,6 +202,13 @@ public class EditionActivity  extends Activity {
 
         adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
         mGridView.setAdapter(adapter);
+
+      /*  for(int i=0; i<partition.getMesure(1).getTempsMesure();i++){
+            tempsMesure.add(String.valueOf(i)+1);
+        }*/
+
+        dataAdapterNuanceTpsMesure = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tempsMesure);
+        dataAdapterNuanceTpsMesure.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -259,7 +277,15 @@ public class EditionActivity  extends Activity {
           }
             SupprimerSelection(true);
             afficheSelection(intervalMesureSelec[0], intervalMesureSelec[1]);
+
+
         }
+        //on met à jour le nbre de temps pour le spinner permettant de commencer un event sur un temps de la mesure
+        tempsMesure.clear();
+        for(int i=0; i<intervalMesureSelec[0].getTempsMesure();i++){
+            tempsMesure.add(i+1+"");
+        }
+        dataAdapterNuanceTpsMesure = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tempsMesure);
     }
 
     //avec true, supprimer seulement les mesures selectionner mais garde l'intervalle de selection
@@ -425,7 +451,7 @@ public class EditionActivity  extends Activity {
             if(mesureDebut>tempMesureDebut){
                 //rien besoin de faire, on passe au suivant pour savoir où commence et se termine l'evenement
             }else if(mesureDebut<=tempMesureDebut){
-                if(mesureFin == tempMesureDebut){//fusionnable avec else if suivant ?
+                if(mesureFin == tempMesureDebut){
                     aMettreAJour.add(temp);
                     res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin,0));
                     eventTraite=true;
@@ -478,7 +504,9 @@ public class EditionActivity  extends Activity {
 
             //nuance selection
             mNuanceSpinner = (Spinner) layout.findViewById(R.id.nuance);
+            mNuanceDebutSpinner = (Spinner) layout.findViewById(R.id.tempsDebut);
             // attaching data adapter to spinner
+
             mNuanceSpinner.setAdapter(dataAdapterNuance);
             mNuanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -493,10 +521,30 @@ public class EditionActivity  extends Activity {
                 }
             });
 
+            mNuanceDebutSpinner.setAdapter(dataAdapterNuanceTpsMesure);
+            mNuanceDebutSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    tpsDebut = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
             if (mesuresSelec.size() > 0) {
+                List<String> tempsMesure = new ArrayList<String>();
+
+
                 debug.setText(" il y a "+mesuresSelec.size()+" mesures selec");
                 mesureDebut = mesuresSelec.get(0).intValue();
                 mesureFin=mesuresSelec.get(mesuresSelec.size()-1).intValue();
+
+
+
+
                 new AlertDialog.Builder(context)
                         .setTitle("Changement de nuance")
                         .setView(layout)
@@ -511,7 +559,7 @@ public class EditionActivity  extends Activity {
                                 TextView debug= (TextView) findViewById(R.id.debug);
                                 //on ajoute le nouvel event
 
-                                VariationIntensite eventIntensite = new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance),1,mesureDebut-1,0);//TODO proposer au programmeur le temps de debut
+                                VariationIntensite eventIntensite = new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance),tpsDebut,mesureDebut-1,0);//TODO proposer au programmeur le temps de debut
 
                                 if(varIntensiteList.indexOf(eventIntensite)!=-1) {
                                     //si deja un event on le met a jour

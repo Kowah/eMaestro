@@ -13,4 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/nuance" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temps de début de la nuance"
+        android:id="@+id/textView3" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tempsDebut" />
+
+
 </LinearLayout>

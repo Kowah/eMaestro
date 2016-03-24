@@ -28,9 +28,10 @@ public class CreationMusiqueActivity extends Activity {
     final String EXTRA_NBMESURE="nbMesure";
     final String EXTRA_PULSATION="pulsation";
     final String EXTRA_UNITE="unite";
-    final String EXTRA_TPSPARMESURE="tpsParMesure";
+    final String EXTRA_TPSPARMESURE="nbTpsMesure";
     final String EXTRA_DRAGACTIF="drag";
     final String EXTRA_ID_PARTITION="idMusique";
+    final String EXTRA_NEW_PARTITION="new";
 
     EditText pulsation;
     EditText nomPartitionE;
@@ -108,6 +109,17 @@ public class CreationMusiqueActivity extends Activity {
         // attaching data adapter to spinner
         uniteSpinner.setAdapter(dataAdapterUnite);
         tpsParMesureSpinner.setAdapter(dataAdapterTpsParMesure);
+        tpsParMesureSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // On selecting a spinner item
+                tpsParMesure = parent.getItemAtPosition(position).toString();
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         //button listener pour création
         loginButton.setOnClickListener(new OnClickListener() {
@@ -126,7 +138,6 @@ public class CreationMusiqueActivity extends Activity {
                     //TODO faire les autres cas
                 }
                 ;
-                tpsParMesure = tpsParMesureSpinner.getSelectedItem().toString();
                 nbPulsation = pulsation.getText().toString();
                 nomPartition = nomPartitionE.getText().toString();
                 // permet le passage de message dans un changement d'activité (startActivity)
@@ -137,6 +148,7 @@ public class CreationMusiqueActivity extends Activity {
                 intent.putExtra(EXTRA_TPSPARMESURE, tpsParMesure);
                 intent.putExtra(EXTRA_UNITE, unite);
                 intent.putExtra(EXTRA_ID_PARTITION, "-1");
+                intent.putExtra(EXTRA_NEW_PARTITION,"true");
 
                 if (dragActive) {
                     Toast.makeText(CreationMusiqueActivity.this, "Edition par drag and drop", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
