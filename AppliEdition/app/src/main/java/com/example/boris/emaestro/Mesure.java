@@ -9,6 +9,7 @@ public class Mesure {
     private String nuance;
     private int tempsMesure;
     private String unite;
+    private int tpsDebutNuance;
 
     boolean selectionne;
 
@@ -16,6 +17,8 @@ public class Mesure {
         this.id = id;
         this.nuance = "neutre";
         selectionne = false;
+        this.unite = "1";
+        this.tpsDebutNuance=1;
 
     }
 //TODO gestion des events
@@ -43,6 +46,7 @@ public class Mesure {
         this.unite = newUnite
         ;
     }
+    public void setTpsDebutNuance(int temps){this.tpsDebutNuance = temps;}
     public void toggleSelec(){
         selectionne = ! selectionne;
     }

@@ -47,7 +47,6 @@ public class Partition {
     public void setNuance(int mesureDebut, int mesureFin, String nuance){
         //mesure de fin est inclus
         for(int i=mesureDebut;i<mesureFin;i++){
-
             partition.get(i).setNuance(nuance);
         }
     }
@@ -62,6 +61,13 @@ public class Partition {
     public void setNbTempsAll(int nbTemps){
         for(int i=0;i<partition.size();i++){
             partition.get(i).setTempsMesure(nbTemps);
+        }
+    }
+
+    public void setNbTemps(int mesureDebut, int mesureFin, int temps){
+        //mesure de fin est inclus
+        for(int i=mesureDebut;i<mesureFin;i++){
+            partition.get(i).setTempsMesure(temps);
         }
     }
     public void setTempo(List<VariationTemps> l){
@@ -80,9 +86,22 @@ public class Partition {
             }
 
             this.setTempo(vT.getMesure_debut(), mesureFin, vT.getTempo());
+            this.setNbTemps(vT.getMesure_debut(), mesureFin, vT.getTemps_par_mesure());
+
 
         }
 
+    }
+
+    public void setTpsDebut(int mesureDebut, int mesureFin, int tpsDebut){
+        //mesure de fin est inclus
+        for(int i=mesureDebut;i<mesureFin;i++){
+            if(i==mesureDebut){
+                partition.get(i).setTpsDebutNuance(tpsDebut);
+            }
+            partition.get(i).setTpsDebutNuance(1);
+
+        }
     }
 
     public void setNuance(List<VariationIntensite> l){
@@ -103,8 +122,40 @@ public class Partition {
             }
             nuance= convertNuanceIntStr(vT.getIntensite());
             this.setNuance(vT.getMesureDebut(), mesureFin, nuance);
+            this.setTpsDebut(vT.getMesureDebut(), mesureFin,vT.getTempsDebut());
 
         }
+    }
+
+
+    public int convertUniteStrInt(String n) {
+        int s;
+        switch (n) {
+            case "blanche":
+                s =0;
+                break;
+            case "noire":
+                s = 1;
+                break;
+            case "croche":
+                s = 2;
+                break;
+            case "ronde pointee":
+                s = 3;
+                break;
+            case "blanche pointee":
+                s = 4;
+                break;
+            case "noire pointee":
+                s = 5;
+                break;
+            default:
+                s = -1;
+                break;
+
+        }
+        return s;
+
     }
 
     public String convertNuanceIntStr(int n) {
