@@ -28,7 +28,7 @@ public class CatalogueActivity extends Activity {
         mListView = (ListView) findViewById(R.id.listView);
         for (int i =0; i <catalogue.size();i++){
             System.out.println(catalogue.get(i).getName());
-            Toast.makeText(getApplicationContext(), "chargement musique "+  String.valueOf(catalogue.get(i).getId())+" nb variations temps :"+bdd.getVariationsTemps(catalogue.get(i)).size(), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getApplicationContext(), "chargement musique "+  String.valueOf(catalogue.get(i).getId())+" nb variations temps :"+bdd.getVariationsTemps(catalogue.get(i)).size(), Toast.LENGTH_SHORT).show();
 
         }
         bdd.close();

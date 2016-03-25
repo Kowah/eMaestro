@@ -30,6 +30,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
     final String EXTRA_TPSPARMESURE="tpsParMesure";
     final String EXTRA_DRAGACTIF="drag";
     final String EXTRA_ID_PARTITION="idMusique";
+    final String EXTRA_NEW_PARTITION="new";
 
     String labelEvent;// pour drop
     int newTempo, mesureFin,mesureDebut;// changement de tempo
@@ -78,6 +79,8 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                 //intent.putExtra(EXTRA_TPSPARMESURE,String.valueOf( musique.getNb_temps_mesure()));
                 //intent.putExtra(EXTRA_UNITE, String.valueOf(musique.getUnite_pulsation()));
                 intent.putExtra(EXTRA_ID_PARTITION,String.valueOf(musique.getId()));
+
+                intent.putExtra(EXTRA_NEW_PARTITION,"false");
                 Toast.makeText(getContext(), "id musique" + String.valueOf(musique.getId()), Toast.LENGTH_SHORT).show();
 
                 intent.putExtra(EXTRA_DRAGACTIF, "false");
