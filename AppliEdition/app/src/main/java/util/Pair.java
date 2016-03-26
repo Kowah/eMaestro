@@ -11,5 +11,5 @@ public class Pair<L,R> {
 	
 	public L getLeft() { return left; }
 	public R getRight() { return right; }
-	public String toString(){return right.toString();}//Affichage uniquement de la droite utile pour afficher la liste des morceaux sans leurs id
+	public String toString(){return "("+left+", "+right+")";}//Affichage uniquement de la droite utile pour afficher la liste des morceaux sans leurs id
 }

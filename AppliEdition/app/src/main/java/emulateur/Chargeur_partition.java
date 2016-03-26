@@ -34,8 +34,15 @@ public class Chargeur_partition {
 			int id = mainActivity.getResources().getIdentifier("a"+temps_par_mesure+"_"+i, "drawable", mainActivity.getPackageName());
 			this.images_ephemeres.put(key, id);
 		}
+		//ajout de l'image de fin
 		int id = mainActivity.getResources().getIdentifier("fin", "drawable", mainActivity.getPackageName());
 		images_ephemeres.put("fin", id);
+
+		//ajout des nombres de decompte
+		for(int n=1; n<=8; n++){
+			int idN = mainActivity.getResources().getIdentifier("d"+n, "drawable", mainActivity.getPackageName());
+			images_ephemeres.put("d"+n, idN);
+		}
 	}
 	
 	private int creer_liste_lecture (VariationTemps varI, int mesure_fin, int nb_temps){

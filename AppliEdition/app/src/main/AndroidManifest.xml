@@ -49,6 +49,12 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
+        <activity
+            android:name="emulateur.LectureV2Activity"
+            android:label="EmulateurV2Activity"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
     </application>
 
 </manifest>
