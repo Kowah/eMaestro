@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 import android.widget.ImageView;
 
 
@@ -195,7 +196,7 @@ public class LectureActivity extends Activity {
         int tempo = listeImages.get(tempsDebutMesure).getRight();
 
         for(int n=nbDecompte; n>0; n--){
-            int id = getResources().getIdentifier("emaestro.testtelecommande:drawable/d"+n, null, null);
+            int id = getResources().getIdentifier("d"+n, "drawable", getPackageName());
 
             BitmapDrawable drawable = (BitmapDrawable) ResourcesCompat.getDrawable(getResources(), id, null); //Creation d'une frame d'animation
             drawable.setAntiAlias(false);

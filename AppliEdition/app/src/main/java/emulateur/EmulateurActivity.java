@@ -63,15 +63,14 @@ public class EmulateurActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                //TODO a corriger
-               /* Pair<Integer, String> selection = (Pair<Integer, String>) parent.getItemAtPosition(position);
+                Musique selection = (Musique) parent.getItemAtPosition(position);
 
-                idMusique = selection.getLeft();
+                idMusique = selection.getId();
                 spinner.setSelection(position);
 
                 //Afficher le nombre de mesures du morceau selectionne
                 TextView textNbMesures = (TextView)findViewById(R.id.textNbMesures);
-                int mesureFin = bddMusique.getMusique(idMusique).getNb_mesure();
+                int mesureFin = bdd.getMusique(idMusique).getNb_mesure();
                 textNbMesures.setText(""+mesureFin);
 
                 //Mise par defaut les mesures de debut et de fin
@@ -81,7 +80,7 @@ public class EmulateurActivity extends Activity {
                 editMesureDebut.setText("1");
 
 
-                editMesureFin.setText(""+mesureFin);*/
+                editMesureFin.setText(""+mesureFin);
             }
 
             @Override

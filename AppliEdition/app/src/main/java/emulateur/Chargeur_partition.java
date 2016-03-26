@@ -29,23 +29,21 @@ public class Chargeur_partition {
 
 	private void creer_images_ephemeres (int temps_par_mesure){
 		String key = "";
-		String chemin = "";
 		for(int i = 1; i <= temps_par_mesure; i++){
 			key = String.valueOf(temps_par_mesure) + "." + String.valueOf(i);
-			chemin = "emaestro.testtelecommande:drawable/a"+temps_par_mesure+"_"+i;
-			int id = mainActivity.getResources().getIdentifier(chemin, null, null);
+			int id = mainActivity.getResources().getIdentifier("a"+temps_par_mesure+"_"+i, "drawable", mainActivity.getPackageName());
 			this.images_ephemeres.put(key, id);
 		}
-		int id = mainActivity.getResources().getIdentifier("emaestro.testtelecommande:drawable/hdfin", null, null);
+		int id = mainActivity.getResources().getIdentifier("fin", "drawable", mainActivity.getPackageName());
 		images_ephemeres.put("fin", id);
 	}
 	
-	private int creer_liste_lecture (Triple<Integer, Integer, Integer> triple, int mesure_fin, int nb_temps){
+	private int creer_liste_lecture (VariationTemps varI, int mesure_fin, int nb_temps){
 		int next_nb_temps = nb_temps;
-		int tempo = triple.getRight();
+		int tempo = varI.getTempo();
 		String key = "";
-		int temps_par_mesure = triple.getMid();
-		int mesure_debut = triple.getLeft();
+		int temps_par_mesure = varI.getTemps_par_mesure();
+		int mesure_debut = varI.getMesure_debut();
 		for (int i = mesure_debut; i <= mesure_fin; i++){
 			this.map_mesures_temps.put(i, next_nb_temps);
 			for (int j = 1; j <= temps_par_mesure; j++){
@@ -59,28 +57,25 @@ public class Chargeur_partition {
 
 	public void charger_partition (int id_musique){
 		if (id_musique != this.id_partition_chargee){
-			int mesure_fin = 0;
-			Triple<Integer, Integer, Integer> triple_temp = new Triple<Integer, Integer, Integer>(0,0,0);
-			int infos_size = 0;
+			int mesure_fin;
+			int infos_size;
 			int nb_temps = 0;
-			//List<Triple<Integer, Integer, Integer>> infos = new ArrayList<Triple<Integer, Integer, Integer>>();
 
 			List<VariationTemps> infos = bdd.getVariationsTemps(bdd.getMusique(id_musique));
 			mesure_fin = bdd.getMusique(id_musique).getNb_mesure();
-			//TODO traiter la liste des variations temps
-			/*		infos_size = infos.size();
+			infos_size = infos.size();
 			for(int i = 0; i < infos_size; i++){
-				triple_temp = infos.get(i);
-				if (!images_ephemeres.containsKey(triple_temp.getMid().toString() + ".1")){
-					creer_images_ephemeres(triple_temp.getMid());
+				VariationTemps varI = infos.get(i);
+				if (!images_ephemeres.containsKey(varI.getTemps_par_mesure() + ".1")){
+					creer_images_ephemeres(varI.getTemps_par_mesure());
 				}
 				if (i == infos_size - 1){
-					nb_temps = creer_liste_lecture(triple_temp, mesure_fin, nb_temps);
+					nb_temps = creer_liste_lecture(varI, mesure_fin, nb_temps);
 				}
 				else{
-					nb_temps = creer_liste_lecture(triple_temp, infos.get(i+1).getLeft() - 1, nb_temps);
+					nb_temps = creer_liste_lecture(varI, infos.get(i+1).getMesure_debut() - 1, nb_temps);
 				}
-			}*/
+			}
 			this.id_partition_chargee = id_musique;
 		}
 	}
