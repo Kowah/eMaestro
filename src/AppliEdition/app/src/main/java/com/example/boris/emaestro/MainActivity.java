@@ -82,7 +82,6 @@ public class MainActivity extends Activity {
 		chercher.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//TODO recherche dans catalogue à faire
 				Intent intent = new Intent(MainActivity.this, CatalogueActivity.class);
 				startActivity(intent);
 			}
@@ -94,6 +93,15 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this, EmulateurActivity.class);
 				startActivity(intent);
+			}
+		});
+
+		final ImageButton telecommande = (ImageButton) findViewById(R.id.telecommande);
+		telecommande.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				//TODO lancer l'appli telecommande
 			}
 		});
 
