@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import BDD.db.DataBaseManager;
+import BDD.to.VariationIntensite;
+import BDD.to.VariationTemps;
 import util.Pair;
 
 /**
@@ -100,7 +102,7 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
         // format : nbTemps -> id image
 
         final HashMap<Integer,Bitmap> mapMesure = creerMapMesure();
-        final HashMap<Integer,Integer> mapAlerte = creerMapAlerte();
+        final HashMap<Integer,Integer> mapNuance = creerMapNuance();
         final HashMap<Integer,Integer> mapSection = creerMapSection();
         final HashMap<Integer,Integer> mapRepetition = creerMapRepetition();
         final HashMap<Integer,Integer> mapBemol = creerMapBemol();
@@ -132,20 +134,16 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
                     temps = 60000/temps;
                     int id = banqueImages.get(key);
 
-                    Log.d("debugT",banqueImages.toString());
-                    Log.d("debugT",""+id);
-
-
                     Bitmap bitmapCercle = BitmapFactory.decodeResource(getResources(), id);
 
                     Bitmap bitmapMesure = (mapMesure.containsKey(numeroTemps)) ? mapMesure.get(numeroTemps) : null;
                     Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
-                    Bitmap bitmapAlerte = (mapAlerte.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapAlerte.get(numeroTemps)) : null;
+                    Bitmap bitmapNuance = (mapNuance.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps)) : null;
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
                     Bitmap bitmapBemol = (mapBemol.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapBemol.get(numeroTemps)) : null;
 
-                    Bitmap bitmapFinal = assemblerParties(bitmapCercle,bitmapAlerte,bitmapSignature,bitmapRepetition,bitmapMesure,bitmapSection,bitmapBemol);
+                    Bitmap bitmapFinal = assemblerParties(bitmapCercle,bitmapNuance,bitmapSignature,bitmapRepetition,bitmapMesure,bitmapSection,bitmapBemol);
 
                     BitmapDrawable draw = new BitmapDrawable(getResources(),bitmapFinal);
                     switcher.setImageDrawable(draw);
@@ -174,8 +172,18 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
         return new HashMap<>();
     }
 
-    private HashMap<Integer, Integer> creerMapAlerte() {
-        return new HashMap<>();
+    private HashMap<Integer, Integer> creerMapNuance() {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        ArrayList<VariationIntensite> variations = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
+        for (VariationIntensite var : variations) {
+            int mesure = var.getMesureDebut();
+            int tempsMesure = mapMesures.get(mesure);
+            int i = var.getIntensite();
+            int idImage = getResources().getIdentifier("intensite"+i,"drawable",getPackageName());
+            map.put(tempsMesure,idImage);
+        }
+        return map;
     }
 
     private HashMap<Integer, Bitmap> creerMapMesure() {
@@ -198,7 +206,9 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
 
     private Bitmap creerBitmapMesure(int nMesure) {
 
-        Bitmap bitmap = Bitmap.createBitmap(64,21, Bitmap.Config.ARGB_8888);
+        Bitmap bitmapMesure = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesureexemple","drawable",getPackageName()));
+
+        Bitmap bitmap = Bitmap.createBitmap(bitmapMesure.getWidth(),bitmapMesure.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         int unite = nMesure%10;
@@ -222,7 +232,7 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
         return new HashMap<>();
     }
 
-    private Bitmap assemblerParties(Bitmap cercle, Bitmap alerte, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap bemol){
+    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap bemol){
         //cercle n'est pas null
 
         Bitmap bitmap = Bitmap.createBitmap(cercle.getWidth(), cercle.getHeight(), cercle.getConfig());
@@ -231,8 +241,8 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
         canvas.drawBitmap(cercle,new Matrix(),null);
         //taille 128x64
 
-        if(alerte != null){
-            canvas.drawBitmap(alerte,(cercle.getWidth()/4),(cercle.getHeight()/4),null);
+        if(nuance != null){
+            canvas.drawBitmap(nuance,(cercle.getWidth()/4),(cercle.getHeight()/4),null);
             //taille 32x32
         }
         if(signature != null){
