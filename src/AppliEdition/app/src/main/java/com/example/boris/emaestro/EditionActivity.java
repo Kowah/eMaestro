@@ -168,8 +168,8 @@ public class EditionActivity  extends Activity {
 
             if(EXTRA_NEW_PARTITION.equals("true")){
                 int id = bdd.getMusique(EXTRA_NOMPARTITION).getId();
-                bdd.save(new VariationIntensite(id,-1,0,0,0));
-                bdd.save(new VariationTemps(id, 0, Integer.parseInt(EXTRA_TPSPARMESURE), Integer.parseInt(EXTRA_PULSATION), Integer.valueOf(EXTRA_UNITE)));//TODO : Gerer l'unite pulsation
+                bdd.save(new VariationIntensite(id,-1,0,1,0));
+                bdd.save(new VariationTemps(id, 1, Integer.parseInt(EXTRA_TPSPARMESURE), Integer.parseInt(EXTRA_PULSATION), Integer.valueOf(EXTRA_UNITE)));//TODO : Gerer l'unite pulsation
 
               //  partition.setNbTempsAll(Integer.parseInt(EXTRA_TPSPARMESURE));
             }
@@ -193,10 +193,10 @@ public class EditionActivity  extends Activity {
         //debug msg
         //-----------------------
         for(int i = 0; i<varIntensiteList.size();i++){
-            debug.setText(debug.getText().toString() + varIntensiteList.size() + "\n nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() + 1) + " nuance : " + partition.convertNuanceIntStr(varIntensiteList.get(i).getIntensite()));
+            debug.setText(debug.getText().toString() + varIntensiteList.size() + "\n nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() ) + " nuance : " + partition.convertNuanceIntStr(varIntensiteList.get(i).getIntensite()));
         }
         for(int i = 0; i<varTempsList.size();i++){
-            debug.setText(debug.getText().toString() + varTempsList.size() + "\n nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() + 1) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
+            debug.setText(debug.getText().toString() + varTempsList.size() + "\n nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() ) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
         }
         //-----------------------
         //debug msg
@@ -423,6 +423,8 @@ public class EditionActivity  extends Activity {
     };
 
 
+
+
     //Pour l'intensité, vérifie que l'ensemble des variations dejà existantes ne rentre pas en conflit avec la nouvelle variation. Met à jour le cas écheant
     private List<VariationTemps> eventSuperposesTemps (int mesureDebut, int mesureFin, int newTempo){
         List<VariationTemps> res = new ArrayList<>();
@@ -440,13 +442,16 @@ public class EditionActivity  extends Activity {
             if(mesureDebut>tempMesureDebut){
                 //rien besoin de faire, on passe au suivant pour savoir où commence et se termine l'evenement
             }else if(mesureDebut<=tempMesureDebut){
+                if(mesureDebut==tempMesureDebut+1){
+                    aMettreAJour.add(temp);
+                }
                 if(mesureFin == tempMesureDebut){
                     aMettreAJour.add(temp);
-                res.add(new VariationTemps(temp.getIDmusique(), mesureFin, temp.getTemps_par_mesure(), temp.getTempo(), temp.getUnite_pulsation(),temp.getUnite_pulsation()));
+                     res.add(new VariationTemps(temp.getIDmusique(), mesureFin+1, temp.getTemps_par_mesure(), temp.getTempo(), temp.getUnite_pulsation(),temp.getUnite_pulsation()));
                     eventTraite=true;
                 }
                 else if(mesureFin<tempMesureDebut){
-                    res.add(new VariationTemps(temp2.getIDmusique(),mesureFin,temp2.getTemps_par_mesure(),temp2.getTempo(),temp2.getUnite_pulsation()));
+                    res.add(new VariationTemps(temp2.getIDmusique(),mesureFin+1,temp2.getTemps_par_mesure(),temp2.getTempo(),temp2.getUnite_pulsation()));
                     eventTraite=true;
                 }
                 else if(mesureFin>tempMesureDebut){
@@ -457,12 +462,8 @@ public class EditionActivity  extends Activity {
             temp2=temp;
         }
         if(!eventTraite){
-            if(i==0){
-                //cas où il n'y a qu'un seul evenement = création de la partition
-               // i++;
-            }
             temp = varTempsList.get(dernierElementApresElemenCournat);
-            res.add(new VariationTemps(temp.getIDmusique(),mesureFin,temp.getTemps_par_mesure(),temp.getTempo(),temp.getUnite_pulsation()));
+            res.add(new VariationTemps(temp.getIDmusique(),mesureFin+1,temp.getTemps_par_mesure(),temp.getTempo(),temp.getUnite_pulsation()));
         }
         for(int j=0; j<aMettreAJour.size();j++){
             temp2 =  aMettreAJour.get(j);
@@ -471,7 +472,7 @@ public class EditionActivity  extends Activity {
         return res ;
     }
 
-    //tempo //TODO en cours traitement
+    //tempo
     private OnClickListener TempoListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -495,9 +496,9 @@ public class EditionActivity  extends Activity {
                                 partition.setTempo(mesuresSelec, newTempo);
                                 Toast.makeText(context, "Le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
                                 idMusique = bdd.getMusique(EXTRA_NOMPARTITION).getId();
-/*
+
                                 //FIXME: Fonctionne pour créer de nouvelles variations (l'erreur venait d'un champs en trop, d'apres les autres mesures fin ne vas pas dans la BDD)
-                                long t = bdd.save(new VariationTemps(idMusique, mesureDebut-1, 1, newTempo,1));
+                                //long t = bdd.save(new VariationTemps(idMusique, mesureDebut-1, 1, newTempo,1));
                                 if(mesureDebut != 0) {
                                     //Ajout de l'evenement de fin de variation
                                     int oldTempo = partition.getMesure(mesureDebut - 1).getTempo();
@@ -505,7 +506,7 @@ public class EditionActivity  extends Activity {
 
                                 }
                                 //Toast.makeText(getApplicationContext(), "Lmidr r, e" + t, Toast.LENGTH_SHORT).show();
-                                varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));*/
+                                varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
 
                                 TextView debug = (TextView) findViewById(R.id.debug);
                                 //on ajoute le nouvel event
@@ -554,6 +555,12 @@ public class EditionActivity  extends Activity {
     };
 
 
+    //////////////////////////////////////////////////////////////////----------------------------------------------------------------------------
+    //////////////////////////////////////////////////////////////////----------------------------------------------------------------------------
+    //////////////////////////////////////////////////////////////////----------------------------------------------------------------------------
+    //////////////////////////////////////////////////////////////////----------------------------------------------------------------------------
+
+
     //Pour l'intensité, vérifie que l'ensemble des variations dejà existantes ne rentre pas en conflit avec la nouvelle variation. Met à jour le cas écheant
     private List<VariationIntensite> eventSuperposesNuance (int mesureDebut, int mesureFin, int nuance){
         List<VariationIntensite> res = new ArrayList<>();
@@ -571,13 +578,17 @@ public class EditionActivity  extends Activity {
             if(mesureDebut>tempMesureDebut){
                 //rien besoin de faire, on passe au suivant pour savoir où commence et se termine l'evenement
             }else if(mesureDebut<=tempMesureDebut){
+
                 if(mesureFin == tempMesureDebut){
                     aMettreAJour.add(temp);
-                    res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin,0));
+                    res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin+1,0));
                     eventTraite=true;
                 }
                 else if(mesureFin<tempMesureDebut){
-                    res.add(new VariationIntensite(temp2.getIdMusique(),temp2.getIntensite(),1,mesureFin,0));
+
+                    if(mesureFin<partition.partition.size()) {
+                        res.add(new VariationIntensite(temp2.getIdMusique(), temp2.getIntensite(), 1, mesureFin + 1, 0));
+                    }
                     eventTraite=true;
                 }
                 else if(mesureFin>tempMesureDebut){
@@ -588,12 +599,8 @@ public class EditionActivity  extends Activity {
             temp2=temp;
         }
         if(!eventTraite){
-            if(i==0){
-                //cas où il n'y a qu'un seul evenement = création de la partition
-                i++;
-            }
             temp = varIntensiteList.get(dernierElementApresElemenCournat);
-            res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin,0));
+           // res.add(new VariationIntensite(temp.getIdMusique(),temp.getIntensite(),1,mesureFin,0));
         }
         for(int j=0; j<aMettreAJour.size();j++){
             temp2 =  aMettreAJour.get(j);
@@ -691,8 +698,7 @@ public class EditionActivity  extends Activity {
                                 TextView debug= (TextView) findViewById(R.id.debug);
                                 //on ajoute le nouvel event
 
-                                VariationIntensite eventIntensite = new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance),tpsDebut,mesureDebut-1,0);
-
+                                VariationIntensite eventIntensite = new VariationIntensite(idMusique, partition.convertNuanceStrInt(nuance),tpsDebut,mesureDebut,0);
                                 if(varIntensiteList.indexOf(eventIntensite)!=-1) {
                                     //si deja un event on le met a jour
                                     VariationIntensite temp = leventPresentSurMemeMesure(eventIntensite);
@@ -715,14 +721,13 @@ public class EditionActivity  extends Activity {
 
                                 chevaucheNuanceList=eventSuperposesNuance(mesureDebut, mesureFin, partition.convertNuanceStrInt(nuance));
                                 for(int i=0;i<chevaucheNuanceList.size();i++){
-                                    bdd.save(chevaucheNuanceList.get(i));
+                                        bdd.save(chevaucheNuanceList.get(i));
+
                                     if(mesureDebut-1 != 0) {
                                         debug.setText(debug.getText() +"nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.getMesure(mesureDebut - 2).getNuance());//TODO gestion à l'echelle de une mesure
                                     }
                                     else{
                                         debug.setText(debug.getText() +  "000nuance de " + mesureDebut + " à " + mesureFin + " est : " + nuance + " A partir de " + (mesureFin + 1) + " jsuquà prochain event , nuance est :" + partition.convertNuanceIntStr(-1));//TODO gestion à l'echelle de une mesure
-
-
                                     }
                                 }
 
@@ -747,6 +752,43 @@ public class EditionActivity  extends Activity {
         //-------------------------------------------------------------------------------------------------
 
     };
+
+
+/*
+    private OnClickListener NuanceListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_nuance, null);
+
+                new AlertDialog.Builder(context)
+                        .setTitle("Changement de nuance")
+                        .setView(layout)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO 1 - demander à l'utilisateur de selectionner une mesure de debut pour chgt nuance
+                                //TODO 2 - Afficher le popup de chgmt de nuance
+                                //TODO 3 - appliquer chgmt de nuance jusqu'au prochain event, s'il existe
+                        }})
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        };
+
+*/
+    //----------------------------------------------------------------------------////////////////////////////////////////////////////////////////
+    //----------------------------------------------------------------------------////////////////////////////////////////////////////////////////
+    //----------------------------------------------------------------------------////////////////////////////////////////////////////////////////
+    //----------------------------------------------------------------------------////////////////////////////////////////////////////////////////
+
+
+
+
 
     @Override
     public void onBackPressed() {

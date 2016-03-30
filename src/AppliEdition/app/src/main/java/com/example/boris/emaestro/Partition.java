@@ -39,14 +39,17 @@ public class Partition {
     public Mesure getMesure(int id){ return partition.get(id);}
 
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
+        //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut;i<mesureFin;i++){
+        for(int i=mesureDebut-1;i<=mesureFin;i++){
             partition.get(i).setTempo(tempo);
         }
     }
     public void setNuance(int mesureDebut, int mesureFin, String nuance){
+
+            //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut;i<mesureFin;i++){
+        for(int i=mesureDebut-1;i<=mesureFin;i++){
             partition.get(i).setNuance(nuance);
         }
     }
@@ -65,8 +68,9 @@ public class Partition {
     }
 
     public void setNbTemps(int mesureDebut, int mesureFin, int temps){
+        //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut;i<mesureFin;i++){
+        for(int i=mesureDebut-1;i<=mesureFin;i++){
             partition.get(i).setTempsMesure(temps);
         }
     }
@@ -82,7 +86,7 @@ public class Partition {
             }
             else{
                 //sinon jusqu'à la fin de la partition
-                mesureFin = this.partition.size();
+                mesureFin = this.partition.size()-1;
             }
 
             this.setTempo(vT.getMesure_debut(), mesureFin, vT.getTempo());
@@ -94,8 +98,9 @@ public class Partition {
     }
 
     public void setTpsDebut(int mesureDebut, int mesureFin, int tpsDebut){
+        //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut;i<mesureFin;i++){
+        for(int i=mesureDebut-1;i<=mesureFin;i++){
             if(i==mesureDebut){
                 partition.get(i).setTpsDebutNuance(tpsDebut);
             }
@@ -118,7 +123,7 @@ public class Partition {
             }
             else{
                 //sinon jusqu'à la fin de la partition
-                mesureFin = this.partition.size();
+                mesureFin = this.partition.size()-1;
             }
             nuance= convertNuanceIntStr(vT.getIntensite());
             this.setNuance(vT.getMesureDebut(), mesureFin, nuance);
@@ -131,23 +136,27 @@ public class Partition {
     public int convertUniteStrInt(String n) {
         int s;
         switch (n) {
-            case "blanche":
-                s =0;
-                break;
-            case "noire":
+            case "ronde" :
                 s = 1;
-                break;
-            case "croche":
+            case "blanche":
                 s = 2;
                 break;
-            case "ronde pointee":
-                s = 3;
-                break;
-            case "blanche pointee":
+            case "noire":
                 s = 4;
                 break;
+            case "croche":
+                s = 8;
+                break;
+            case "ronde pointee":
+                s = 11;
+                break;
+            case "blanche pointee":
+                s = 21;
+                break;
             case "noire pointee":
-                s = 5;
+                s = 41;
+            case "croche pointee":
+                s = 81;
                 break;
             default:
                 s = -1;
@@ -161,28 +170,28 @@ public class Partition {
     public String convertNuanceIntStr(int n) {
         String s;
         switch (n) {
-            case 0:
+            case 7:
                 s = "fortississimo";
                 break;
-            case 1:
+            case 6:
                 s = "fortissimo";
                 break;
-            case 2:
+            case 5:
                 s = "forte";
                 break;
-            case 3:
+            case 4:
                 s = "mezzoforte";
                 break;
-            case 4:
+            case 3:
                 s = "mezzopiano";
                 break;
-            case 5:
+            case 2:
                 s = "piano";
                 break;
-            case 6:
+            case 1:
                 s = "pianissimo";
                 break;
-            case 7:
+            case 0:
                 s = "pianississimo";
                 break;
             default:
@@ -196,28 +205,28 @@ public class Partition {
         int s;
         switch (n) {
             case "fortississimo":
-                s = 0;
+                s = 7;
                 break;
             case "fortissimo":
-                s = 1;
-                break;
-            case "forte":
-                s = 2;
-                break;
-            case "mezzoforte":
-                s = 3;
-                break;
-            case "mezzopiano":
-                s = 4;
-                break;
-            case "piano":
-                s = 5;
-                break;
-            case "pianissimo":
                 s = 6;
                 break;
+            case "forte":
+                s = 5;
+                break;
+            case "mezzoforte":
+                s = 4;
+                break;
+            case "mezzopiano":
+                s = 3;
+                break;
+            case "piano":
+                s = 2;
+                break;
+            case "pianissimo":
+                s = 1;
+                break;
             case "pianississimo":
-                s = 7;
+                s = 0;
                 break;
             default:
                 s = -1;
