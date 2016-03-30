@@ -35,18 +35,21 @@
         <activity
             android:name=".CatalogueActivity"
             android:label="@string/title_activity_catalogue"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="emulateur.LectureActivity"
             android:label="@string/title_activity_lecture"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape" >
         </activity>
 
         <activity
             android:name="emulateur.EmulateurActivity"
             android:label="@string/title_activity_emulateur"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape">
         </activity>
 
         <activity
@@ -58,7 +61,8 @@
         <activity
             android:name="emulateur.LectureV2Activity"
             android:label="EmulateurV2Activity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape">
         </activity>
 
     </application>
