@@ -1,4 +1,4 @@
-package guillaume.telecommande;
+package telecommande;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -8,12 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.boris.emaestro.R;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class Telecommande extends AppCompatActivity {
 
     Socket socketServeur = null;
     PrintWriter printerServeur = null;
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.telecommande);
 
 
         connectButton = (Button) findViewById(R.id.connectButton);
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     public void showToast(final String toast){
         runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(MainActivity.this, toast, Toast.LENGTH_LONG).show();
+                Toast.makeText(Telecommande.this, toast, Toast.LENGTH_LONG).show();
             }
         });
     }

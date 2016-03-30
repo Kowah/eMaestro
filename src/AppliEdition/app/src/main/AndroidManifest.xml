@@ -50,6 +50,12 @@
         </activity>
 
         <activity
+            android:name="telecommande.Telecommande"
+            android:label="@string/title_activity_telecommande"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <activity
             android:name="emulateur.LectureV2Activity"
             android:label="EmulateurV2Activity"
             android:theme="@style/AppTheme.NoActionBar" >

@@ -1,29 +1,20 @@
 package com.example.boris.emaestro;
 
-import android.content.Context;
-import android.content.Intent;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
-
 import BDD.to.Musique;
-import BDD.to.VariationTemps;
-
 import emulateur.EmulateurActivity;
+import telecommande.Telecommande;
 
 public class MainActivity extends Activity {
 
@@ -101,7 +92,8 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				//TODO lancer l'appli telecommande
+				Intent intent = new Intent(MainActivity.this, Telecommande.class);
+				startActivity(intent);
 			}
 		});
 
