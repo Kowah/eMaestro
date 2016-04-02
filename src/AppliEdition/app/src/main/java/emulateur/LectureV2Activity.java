@@ -122,6 +122,9 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
             int index = 0;
             int numeroTemps= tempsDebut-nbDecompte;
 
+            Bitmap bitmapMesure = null;
+            Bitmap bitmapNuance = null;
+
             @Override
             public void run() {
 
@@ -136,9 +139,13 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
 
                     Bitmap bitmapCercle = BitmapFactory.decodeResource(getResources(), id);
 
-                    Bitmap bitmapMesure = (mapMesure.containsKey(numeroTemps)) ? mapMesure.get(numeroTemps) : null;
+                    if(mapMesure.containsKey(numeroTemps)){
+                        bitmapMesure = mapMesure.get(numeroTemps);
+                    }
+                    if(mapNuance.containsKey(numeroTemps)){
+                        bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps));
+                    }
                     Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
-                    Bitmap bitmapNuance = (mapNuance.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps)) : null;
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
                     Bitmap bitmapBemol = (mapBemol.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapBemol.get(numeroTemps)) : null;
@@ -187,19 +194,13 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
     }
 
     private HashMap<Integer, Bitmap> creerMapMesure() {
+        //une image de mesure par temps de debut
         HashMap<Integer, Bitmap> map = new HashMap<>();
 
         for(int m=mesureDebut; m<=mesureFin; m++){
-
-            //Calcul des bornes de temps de la mesure m
             int tempsDebut = mapMesures.get(m);
-            int tempsMesure2 = (mapMesures.containsKey(m+1)) ? mapMesures.get(m+1) : listeImages.size();
-
-            //Pour tous ces temps, ajouter la mesure à la map
-            for(int t=tempsDebut; t<tempsMesure2; t++){
-                Bitmap imageM = creerBitmapMesure(m);
-                map.put(t, imageM);
-            }
+            Bitmap imageM = creerBitmapMesure(m);
+            map.put(tempsDebut, imageM);
         }
         return map;
     }
