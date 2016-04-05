@@ -12,14 +12,6 @@
         android:layout_width="800dp"
         android:layout_alignParentRight="true"
         />
-    <include android:id="@+id/menu"
-        layout="@layout/barre_menu"
-        android:layout_height="60dp"
-        android:layout_width="800dp"
-        android:layout_alignParentBottom="true"
-        
-        android:layout_marginLeft="60dp"
-        android:layout_marginStart="60dp" />
 
     <TextView
         android:layout_width="400dp"

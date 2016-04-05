@@ -93,14 +93,6 @@ public class EditionActivity  extends Activity {
         context = EditionActivity.this;
         bdd.open();
 
-
-        //Barre de menu
-        menu = (LinearLayout) findViewById(R.id.menu);
-        mTempo = (ImageView) menu.findViewById(R.id.tempo);
-        mNuance = (ImageView) menu.findViewById(R.id.nuance);
-        mSelection = (ImageView) menu.findViewById(R.id.selection);
-        mSupprimerSelection = (ImageView) menu.findViewById(R.id.selection_delete);
-
         //Debug
         debug = (TextView) findViewById(R.id.debug);
 
@@ -127,8 +119,6 @@ public class EditionActivity  extends Activity {
         //Variables d'edition
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
-        chevaucheNuanceList = new ArrayList<>();
-        chevaucheTempsList = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -191,10 +181,6 @@ public class EditionActivity  extends Activity {
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
 
-            //selection
-            mTempo.setOnClickListener(TempoListener);
-            mNuance.setOnClickListener(NuanceListener);
-
         adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
         mGridView.setAdapter(adapter);
 
@@ -207,6 +193,7 @@ public class EditionActivity  extends Activity {
                 Mesure m = partition.getMesure(position);
                 Toast.makeText(getApplicationContext(), "Le tempo de la mesure" + m.getId() + " est :" + String.valueOf(m.getTempo()), Toast.LENGTH_SHORT).show();
                 //TODO affiche un popUP
+
 
             }
         });
