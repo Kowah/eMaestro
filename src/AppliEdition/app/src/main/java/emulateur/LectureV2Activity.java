@@ -114,6 +114,22 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
         switcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         switcher.setFactory(this);
 
+        int tempsDebut = mapMesures.get(mesureDebut);
+        Bitmap bitmapNuance = null;
+
+        //initialisation de la nuance. On recupere la derniere image de nuance avant le temps de debut
+        for(int t=1; t<tempsDebut; t++){
+            if(mapNuance.containsKey(t)){
+                int idNuance = mapNuance.get(t);
+                if(idNuance != -1){
+                    bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(t));
+                }
+                else{
+                    bitmapNuance = null;
+                }
+            }
+        }
+
         runnable = new Runnable() {
             int tempsDebut = mapMesures.get(mesureDebut);
             int tempsMesure2 = (mapMesures.containsKey(mesureDebut+1)) ? mapMesures.get(mesureDebut+1) : listeImages.size();
@@ -124,6 +140,11 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
 
             Bitmap bitmapMesure = null;
             Bitmap bitmapNuance = null;
+
+            public Runnable init(Bitmap bitmapNuanceInit){
+                bitmapNuance = bitmapNuanceInit;
+                return this;
+            }
 
             @Override
             public void run() {
@@ -143,15 +164,25 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
                         bitmapMesure = mapMesure.get(numeroTemps);
                     }
                     if(mapNuance.containsKey(numeroTemps)){
-                        bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps));
+                        int idNuance = mapNuance.get(numeroTemps);
+                        if(idNuance != -1){
+                            bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps));
+                        }
+                        else{
+                            bitmapNuance = null;
+                        }
                     }
                     Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
                     Bitmap bitmapBemol = (mapBemol.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapBemol.get(numeroTemps)) : null;
-
-                    Bitmap bitmapFinal = assemblerParties(bitmapCercle,bitmapNuance,bitmapSignature,bitmapRepetition,bitmapMesure,bitmapSection,bitmapBemol);
-
+                    Bitmap bitmapFinal;
+                    if(index >= nbDecompte) {
+                        bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapBemol);
+                    }
+                    else{
+                        bitmapFinal = bitmapCercle;
+                    }
                     BitmapDrawable draw = new BitmapDrawable(getResources(),bitmapFinal);
                     switcher.setImageDrawable(draw);
 
@@ -161,7 +192,7 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
                     switcher.postDelayed(this, temps);
                 }
             }
-        };
+        }.init(bitmapNuance);//initialisation avec les images de départ récupérées avant le premier temps
 
         switcher.postDelayed(runnable,500);
 
@@ -187,7 +218,10 @@ public class LectureV2Activity extends Activity implements ViewSwitcher.ViewFact
             int mesure = var.getMesureDebut();
             int tempsMesure = mapMesures.get(mesure);
             int i = var.getIntensite();
-            int idImage = getResources().getIdentifier("intensite"+i,"drawable",getPackageName());
+            int idImage = -1;
+            if(i != -1) {
+                idImage = getResources().getIdentifier("intensite" + i, "drawable", getPackageName());
+            }
             map.put(tempsMesure,idImage);
         }
         return map;
