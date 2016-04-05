@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import BDD.db.DataBaseManager;
 import BDD.to.Musique;
-import util.Pair;
 
 /**
  * Created by Boris on 16/03/2016.
@@ -90,36 +89,6 @@ public class EmulateurActivity extends Activity {
         });
     }
 
-    public void jouer(View view) {
-        if(idMusique != -1) {//Si un morceau a ete choisi
-            int mesureFinMusique =  bdd.getMusique(idMusique).getNb_mesure();
-            EditText editMesureDebut = (EditText)findViewById(R.id.editMesureDebut);
-            EditText editMesureFin = (EditText)findViewById(R.id.editMesureFin);
-            int mesureDebut = Integer.parseInt(editMesureDebut.getText().toString());
-            int mesureFin = Integer.parseInt(editMesureFin.getText().toString());
-
-            //Erreur dans les indications de mesures pour la lecture
-            if(mesureDebut<=0 || mesureDebut>mesureFin || mesureFin>mesureFinMusique){
-                if(mesureDebut<=0){
-                    Toast.makeText(this, "La mesure de début doit valoir au minimum 1", Toast.LENGTH_LONG).show();
-                }
-                if(mesureDebut>mesureFin){
-                    Toast.makeText(this, "La mesure de début doit précéder celle de fin", Toast.LENGTH_LONG).show();
-                }
-                if(mesureFin>mesureFinMusique){
-                    Toast.makeText(this, "La mesure de fin doit au plus être la dernière mesure du morceau", Toast.LENGTH_LONG).show();
-                }
-            }
-            else {
-                Intent intent = new Intent(this, LectureActivity.class);
-                intent.putExtra("idMusique", idMusique);
-                intent.putExtra("mesureDebut", mesureDebut);
-                intent.putExtra("mesureFin", mesureFin);
-                startActivity(intent);
-            }
-        }
-    }
-
     public void emuler(View view){
 
         if(idMusique != -1) {//Si un morceau a ete choisi
@@ -142,7 +111,7 @@ public class EmulateurActivity extends Activity {
                 }
             }
             else {
-                Intent intent = new Intent(this, LectureV2Activity.class);
+                Intent intent = new Intent(this, LectureActivity.class);
                 intent.putExtra("idMusique", idMusique);
                 intent.putExtra("mesureDebut", mesureDebut);
                 intent.putExtra("mesureFin", mesureFin);

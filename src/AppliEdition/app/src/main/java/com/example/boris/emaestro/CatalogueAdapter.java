@@ -63,7 +63,6 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
          final Musique musique = catalogue.get(position);
 
 
-
         //on met a jour l'id de la view de la mesure
         ((TextView)convertView.findViewById(R.id.id)).setText(musique.getName());
         editer = (Button)convertView.findViewById(R.id.editer);
@@ -92,6 +91,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
         supprimer.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
+                                             //TODO Confirmation de suppression
                                              bdd = new DataBaseManager(v.getContext());
                                              bdd.open();
                                              bdd.delete(musique);
@@ -106,8 +106,9 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                                              //v.getContext().startActivity(intent);
                                          }
                                      }
-        )
-                ;
+        );
+        //TODO et le bouton Jouer ?
+
         if(viewHolder == null){
             viewHolder = new CatalogueViewHolder();
             viewHolder.nom = (TextView) convertView.findViewById(R.id.id);

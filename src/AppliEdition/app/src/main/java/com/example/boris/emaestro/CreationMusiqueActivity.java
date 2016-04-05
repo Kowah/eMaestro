@@ -24,6 +24,8 @@ import BDD.to.Musique;
 
 public class CreationMusiqueActivity extends Activity {
 
+    final Activity thisActivity = this;
+
     final String EXTRA_NOMPARTITION="vide";
     final String EXTRA_NBMESURE="nbMesure";
     final String EXTRA_PULSATION="pulsation";
@@ -94,7 +96,7 @@ public class CreationMusiqueActivity extends Activity {
 
 
         List<String> tpsMesure = new ArrayList<String>();
-        for(int i=1;i<=16;i++){
+        for(int i=2;i<=8;i++){
             tpsMesure.add(String.valueOf(i));
         }
 
@@ -181,6 +183,7 @@ public class CreationMusiqueActivity extends Activity {
                                 Toast.makeText(getApplicationContext(), "Drag and drop désactivé, utilisez mode selection", Toast.LENGTH_SHORT).show();
                             }
                             startActivity(intent);
+                            thisActivity.finish();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "La partition " + nomPartition + " existe déjà", Toast.LENGTH_SHORT).show();

@@ -1,124 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
 
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
 
-    <TextView
-        android:id="@+id/nomPartition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/partition"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/normal_text_size"
-      />
+        <TextView
+            android:id="@+id/nomPartition"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="@string/partition"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/normal_text_size"
+          />
 
-    <EditText
-            android:id="@+id/nom"
-            android:layout_width="fill_parent"
-            android:layout_height="100px"
-            android:hint="@string/partition"
-            android:inputType="textMultiLine"
+        <EditText
+                android:id="@+id/nom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/partition"
             android:lines="5"
-            android:layout_below="@id/nomPartition"/>
+            android:inputType="text" />
+    </TableRow>
 
-    <TextView
-        android:id="@+id/nombreMesure"
-        android:layout_width="wrap_content"
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <TextView
+            android:id="@+id/nombreMesure"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="@string/mesure"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/nbMesure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/mesure"
+            android:inputType="number"
+            android:lines="5" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <TextView
+
+            android:id="@+id/textPulsation"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="Tempo"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/normal_text_size" />
+
+        <EditText
+            android:id="@+id/pulsation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Tempo"
+            android:inputType="number"
+            android:lines="5" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <TextView
+
+        android:id="@+id/uniteNote"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/mesure"
+            android:text="Unite"
         android:textSize="@dimen/normal_text_size"
-        android:textColor="@android:color/black"
-        android:layout_below="@id/nom"/>
-        />
+            android:textColor="@android:color/black" />
 
-    <EditText
-        android:id="@+id/nbMesure"
-        android:layout_width="fill_parent"
-        android:layout_height="100px"
-        android:hint="@string/mesure"
-        android:inputType="number"
-        android:lines="5"
-        android:layout_below="@id/nombreMesure"/>
-        />
+        <Spinner
+            android:id="@+id/uniteTempo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableRow>
 
-    <TextView
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
 
-        android:id="@+id/textPulsation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="pulsation"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/normal_text_size"
-        android:layout_below="@id/nbMesure"
-        />
+        <TextView
 
-    <EditText
-        android:id="@+id/pulsation"
-        android:layout_width="200px"
-        android:layout_height="100px"
-        android:hint="pulsation"
-        android:inputType="number"
-        android:lines="5"
-        android:layout_below="@id/textPulsation"
-        />
+            android:id="@+id/infoMesure"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="Temps par mesure"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@android:color/black" />
 
-    <TextView
+        <Spinner
+            android:id="@+id/tempsParMesure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-    android:id="@+id/uniteNote"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:text="Unite :"
-    android:textSize="@dimen/normal_text_size"
-        android:textColor="@android:color/black"
-    android:layout_below="@id/pulsation"
-        />
-
-    <Spinner
-        android:id="@+id/uniteTempo"
-        android:layout_width="250px"
-        android:layout_height="100px"
-        android:layout_below="@id/uniteNote"/>
-    <TextView
-
-        android:id="@+id/infoMesure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="mesure par défaut :"
-        android:textSize="@dimen/normal_text_size"
-        android:textColor="@android:color/black"
-        android:layout_below="@id/uniteTempo"
-        />
-    <Spinner
-        android:id="@+id/tempsParMesure"
-        android:layout_width="250px"
-        android:layout_height="100px"
-
-        android:layout_below="@id/infoMesure"/>
+            />
+    </TableRow>
 
     <Button
             android:id="@+id/creer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:text="creer"
 
-        android:layout_below="@id/tempsParMesure"
-            />
+        />
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:text="Activer le drag 'n drop"
         android:id="@+id/drag"
-        android:layout_gravity="center_vertical"
         android:layout_below="@id/creer"/>
 
 
-
-    </RelativeLayout>
+</LinearLayout>

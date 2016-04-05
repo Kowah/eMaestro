@@ -38,12 +38,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape" >
         </activity>
-        <activity
-            android:name="emulateur.LectureActivity"
-            android:label="@string/title_activity_lecture"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="landscape" >
-        </activity>
 
         <activity
             android:name="emulateur.EmulateurActivity"
@@ -59,7 +53,7 @@
         </activity>
 
         <activity
-            android:name="emulateur.LectureV2Activity"
+            android:name="emulateur.LectureActivity"
             android:label="EmulateurV2Activity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape">
