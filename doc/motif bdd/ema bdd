@@ -1,0 +1,89 @@
+Musique :
+id_musique int
+nom text
+nb_mesures int
+
+VariationTemps :
+id_variation_temps int
+id_musique int
+mesure_debut int
+temps_par_mesure int
+tempo int
+unite_pulsation int (1 pour la ronde, 2 blanche, 4 noire etc)
+passage_reprise int
+
+VariationIntensite :
+id_variation_intensite int
+id_musique int
+mesure_debut int
+temps_debut int
+nb_temps int (pour crescendo et decrescendo, nombre de temps sur lequel il s'étale)
+intensite int (0 pour ppp à 7 pour fff, -1 pour enlever l'affichage)
+passage_reprise int
+
+Partie (genre A, B, C) : // MODIFIE !!
+id_partie int
+id_musique int
+mesure_debut int
+label text
+
+MesuresNonLues :
+id_messures_non_lues int
+id_musique int
+mesure_debut int
+mesure_fin int
+passage_reprise int
+
+Reprise : // MODIFIE !!
+id_reprise int
+id_musique int
+mesure_debut int // MODIFIE !!
+mesure_fin int // MODIFIE !!
+Lors de l'utilisation de l'appli, les mesures non lues lors du second passage seront en fait une plage de mesures non lues avec passage_reprise à 2
+
+Alerte : // MODIFIE !!
+id_alerte int
+id_musique int
+mesure_debut int // MODIFIE !!
+temps_debut int  // MODIFIE !! (on affichera l'alerte pendant l'intégralité du temps concerné, par simplicité)
+couleur int  // MODIFIE !! (-1 à 7, même code couleur que les intensités, -1 pour la non-alerte)
+passage_reprise int
+(peut être amené à être modifié selon la réponse d'Olivier sur la question)
+
+VariationRythme (pour ralentissements et accelerations) : // MODIFIE !!
+id_variation_rythme int
+id_musique int
+mesure_debut int
+temps_debut int
+taux_de_variation float (pourcentage de variation du rythme, par exemple 1.15 pour 15% de ralentissement, ce qui passerait le facteur de lecture de f à f*1.15)
+passage_reprise int
+
+Suspension (pour points d'orgue et respirations) :
+id_suspension int
+id_musique int
+mesure int
+temps int
+duree int
+passage_reprise int
+(c'est mesure et temps, et non pas mesure_debut et temps_debut, parce que c'est le seul truc qui est vraiment ponctuel)
+
+Armature (# et bémols) :
+id_armature int
+id_musique int
+mesure_debut int
+temps_debut int (peut être amené à changer/disparaître selon la réponse d'Olivier sur la possibilité d'avoir un changement d'armature au milieu d'une mesure)
+alteration int (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
