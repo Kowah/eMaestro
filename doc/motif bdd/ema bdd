@@ -25,7 +25,7 @@ Partie (genre A, B, C) : // MODIFIE !!
 id_partie int
 id_musique int
 mesure_debut int
-label text
+label text (-1 pour ne pas afficher)
 
 MesuresNonLues :
 id_messures_non_lues int
@@ -67,12 +67,13 @@ duree int
 passage_reprise int
 (c'est mesure et temps, et non pas mesure_debut et temps_debut, parce que c'est le seul truc qui est vraiment ponctuel)
 
-Armature (# et bémols) :
+Armature (# et bémols) : // NOUVEAU !!
 id_armature int
 id_musique int
 mesure_debut int
 temps_debut int (peut être amené à changer/disparaître selon la réponse d'Olivier sur la possibilité d'avoir un changement d'armature au milieu d'une mesure)
 alteration int (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
+passage_reprise int
 
 
 
