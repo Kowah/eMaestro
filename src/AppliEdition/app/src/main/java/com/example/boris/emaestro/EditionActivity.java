@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -191,13 +193,53 @@ public class EditionActivity  extends Activity {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Mesure m = partition.getMesure(position);
-                Toast.makeText(getApplicationContext(), "Le tempo de la mesure" + m.getId() + " est :" + String.valueOf(m.getTempo()), Toast.LENGTH_SHORT).show();
-                //TODO affiche un popUP
 
+                AlertDialog.Builder popup = new AlertDialog.Builder(context);
+
+                popup.setTitle("Informations de la mesure " + (position + 1));
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.popup_liste_event, null);
+                popup.setView(popupView);
+
+                //tempo
+                TextView textModifTempo = (TextView) popupView.findViewById(R.id.textModifTempo);
+                textModifTempo.setText("" + m.getTempo());
+
+
+                //nb de temps
+                Spinner spinnerModifNbTemps = (Spinner) popupView.findViewById(R.id.spinnerModifNbTemps);
+                List<Integer> tpsMesure = new ArrayList<Integer>();
+                for(int i=2;i<=8;i++){ tpsMesure.add(i); }
+                ArrayAdapter<Integer> adapterModifNbTemps = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, tpsMesure);
+                adapterModifNbTemps.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerModifNbTemps.setAdapter(adapterModifNbTemps);
+                spinnerModifNbTemps.setSelection(tpsMesure.indexOf(m.getTempsMesure()));
+
+                //nuance
+                Spinner spinnerModifNuance = (Spinner) popupView.findViewById(R.id.spinnerModifNuance);
+                String[] nuancesTab = {"neutre","fortississimo","fortissimo","forte","mezzo forte","mezzo piano","piano","pianissimo","pianississimo"};
+                List<String> nuances = Arrays.asList(nuancesTab);
+                ArrayAdapter<String> adapterModifNuance = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, nuances);
+                adapterModifNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerModifNuance.setAdapter(adapterModifNuance);
+                spinnerModifNuance.setSelection(nuances.indexOf(m.getNuance()));
+
+
+
+                popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // on ne modifie rien
+                    }
+                });
+                popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO recuperer les infos modifiees et creer les events qui correspondent aux nouvelles infos (ne pas creer d'event doublon ou redondant)
+                    }
+                });
+                popup.show();
 
             }
         });
-
 
     }
 

@@ -119,7 +119,7 @@ public class CreationMusiqueActivity extends Activity {
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
+                //nothing
             }
         });
 
