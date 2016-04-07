@@ -5,7 +5,9 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.boris.emaestro.R;
@@ -14,6 +16,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+
+import BDD.db.CatalogueDAO;
+import BDD.db.DataBaseManager;
+import BDD.to.Musique;
 
 public class Telecommande extends AppCompatActivity {
 
@@ -21,14 +28,17 @@ public class Telecommande extends AppCompatActivity {
     PrintWriter printerServeur = null;
     final String adresseIP = "192.168.103.1";
     final int port = 8192;
+    int musiqueID = 0;
     ArrayList<Button> buttons = new ArrayList<>();
     Button connectButton=null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.telecommande);
 
+        final Spinner spinner = (Spinner)findViewById(R.id.musiqueSpinner);
 
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +52,7 @@ public class Telecommande extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                musiqueID = ((Musique)spinner.getSelectedItem()).getId();
                 action("PLAY");
             }
         });
@@ -77,6 +88,15 @@ public class Telecommande extends AppCompatActivity {
 
         setConnected(false);
 
+        DataBaseManager bdd = new DataBaseManager(this);
+        bdd.open();
+        final ArrayList<Musique> listMusique = bdd.getMusiques();
+
+        final ArrayAdapter<Musique> arrayAdapter = new ArrayAdapter<Musique>(this,android.R.layout.simple_spinner_item, listMusique);
+
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
     }
 
     public void connect(){
@@ -108,6 +128,25 @@ public class Telecommande extends AppCompatActivity {
     }
 
     public void action(String message){
+
+        if(message == "PLAY" && printerServeur != null)
+        {
+            //FIXME : trouver un moyen de synchroniser de manière sychrone
+       /*     DataBaseManager bd = new DataBaseManager(getBaseContext());
+            bd.open();
+            List<Musique> m = bd.getMusiques();
+            bd.close();
+
+            CatalogueDAO bdd = new CatalogueDAO(getBaseContext());
+            bdd.open();
+            bdd.clean();
+            bdd.save(m);
+            bdd.synchronizer();
+            bdd.close();*/
+
+            printerServeur.write(musiqueID);
+            printerServeur.flush();
+        }
         if (printerServeur != null) {
             printerServeur.write(message);
             printerServeur.flush();
