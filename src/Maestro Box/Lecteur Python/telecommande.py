@@ -14,21 +14,23 @@ class Telecommande(threading.Thread):
         self.logo=''
         self.matrix = None
         self.count = 1
+	self.name = ''
         
     def setMessage(self,msg):
         self.message=msg
         
     def run(self):
 	while self.message != 'QUIT':
-		if self.message == 'PLAY':
-			self.play()
-		elif self.message == 'PAUSE':
-			self.pause()
+	  if self.message == 'PLAY':
+	    self.play()
+          elif self.message == 'PAUSE':
+	    self.pause()
 	self.quit()
 
     def play(self):
-       cp = Chargeur_partition(27)
-        while self.message == 'PLAY':
+       print "playing "+ self.name
+       cp = Chargeur_partition(self.name)
+       while self.message == 'PLAY':
             afficher(cp.get_liste_de_lecture(), cp.get_images_ephemeres(),self.matrix)
     
     def pause(self):

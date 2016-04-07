@@ -23,14 +23,17 @@ while True:
             thread_telecommande.logo = logo
             message = client.recv(255) #Taille buffer
             message = message.replace('\n', '')
+	    thread_telecommande.name = message
+	    message = client.recv(255)
+	    message = message.replace('\n','')
             while message != 'QUIT' and message != 'SHUTDOWN' and message != '':
                 thread_telecommande.setMessage(message)
                 message = client.recv(255) #Taille buffer
                 message = message.replace('\n', '')
             thread_telecommande.setMessage('QUIT')
 	    if message == 'SHUTDOWN':
-	        os.system("shutdown now")
 		print "Shutdown"
+	        os.system("shutdown now")
             print "Quit received"
         except Exception, e:
             print 'EXCEPTION : '+str(e)

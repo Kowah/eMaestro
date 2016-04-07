@@ -7,5 +7,5 @@ def afficher(liste_de_lecture, images_ephemeres,matrix):
 	for (image, tempo) in liste_de_lecture:
    	    images_ephemeres[image].load()
 	    matrix.SetImage(images_ephemeres[image].im.id, 0, 0)
-	    time.sleep(tempo)
+	    time.sleep(tempo/100)
 

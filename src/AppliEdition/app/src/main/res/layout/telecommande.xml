@@ -3,40 +3,68 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:foregroundGravity="center">
 
     <Button
-        android:layout_width="90dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="CONNECT"
+        android:text="Se connecter au eMaestro"
         android:id="@+id/connectButton"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="90dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="451dp"
         android:layout_height="wrap_content"
-        android:text="JOUER"
+        android:foregroundGravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Selectionner une musique"
+            android:id="@+id/textView5"
+            android:inputType="none"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/musiqueSpinner"
+            android:layout_marginLeft="@dimen/abc_action_bar_default_height_material" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:text="Lancer la lecture"
         android:id="@+id/playButton"
         android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="90dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="STOP"
+        android:text="Mettre en pause"
         android:id="@+id/stopButton"
         android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="90dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="QUITTER"
+        android:text="Se déconnecter"
         android:id="@+id/quitButton"
         android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="90dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="Arrêter"
+        android:text="Eteindre le eMaestro"
         android:id="@+id/shutdownButton"
         android:layout_gravity="center_horizontal" />
 
