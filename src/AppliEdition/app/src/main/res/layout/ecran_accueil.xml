@@ -48,5 +48,15 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="43dp" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reconnect"
+        android:background="@drawable/reconnexion"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/emulateur"
+        android:layout_alignParentBottom="true" />
+
 
 </RelativeLayout>

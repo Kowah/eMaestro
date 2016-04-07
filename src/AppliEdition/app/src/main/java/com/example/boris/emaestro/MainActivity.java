@@ -2,11 +2,15 @@ package com.example.boris.emaestro;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,26 +26,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ecran_accueil);
-/*
-		long m1,m2;
-		CatalogueDAO db =new CatalogueDAO(this);
-		DataBaseManager bdd = new DataBaseManager(this);
-		bdd.open();
-		bdd.clean();
-		m1 = bdd.save(new Musique("Test1", 2));
-		m2 = bdd.save(new Musique("Test2",10));
-		bdd.update(new Musique((int) m1, "Test3", 99));
+		DataBaseManager.connect(this);
 
-		long var = bdd.save((new VariationTemps((int) m2, 3, 3, 3, 3)));
-		bdd.save((new VariationTemps((int) m1, 1, 2, 1,1)));
-		bdd.save((new VariationTemps((int) m2, 1, 2, 1,1)));
-		bdd.update((new VariationTemps((int) var,(int) m1,5,8,4,2)));
-
-		db.open();;
-		db.save(m1);
-		db.save(m2);
-		db.synchronizer();
-*/
 		final ImageButton nouveau = (ImageButton) findViewById(R.id.nouveau);
 		nouveau.setOnClickListener(new OnClickListener() {
 			@Override
@@ -96,8 +82,21 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			}
 		});
+		final ImageButton reconnect = (ImageButton) findViewById(R.id.reconnect);
+		reconnect.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DataBaseManager.connect(v.getContext());
+			}
+		});
 
 
 	}
+	 @Override
+	protected void onDestroy(){
+		 super.onDestroy();
+		 DataBaseManager.disconnect(this);
+	 }
+
 
 	}

@@ -88,14 +88,14 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
         String queryCleanVarIntensite = "TRUNCATE " + DataBaseHelper.VarIntensite_Table;
 
         String queryMusic = "Insert into " + DataBaseHelper.MUSIQUE_TABLE + " ("
-                + DataBaseHelper.KEY_Musique + ","
+                + DataBaseHelper.IDMusique + ","
                 + DataBaseHelper.NAME_Musique + ","
                 + DataBaseHelper.NB_MESURE + ")"
 
                 + " values(?,?,?)";
         String queryVarTemps = "Insert into " + DataBaseHelper.VarTemps_Table + " ("
                 + DataBaseHelper.IDVarTemps + ","
-                + DataBaseHelper.KEY_Musique + ","
+                + DataBaseHelper.IDMusique + ","
                 + DataBaseHelper.MESURE_DEBUT + ","
                 + DataBaseHelper.TEMPS_PAR_MESURE + ","
                 + DataBaseHelper.TEMPO + ","
@@ -103,7 +103,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
                 + " values(?,?,?,?,?,?)";
         String queryVarIntensite = "Insert into " + DataBaseHelper.VarIntensite_Table + " ("
                 + DataBaseHelper.IDIntensite + ","
-                + DataBaseHelper.KEY_Musique + ","
+                + DataBaseHelper.IDMusique + ","
                 + DataBaseHelper.MESURE_DEBUT + ","
                 + DataBaseHelper.TEMPS_DEBUT + ","
                 + DataBaseHelper.NB_TEMPS + ","

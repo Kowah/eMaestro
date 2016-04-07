@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.to.Musique;
-import BDD.to.VariationIntensite;
-import BDD.to.VariationTemps;
 
 
 public class CatalogueDAO extends DataBaseManager {
 
-    private static final String WHERE_ID_EQUALS = DataBaseHelper.KEY_Musique
+    private static final String WHERE_ID_EQUALS = DataBaseHelper.IDMusique
             + " =?";
     Context context;
 
@@ -45,7 +43,7 @@ public class CatalogueDAO extends DataBaseManager {
         for(Musique m:musiques){
             ContentValues values = new ContentValues();
             if(m.getId() > 0){
-                values.put(DataBaseHelper.KEY_Musique, m.getId());
+                values.put(DataBaseHelper.IDMusique, m.getId());
 
                 if(database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values) < 0){
                     System.err.println("Erreur lors de l'insertion de données dans ala table catalogue");
@@ -62,7 +60,7 @@ public class CatalogueDAO extends DataBaseManager {
 
     public long save(long id) {
             ContentValues values = new ContentValues();
-            values.put(DataBaseHelper.KEY_Musique, id);
+            values.put(DataBaseHelper.IDMusique, id);
 
             return database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values);
     }
@@ -86,7 +84,7 @@ public class CatalogueDAO extends DataBaseManager {
     public Musique getMusique(int id){
         String query = "SELECT * FROM "
                 + DataBaseHelper.MUSIQUE_TABLE
-                +" WHERE " + DataBaseHelper.KEY_Musique + "= ?";
+                +" WHERE " + DataBaseHelper.IDMusique + "= ?";
         Log.d("query", query);
         Cursor cursor = database.rawQuery(query, new String[] {Integer.toString(id)});
         Musique musique = new Musique();
@@ -95,14 +93,14 @@ public class CatalogueDAO extends DataBaseManager {
             musique.setName(cursor.getString(1));
             musique.setNb_mesure(cursor.getInt(2));
         }
+        cursor.close();
         return musique;
     }
 
     //Retourne la liste des musiques du catalogue
-    //FIXME: a tester
     public ArrayList<Musique> getMusiques() {
-        ArrayList<Musique> musiques = new ArrayList<Musique>();
-        String query = "SELECT "+ DataBaseHelper.KEY_Musique +" FROM "
+        ArrayList<Musique> musiques = new ArrayList<>();
+        String query = "SELECT "+ DataBaseHelper.IDMusique +" FROM "
                 + DataBaseHelper.CATALOGUE_TABLE;
 
         String queryMusique = "Select * FROM "+DataBaseHelper.MUSIQUE_TABLE+
@@ -121,18 +119,15 @@ public class CatalogueDAO extends DataBaseManager {
 
                 musiques.add(musique);
             }
+            cursor.close();
+            curMusique.close();
         }
         return musiques;
     }
 
     public int synchronizer()  {
-        List<Musique> musiques = this.getMusiques();
-        List<VariationTemps> variationTemps;
-        List<VariationIntensite> variationIntensites;
-
         Synchronize s = new Synchronize(context);
         s.execute();
-
-         return 0;
+        return 0;
     }
 }
