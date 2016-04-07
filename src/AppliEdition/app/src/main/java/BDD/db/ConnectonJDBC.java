@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class ConnectonJDBC {
     //private static String ip = "148.60.13.86";
 
-    //private static String ip = "148.60.13.18";
+    //private static String ip = "192.168.0.11";
     //Maestro:
     private static String ip = "192.168.103.1";
     private static String port = "3306";

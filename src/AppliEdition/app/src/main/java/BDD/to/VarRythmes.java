@@ -1,37 +1,39 @@
 package BDD.to;
 
 
-public class Alertes extends Evenement{
+public class VarRythmes extends Evenement{
 
     private int temps_debut;
-    private int couleur;
+    private float delta;
     private int passage_reprise;
 
-    public Alertes(){
+    public VarRythmes(){
         super();
     }
 
-    public Alertes(int id, int idMusique,int mesure_debut, int temps_debut, int couleur, int passage_reprise){
+    public VarRythmes(int id, int idMusique,int mesure_debut, int temps_debut, float delta, int passage_reprise){
         this.setId(id);
         this.setIdMusiquet(idMusique);
         this.setMesure_debut(mesure_debut);
         this.temps_debut = temps_debut;
-        this.couleur = couleur;
+        this.delta = delta;
         this.passage_reprise = passage_reprise;
     }
-    public Alertes(int idMusique,int mesure_debut, int temps_debut, int couleur, int passage_reprise){
+    public VarRythmes(int idMusique,int mesure_debut, int temps_debut, float delta, int passage_reprise){
         this.setIdMusiquet(idMusique);
         this.setMesure_debut(mesure_debut);
         this.temps_debut = temps_debut;
-        this.couleur = couleur;
+        this.delta = delta;
         this.passage_reprise = passage_reprise;
     }
 
     public int getTemps_debut() {return temps_debut;}
-    public int getCouleur() {return couleur;}
+    public float getTauxVariation() {return delta;}
     public int getPassage_reprise() {return passage_reprise;}
 
+
     public void setTemps_debut(int temps_debut) {this.temps_debut = temps_debut;}
-    public void setCouleur(int couleur) {this.couleur = couleur;}
+    public void setTauxVariation(int delta) {this.delta = delta;}
     public void setPassage_reprise(int passage_reprise) {this.passage_reprise = passage_reprise;}
+
 }

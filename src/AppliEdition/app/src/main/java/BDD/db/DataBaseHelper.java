@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "emaestro";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 5;
     //LES TABLES
 	public static final String MUSIQUE_TABLE = "Musique";
 	public static final String CATALOGUE_TABLE = "Catalogue";
@@ -135,7 +135,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	/***********************************************************************/
 
 	//Colonnes de la table MesuresNonLues
-	public static final String IDMesuresNonLues = "id_messures_non_lues";
+	public static final String IDMesuresNonLues = "id_mesures_non_lues";
 	//public static final String MESURE_DEBUT = "mesure_debut";
 	public static final String MESURE_FIN = "mesure_fin";
 	public static final String PASSAGE_REPRISE = "passage_reprise";
@@ -176,7 +176,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	/*******************************Alertes********************************/
 	/***********************************************************************/
 	//Colonnes
-	public static final String IDAlertes = "id_reprise";
+	public static final String IDAlertes = "id_alerte";
 	//public static final String MESURE_DEBUT = "mesure_debut";
 	//public static final String TEMPS_DEBUT = "temps_debut";
 	public static final String Couleur = "couleur";
@@ -184,7 +184,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 	//Creation de la table
 	private static final String CREATE_Alerte_TABLE =
-			"CREATE TABLE " + Reprises_Table + " ("
+			"CREATE TABLE " + Alerte_Table + " ("
 					+ IDAlertes + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ IDMusique + " INTEGER, "
 					+ MESURE_DEBUT + " INTEGER, "
@@ -201,7 +201,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	/***************************VariationRythme*****************************/
 	/***********************************************************************/
 	//Colonnes
-	public static final String IDVarRythme = "id_reprise";
+	public static final String IDVarRythme = "id_variation_rythme";
 	//public static final String MESURE_DEBUT = "mesure_debut";
 	//public static final String TEMPS_DEBUT = "temps_debut";
 	public static final String Taux_Varitation = "taux_de_variation";
@@ -214,7 +214,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 					+ IDMusique + " INTEGER, "
 					+ MESURE_DEBUT + " INTEGER, "
 					+ TEMPS_DEBUT + " INTEGER, "
-					+ Taux_Varitation + " INTEGER, "
+					+ Taux_Varitation + " REAL, "
 					+ PASSAGE_REPRISE + " INTEGER"
 					+ ");";
 	//Destruction de la table
@@ -249,10 +249,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	/******************************Armature*********************************/
 	/***********************************************************************/
 	//Colonnes
-	public static final String IDArmature = "id_suspension";
+	public static final String IDArmature = "id_armature";
 	//public static final String MESURE_DEBUT = "mesure";
 	//public static final String TEMPS_DEBUT = "temps";
-	public static final String Alteration = "duree";
+	public static final String Alteration = "alteration";
 	//public static final String PASSAGE_REPRISE = "passage_reprise";
 
 	//Creation de la table

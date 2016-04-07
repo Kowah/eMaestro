@@ -14,10 +14,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import BDD.to.Alertes;
+import BDD.to.Armature;
 import BDD.to.MesuresNonLues;
 import BDD.to.Musique;
 import BDD.to.Partie;
 import BDD.to.Reprise;
+import BDD.to.Suspension;
+import BDD.to.VarRythmes;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 
@@ -37,7 +40,12 @@ public class DataBaseManager {
             + " =?";
     private static final String WHERE_ID_ALERTES_EQUALS = DataBaseHelper.IDAlertes
             + " =?";
-
+    private static final String WHERE_ID_VAR_RYTHMES_EQUALS = DataBaseHelper.IDVarRythme
+            + " =?";
+    private static final String WHERE_ID_SUSPENSION_EQUALS = DataBaseHelper.IDSuspension
+            + " =?";
+    private static final String WHERE_ID_ARMATURE_EQUALS = DataBaseHelper.IDArmature
+            + " =?";
 
     protected SQLiteDatabase database;
 	private BDD.db.DataBaseHelper dbHelper;
@@ -143,10 +151,53 @@ public class DataBaseManager {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, alertes.getIdMusique());
         values.put(DataBaseHelper.MESURE_DEBUT, alertes.getMesure_debut());
-        values.put(DataBaseHelper.MESURE_FIN, alertes.getTemps_debut());
+        values.put(DataBaseHelper.TEMPS_DEBUT, alertes.getTemps_debut());
         values.put(DataBaseHelper.Couleur, alertes.getCouleur());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, alertes.getPassage_reprise());
 
         return database.insert(DataBaseHelper.Alerte_Table, null, values);
+    }
+
+    //Permet de sauvegarder les variations de rythmes dans la base
+    //@return l'id dans la BDD
+    public long save(VarRythmes varRythmes) {
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, varRythmes.getIdMusique());
+        values.put(DataBaseHelper.MESURE_DEBUT, varRythmes.getMesure_debut());
+        values.put(DataBaseHelper.TEMPS_DEBUT, varRythmes.getTemps_debut());
+        values.put(DataBaseHelper.Taux_Varitation, varRythmes.getTauxVariation());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, varRythmes.getPassage_reprise());
+
+
+        return database.insert(DataBaseHelper.Variation_Rythme_Table, null, values);
+    }
+
+    //Permet de sauvegarder les suspensions dans la base
+    //@return l'id dans la BDD
+    public long save(Suspension suspension) {
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, suspension.getIdMusique());
+        values.put(DataBaseHelper.MESURE, suspension.getMesure_debut());
+        values.put(DataBaseHelper.TEMPS, suspension.getTemps());
+        values.put(DataBaseHelper.DUREE, suspension.getDuree());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, suspension.getPassage_reprise());
+
+
+        return database.insert(DataBaseHelper.Suspension_Table, null, values);
+    }
+
+    //Permet de sauvegarder les armatures dans la base
+    //@return l'id dans la BDD
+    public long save(Armature armature) {
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, armature.getIdMusique());
+        values.put(DataBaseHelper.MESURE_DEBUT, armature.getMesure_debut());
+        values.put(DataBaseHelper.TEMPS_DEBUT, armature.getTemps_debut());
+        values.put(DataBaseHelper.Alteration, armature.getAlteration());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, armature.getPassage_reprise());
+
+
+        return database.insert(DataBaseHelper.Armature_Table, null, values);
     }
 
 	/****************
@@ -222,7 +273,7 @@ public class DataBaseManager {
         Log.d("Update Result:", "=" + result);
         return result;
     }
-    //Permet de mettre a jour la reprise passé en paramétre dans la table mesure non lue
+    //Permet de mettre a jour la reprise passé en paramétre dans la table reprise
     public long update(Reprise reprise) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, reprise.getIdMusique());
@@ -236,13 +287,14 @@ public class DataBaseManager {
         return result;
     }
 
-    //Permet de mettre a jour l'alerte passé en paramétre dans la table mesure non lue
+    //Permet de mettre a jour l'alerte passé en paramétre dans la table alerte
     public long update(Alertes alertes) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, alertes.getIdMusique());
         values.put(DataBaseHelper.MESURE_DEBUT, alertes.getMesure_debut());
         values.put(DataBaseHelper.TEMPS_DEBUT, alertes.getTemps_debut());
         values.put(DataBaseHelper.Couleur, alertes.getCouleur());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, alertes.getPassage_reprise());
 
         long result = database.update(DataBaseHelper.Alerte_Table, values,
                 WHERE_ID_ALERTES_EQUALS,
@@ -250,7 +302,52 @@ public class DataBaseManager {
         Log.d("Update Result:", "=" + result);
         return result;
     }
+    //Permet de mettre a jour la variation de rythme passé en paramétre dans la table VarRythmes
+    public long update(VarRythmes varRythmes) {
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, varRythmes.getIdMusique());
+        values.put(DataBaseHelper.MESURE_DEBUT, varRythmes.getMesure_debut());
+        values.put(DataBaseHelper.TEMPS_DEBUT, varRythmes.getTemps_debut());
+        values.put(DataBaseHelper.Taux_Varitation, varRythmes.getTauxVariation());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, varRythmes.getPassage_reprise());
 
+        long result = database.update(DataBaseHelper.Variation_Rythme_Table, values,
+                WHERE_ID_VAR_RYTHMES_EQUALS,
+                new String[]{String.valueOf(varRythmes.getId())});
+        Log.d("Update Result:", "=" + result);
+        return result;
+    }
+
+    //Permet de mettre a jour la suspension passé en paramétre dans la table suspension
+    public long update(Suspension suspension){
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, suspension.getIdMusique());
+        values.put(DataBaseHelper.MESURE, suspension.getMesure_debut());
+        values.put(DataBaseHelper.TEMPS, suspension.getTemps());
+        values.put(DataBaseHelper.DUREE, suspension.getDuree());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, suspension.getPassage_reprise());
+
+        long result = database.update(DataBaseHelper.Suspension_Table, values,
+                WHERE_ID_SUSPENSION_EQUALS,
+                new String[]{String.valueOf(suspension.getId())});
+        Log.d("Update Result:", "=" + result);
+        return result;
+    }
+    //Permet de mettre a jour l'armature passé en paramétre dans la table armature
+    public long update(Armature armature){
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, armature.getIdMusique());
+        values.put(DataBaseHelper.MESURE, armature.getMesure_debut());
+        values.put(DataBaseHelper.TEMPS, armature.getTemps_debut());
+        values.put(DataBaseHelper.DUREE, armature.getAlteration());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, armature.getPassage_reprise());
+
+        long result = database.update(DataBaseHelper.Armature_Table, values,
+                WHERE_ID_ARMATURE_EQUALS,
+                new String[]{String.valueOf(armature.getId())});
+        Log.d("Update Result:", "=" + result);
+        return result;
+    }
 	/***************
 	 * Delete
 	 *****************/
@@ -321,6 +418,32 @@ public class DataBaseManager {
                 WHERE_ID_ALERTES_EQUALS, new String[]{alertes.getId() + ""});
     }
 
+    public int deleteVarRythmes(Musique musique) {
+        return database.delete(DataBaseHelper.Variation_Rythme_Table,
+                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
+    }
+    public int delete(VarRythmes varRythmes){
+        return database.delete(DataBaseHelper.Variation_Rythme_Table,
+                WHERE_ID_VAR_RYTHMES_EQUALS, new String[]{varRythmes.getId() + ""});
+    }
+
+    public int deleteSuspension(Musique musique) {
+        return database.delete(DataBaseHelper.Suspension_Table,
+                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
+    }
+    public int delete(Suspension suspension){
+        return database.delete(DataBaseHelper.Suspension_Table,
+                WHERE_ID_SUSPENSION_EQUALS, new String[]{suspension.getId() + ""});
+    }
+
+    public int deleteArmature(Musique musique) {
+        return database.delete(DataBaseHelper.Armature_Table,
+                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
+    }
+    public int delete(Armature armature){
+        return database.delete(DataBaseHelper.Armature_Table,
+                WHERE_ID_ARMATURE_EQUALS, new String[]{armature.getId() + ""});
+    }
 	/****************
 	 * GET
 	 *************/
@@ -337,6 +460,7 @@ public class DataBaseManager {
 			musique.setName(cursor.getString(1));
 			musique.setNb_mesure(cursor.getInt(2));
 		}
+        cursor.close();
 		return musique;
 	}
 
@@ -353,6 +477,7 @@ public class DataBaseManager {
 			musique.setName(cursor.getString(1));
 			musique.setNb_mesure(cursor.getInt(2));
 		}
+        cursor.close();
 		return musique;
 	}
 
@@ -373,6 +498,7 @@ public class DataBaseManager {
 
 			musiques.add(musique);
 		}
+        cursor.close();
 		return musiques;
 	}
 
@@ -399,6 +525,7 @@ public class DataBaseManager {
 
 				variationsT.add(varTemps);
 			}
+            cursor.close();
 		}
 		return variationsT;
 	}
@@ -425,6 +552,7 @@ public class DataBaseManager {
 
 			variationsI.add(varIntensite);
 		}
+        cursor.close();
 		return variationsI;
 	}
 	//Permet d'obtenir toutes les parties asscociés à cette musqiue
@@ -446,6 +574,7 @@ public class DataBaseManager {
 
 			parties.add(partie);
 		}
+        cursor.close();
 		return parties;
 	}
     //Permet d'obtenir toutes les mesures non lues asscociés à cette musqiue
@@ -468,6 +597,7 @@ public class DataBaseManager {
 
             mnl.add(m);
         }
+        cursor.close();
         return mnl;
     }
 
@@ -490,6 +620,7 @@ public class DataBaseManager {
 
             reprises.add(reprise);
         }
+        cursor.close();
         return reprises;
     }
 
@@ -510,12 +641,85 @@ public class DataBaseManager {
             alerte.setMesure_debut(cursor.getInt(2));
             alerte.setTemps_debut(cursor.getInt(3));
             alerte.setCouleur(cursor.getInt(4));
+            alerte.setPassage_reprise(cursor.getInt(5));
 
             alertes.add(alerte);
         }
+        cursor.close();
         return alertes;
     }
+    //Permet d'obtenir toutes les reprises non lues asscociés à cette musqiue
+    public ArrayList<VarRythmes> getVarRythmes(Musique musique) {
+        ArrayList<VarRythmes> varRythmes = new ArrayList<>();
+        final String query = "SELECT * FROM "
+                + DataBaseHelper.Variation_Rythme_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
 
+
+        Log.d("query", query);
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        while (cursor.moveToNext()) {
+            VarRythmes varRythme = new VarRythmes();
+            varRythme.setId(cursor.getInt(0));
+            varRythme.setIdMusiquet(cursor.getInt(1));
+            varRythme.setMesure_debut(cursor.getInt(2));
+            varRythme.setTemps_debut(cursor.getInt(3));
+            varRythme.setTauxVariation(cursor.getInt(4));
+            varRythme.setPassage_reprise(cursor.getInt(5));
+
+            varRythmes.add(varRythme);
+        }
+        cursor.close();
+        return varRythmes;
+    }
+    //Permet d'obtenir toutes les reprises non lues asscociés à cette musqiue
+    public ArrayList<Suspension> getSuspension(Musique musique) {
+        ArrayList<Suspension> suspensions = new ArrayList<>();
+        final String query = "SELECT * FROM "
+                + DataBaseHelper.Suspension_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+
+
+        Log.d("query", query);
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        while (cursor.moveToNext()) {
+            Suspension suspension = new Suspension();
+            suspension.setId(cursor.getInt(0));
+            suspension.setIdMusiquet(cursor.getInt(1));
+            suspension.setMesure_debut(cursor.getInt(2));
+            suspension.setTemps(cursor.getInt(3));
+            suspension.setDuree(cursor.getInt(4));
+            suspension.setPassage_reprise(cursor.getInt(5));
+
+            suspensions.add(suspension);
+        }
+        cursor.close();
+        return suspensions;
+    }
+    //Permet d'obtenir toutes les armatures non lues asscociés à cette musqiue
+    public ArrayList<Armature> getArmature(Musique musique) {
+        ArrayList<Armature> armatures = new ArrayList<>();
+        final String query = "SELECT * FROM "
+                + DataBaseHelper.Armature_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+
+
+        Log.d("query", query);
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        while (cursor.moveToNext()) {
+            Armature armature = new Armature();
+            armature.setId(cursor.getInt(0));
+            armature.setIdMusiquet(cursor.getInt(1));
+            armature.setMesure_debut(cursor.getInt(2));
+            armature.setTemps_debut(cursor.getInt(3));
+            armature.setAlteration(cursor.getInt(4));
+            armature.setPassage_reprise(cursor.getInt(5));
+
+            armatures.add(armature);
+        }
+        cursor.close();
+        return armatures;
+    }
 
 	public static void connect(Context c) {
 		//String networkSSID = "\"wifsic-free\"";

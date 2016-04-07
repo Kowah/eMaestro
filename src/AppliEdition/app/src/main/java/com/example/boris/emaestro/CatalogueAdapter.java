@@ -26,8 +26,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
     final String EXTRA_NOMPARTITION="vide";
     final String EXTRA_NBMESURE="nbMesure";
     final String EXTRA_PULSATION="pulsation";
-    final String EXTRA_UNITE="unite";
-    final String EXTRA_TPSPARMESURE="tpsParMesure";
+
     final String EXTRA_DRAGACTIF="drag";
     final String EXTRA_ID_PARTITION="idMusique";
     final String EXTRA_NEW_PARTITION="new";

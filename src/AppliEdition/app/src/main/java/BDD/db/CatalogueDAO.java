@@ -29,7 +29,7 @@ public class CatalogueDAO extends DataBaseManager {
         long res;
         if(musique.getId() > 0) {
             ContentValues values = new ContentValues();
-            values.put(DataBaseHelper.NAME_Musique, musique.getId());
+            values.put(DataBaseHelper.IDMusique, musique.getId());
 
             res = database.insert(DataBaseHelper.CATALOGUE_TABLE, null, values);
         }
@@ -119,9 +119,10 @@ public class CatalogueDAO extends DataBaseManager {
 
                 musiques.add(musique);
             }
-            cursor.close();
             curMusique.close();
         }
+        cursor.close();
+
         return musiques;
     }
 
