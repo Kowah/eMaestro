@@ -19,6 +19,7 @@ import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
@@ -82,7 +83,12 @@ public class EditionActivity  extends Activity {
     //spinner chgt nbTps par mesure
     List<String> nbTempsMesure = new ArrayList<>();
     ArrayAdapter<String> dataAdapterNbTpsMesure;
-    List<VariationTemps> chevaucheTempsList;
+
+
+    static ListView eventNaunceListView;
+    EventNuanceAdapter adapterEventNuance;
+
+    List<VariationIntensite> varIntensiteListSurMesureCour;
 
     //debug
     TextView debug;
@@ -194,12 +200,21 @@ public class EditionActivity  extends Activity {
                                     int position, long id) {
                 Mesure m = partition.getMesure(position);
 
+
+
                 AlertDialog.Builder popup = new AlertDialog.Builder(context);
 
                 popup.setTitle("Informations de la mesure " + (position + 1));
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
                 View popupView = inflater.inflate(R.layout.popup_liste_event, null);
                 popup.setView(popupView);
+
+                varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
+                adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour); // TODO autre liste d'event
+                eventNaunceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
+                eventNaunceListView.setAdapter(adapterEventNuance);
+
+
 
                 //tempo
                 TextView textModifTempo = (TextView) popupView.findViewById(R.id.textModifTempo);
@@ -241,6 +256,20 @@ public class EditionActivity  extends Activity {
             }
         });
 
+    }
+
+    private List<VariationIntensite> eventsNuanceDeLaMesure(int numMesure){
+        List<VariationIntensite> res = new ArrayList<>();
+        VariationIntensite event;
+        for(int i =0; i<varIntensiteList.size();i++){
+            event = varIntensiteList.get(i);
+            if(event.getMesureDebut() == numMesure){
+                res.add(event);
+            }
+
+        }
+
+        return res;
     }
 
 

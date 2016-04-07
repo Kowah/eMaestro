@@ -100,8 +100,6 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         }
         //il ne reste plus qu'à remplir notre vue
         viewHolder.id.setText(String.valueOf(mesure.getId()));
-        //Si on veut modifier le background viewHolder.m.setBackground(Drawable.createFromPath("@drawable/mesure"));
-        convertView.setOnDragListener(new MesureDragListener(viewHolder));
         return convertView;
     }
 
@@ -109,103 +107,4 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         public TextView id;
     }
 
-//drag Listener
-    private class MesureDragListener implements View.OnDragListener {
-        private MesureViewHolder viewHolder;
-
-    public MesureDragListener(MesureViewHolder a){
-        viewHolder = a;
-    }
-
-        @Override
-        public boolean onDrag(View v, DragEvent event) {
-            int action = event.getAction();
-
-            switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    break;
-                case DragEvent.ACTION_DROP:
-                    //TODO appliquer le bon effet pour chaque bouton
-                  labelEvent = event.getClipData().getDescription().getLabel().toString();
-                    switch(labelEvent) {
-                        case "tempo":
-                            View layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_tempo_drag, null);
-                            final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-                            final EditText finTempo = (EditText) layout.findViewById(R.id.mesureFin);
-
-                            mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
-                            new AlertDialog.Builder(getContext())
-                                .setTitle("Changement de tempo à partir de la mesure n° "+mesureDebut)
-                                .setView(layout)
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        newTempo = Integer.parseInt(editTempo.getText().toString());
-                                        mesureFin = Integer.parseInt(finTempo.getText().toString());
-                                        //TODO ajouter evenement dans bdd
-                                        if (mesureFin > partition.getListMesures().size()) {
-                                            Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie n'existe pas", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-
-                                        }
-                                        else if(mesureFin<mesureDebut) {
-                                            Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie est située avant la mesure de début choisie", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-                                        }
-                                        else {
-                                            partition.setTempo(mesureDebut, mesureFin, newTempo);
-                                            Toast.makeText(getContext(), "le tempo des mesures [" + mesureDebut + "," + mesureFin + "] = " + newTempo, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-                                        }
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // do nothing
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                                break;
-                        case "nuance" :
-                             layout = LayoutInflater.from(getContext()).inflate(R.layout.popup_changement_nuance_drag, null);
-                             final Spinner nuance = (Spinner) layout.findViewById(R.id.nuance);
-                            nuance.setAdapter(nuanceAdapter);
-                            final EditText finNuance = (EditText) layout.findViewById(R.id.mesureFin);
-                            mesureDebut = Integer.parseInt(viewHolder.id.getText().toString());
-                             new AlertDialog.Builder(getContext())
-                                    .setTitle("Changement de Nuance à partir de la mesure n° "+mesureDebut)
-                                    .setView(layout)
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            newNuance = nuance.getSelectedItem().toString();
-                                           mesureFin = Integer.parseInt(finNuance.getText().toString());
-
-                                            //TODO ajouter evenement dans bdd
-                                            if (mesureFin > partition.getListMesures().size()) {
-                                                Toast.makeText(getContext(), "la Mesure de fin que vous avez choisie n'existe pas", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-
-                                            } else {
-                                                partition.setNuance(mesureDebut, mesureFin, newNuance);
-                                                Toast.makeText(getContext(), "la nuance des mesures [" + mesureDebut + "," + mesureFin + "] = " + newNuance, Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-                                            }
-                                        }
-                                    })
-                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // do nothing
-                                        }
-                                    })
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            break;
-
-                    }
-                case DragEvent.ACTION_DRAG_ENDED:
-                default:
-                    break;
-            }
-            return true;
-        }
-    }
 }
