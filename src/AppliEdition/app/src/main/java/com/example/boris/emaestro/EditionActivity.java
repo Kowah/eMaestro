@@ -63,11 +63,6 @@ public class EditionActivity  extends Activity {
     Partition partition;
     Context context;
 
-    //menu edition
-    ImageView mTempo;
-    ImageView mNuance;
-    ImageView mSelection;
-    ImageView mSupprimerSelection;
 
     //modif nuance
     Spinner mNuanceSpinner;
@@ -80,9 +75,7 @@ public class EditionActivity  extends Activity {
     List<String> tempsMesure = new ArrayList<>();
     ArrayAdapter<String> dataAdapterNuanceTpsMesure;
 
-    //spinner chgt nbTps par mesure
-    List<String> nbTempsMesure = new ArrayList<>();
-    ArrayAdapter<String> dataAdapterNbTpsMesure;
+
 
 
     static ListView eventNaunceListView;
@@ -115,14 +108,6 @@ public class EditionActivity  extends Activity {
         nuanceList.add("pianissimo");
         nuanceList.add("pianississimo");
 
-        //Temps par mesure
-        nbTempsMesure = new ArrayList<>();
-        for(int i=0; i<9;i++){
-            nbTempsMesure.add(i+"");
-        }
-
-        dataAdapterNbTpsMesure = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nbTempsMesure);
-        dataAdapterNbTpsMesure.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         //Variables d'edition
         varIntensiteList = new ArrayList<>();
@@ -265,6 +250,9 @@ public class EditionActivity  extends Activity {
                                 //on cree l'event
                                 bdd.save(eventTemps);
                             }
+                            varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
+                            triListVarIntensite();
+                            partition.setTempo(varTempsList);
                             bdd.close();
                         }
                         //TODO recuperer les infos modifiees et creer les events qui correspondent aux nouvelles infos (ne pas creer d'event doublon ou redondant)
@@ -341,58 +329,6 @@ public class EditionActivity  extends Activity {
         });
     }
 
-    //tempo
-    private OnClickListener TempoListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_tempo, null);
-            final EditText editTempo = (EditText) layout.findViewById(R.id.tempo);
-            final Spinner nbTpsMesureSpinner = (Spinner) layout.findViewById(R.id.nbTempsMesure);
-            nbTpsMesureSpinner.setAdapter(dataAdapterNbTpsMesure);
-
-
-                new AlertDialog.Builder(context)
-                        .setTitle("Changement de tempo")
-                        .setView(layout)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //TODO do something
-                            }}
-                        )
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
-    };
-
-    private VariationTemps leventPresentSurMemeMesure(VariationTemps vT){
-        VariationTemps res = new VariationTemps();
-        VariationTemps tempTemps;
-        for(int i=0;i<varTempsList.size() ;i++){
-            tempTemps=varTempsList.get(i);
-            if(tempTemps.getMesure_debut() == vT.getMesure_debut()){
-                return tempTemps;
-            }
-        }
-        return res;
-    }
-
-    private VariationIntensite leventPresentSurMemeMesure(VariationIntensite vI){
-       VariationIntensite res = new VariationIntensite();
-        VariationIntensite tempIntens;
-        for(int i=0;i<varIntensiteList.size() ;i++){
-            tempIntens=varIntensiteList.get(i);
-            if(tempIntens.getMesureDebut() == vI.getMesureDebut()){
-                return tempIntens;
-            }
-        }
-        return res;
-    }
 
     //nuance
     private OnClickListener NuanceListener = new OnClickListener() {
