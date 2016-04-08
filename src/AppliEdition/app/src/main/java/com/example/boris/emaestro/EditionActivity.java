@@ -139,7 +139,6 @@ public class EditionActivity  extends Activity {
                 bdd.save(new VariationIntensite(id,-1,0,1,0));
                 bdd.save(new VariationTemps(id, 1, Integer.parseInt(EXTRA_TPSPARMESURE), Integer.parseInt(EXTRA_PULSATION), Integer.valueOf(EXTRA_UNITE)));//TODO : Gerer l'unite pulsation
 
-              //  partition.setNbTempsAll(Integer.parseInt(EXTRA_TPSPARMESURE));
             }
 
         }else{
@@ -174,7 +173,7 @@ public class EditionActivity  extends Activity {
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
 
-        adapter = new MesureAdapter(EditionActivity.this, partition, dataAdapterNuance);
+        adapter = new MesureAdapter(EditionActivity.this, partition);
         mGridView.setAdapter(adapter);
 
         dataAdapterNuanceTpsMesure = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tempsMesure);
@@ -196,11 +195,116 @@ public class EditionActivity  extends Activity {
                 View popupView = inflater.inflate(R.layout.popup_liste_event, null);
                 popup.setView(popupView);
 
+
+                //affiche les event de nuance present sur la mesure
                 varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
-                adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour); // TODO autre liste d'event
+                adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                 eventNaunceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
                 eventNaunceListView.setAdapter(adapterEventNuance);
 
+
+                Button newEvent = (Button) popupView.findViewById(R.id.newEvent);
+                newEvent.setOnClickListener(new OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    AlertDialog.Builder popup = new AlertDialog.Builder(context);
+                                                    popup.setTitle("Choix de l'evenement");
+                                                    LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                                                    View popupView = inflater.inflate(R.layout.popup_choix_event, null);
+
+                                                    Button newNuance = (Button) popupView.findViewById(R.id.newNuance);
+                                                    newNuance.setOnClickListener(new OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            AlertDialog.Builder popup = new AlertDialog.Builder(context);
+                                                            popup.setTitle("Evenement Nuance");
+                                                            LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                                                            View popupView = inflater.inflate(R.layout.edition_nuance, null);
+                                                            popup.setView(popupView);
+
+                                                            //nuance
+                                                            final Spinner spinnerModifNuance = (Spinner) popupView.findViewById(R.id.spinnerModifNuance);
+                                                            final Spinner spinnerModifNuanceTpsDebut = (Spinner) popupView.findViewById(R.id.spinnerModifTempsDebut);
+                                                            String[] nuancesTab = {"neutre","fortississimo","fortissimo","forte","mezzo forte","mezzo piano","piano","pianissimo","pianississimo"};
+                                                            List<String> nuances = Arrays.asList(nuancesTab);
+                                                            ArrayAdapter<String> adapterModifNuance = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, nuances);
+                                                            adapterModifNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                            spinnerModifNuance.setAdapter(adapterModifNuance);
+                                                            spinnerModifNuance.setSelection(nuances.indexOf(m.getNuance()));
+                                                            //nuance tps debut
+                                                            List<String>nbTempsMesure = new ArrayList<>();
+                                                            for(int i=1; i<=m.getTempsMesure();i++){
+                                                                nbTempsMesure.add(i+"");
+                                                            }
+                                                            ArrayAdapter<String> adapterModifNuanceTpsDebut = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, nbTempsMesure);
+                                                            adapterModifNuanceTpsDebut.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                            spinnerModifNuanceTpsDebut.setAdapter(adapterModifNuanceTpsDebut);
+                                                            spinnerModifNuanceTpsDebut.setSelection(0);
+
+                                                            popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    // on ne modifie rien
+                                                                }
+                                                            });
+                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    int newNuance = partition.convertNuanceStrInt(spinnerModifNuance.getSelectedItem().toString());
+                                                                    int newTempsDebut =Integer.parseInt(spinnerModifNuanceTpsDebut.getSelectedItem().toString());
+                                                                    List<VariationIntensite> eventPresents = eventsNuanceDeLaMesure(m.getId());
+                                                                    VariationIntensite eventCour=new VariationIntensite();
+                                                                    boolean eventDejaPresent=false;
+                                                                    for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
+                                                                        eventCour = eventPresents.get(i);
+                                                                        if(eventCour.getTempsDebut()==newTempsDebut){
+                                                                            eventDejaPresent = true;
+
+
+                                                                        }
+                                                                    }
+
+                                                                    if(eventDejaPresent){
+                                                                        eventCour.setIntensite(newNuance);
+                                                                        eventCour.setTempsDebut(newTempsDebut);
+                                                                        bdd.update(eventCour);
+
+
+                                                                    }else{
+                                                                        eventCour = new VariationIntensite(bdd.getMusique(EXTRA_NOMPARTITION).getId(),newNuance,newTempsDebut,m.getId(),0);
+                                                                        bdd.save(eventCour);
+                                                                    }
+                                                                    varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
+                                                                    triListVarIntensite();
+                                                                    partition.setNuance(varIntensiteList);
+                                                                    //MAJ affichage
+                                                                    adapter = new MesureAdapter(EditionActivity.this, partition);
+                                                                    mGridView.setAdapter(adapter);
+
+                                                                }
+                                                            });
+                                                            popup.show();
+
+                                                        }
+                                                    });
+
+                                                    popup.setView(popupView);
+                                                    popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            // on ne modifie rien
+                                                        }
+                                                    });
+                                                    popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                           //TODO
+
+                                                        }
+                                                    });
+                                                    popup.show();
+
+
+
+                                                }
+                                            }
+                );
 
 
                 //tempo
@@ -217,19 +321,12 @@ public class EditionActivity  extends Activity {
                 spinnerModifNbTemps.setAdapter(adapterModifNbTemps);
                 spinnerModifNbTemps.setSelection(tpsMesure.indexOf(oldTempsMesure));
 
-                //nuance
-                Spinner spinnerModifNuance = (Spinner) popupView.findViewById(R.id.spinnerModifNuance);
-                String[] nuancesTab = {"neutre","fortississimo","fortissimo","forte","mezzo forte","mezzo piano","piano","pianissimo","pianississimo"};
-                List<String> nuances = Arrays.asList(nuancesTab);
-                ArrayAdapter<String> adapterModifNuance = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, nuances);
-                adapterModifNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerModifNuance.setAdapter(adapterModifNuance);
-                spinnerModifNuance.setSelection(nuances.indexOf(m.getNuance()));
-
-
 
                 popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        //MAJ affichage
+                        adapter = new MesureAdapter(EditionActivity.this, partition);
+                        mGridView.setAdapter(adapter);
                         // on ne modifie rien
                     }
                 });
@@ -239,8 +336,9 @@ public class EditionActivity  extends Activity {
                         int newNbTempsMesure = Integer.parseInt(spinnerModifNbTemps.getSelectedItem().toString());
                         if (newTempo != oldTempo || newNbTempsMesure != oldTempsMesure) {
                             VariationTemps eventSurMesure = eventTempsDeLaMesure(m.getId());
+
                             VariationTemps eventTemps = new VariationTemps(bdd.getMusique(EXTRA_NOMPARTITION).getId(), m.getId(), newNbTempsMesure, newTempo, 1);//TODO mettre la bonne unite
-                            bdd.open();
+
                             if (eventSurMesure.getMesure_debut() != -1) {
                                 //event existe deja, on fait une update
                                 eventSurMesure.setTempo(newTempo);
@@ -250,10 +348,13 @@ public class EditionActivity  extends Activity {
                                 //on cree l'event
                                 bdd.save(eventTemps);
                             }
-                            varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
-                            triListVarIntensite();
+                            varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
+                            triListVarTemps();
                             partition.setTempo(varTempsList);
-                            bdd.close();
+                            //MAJ affichage
+                            adapter = new MesureAdapter(EditionActivity.this, partition);
+                            mGridView.setAdapter(adapter);
+
                         }
                         //TODO recuperer les infos modifiees et creer les events qui correspondent aux nouvelles infos (ne pas creer d'event doublon ou redondant)
                     }

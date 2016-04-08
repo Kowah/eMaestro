@@ -67,6 +67,7 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
                                              bdd.open();
                                              bdd.delete(event);
                                              bdd.close();
+                                             events.remove(event);
                                              EventNuanceAdapter adapter = new EventNuanceAdapter(v.getContext(), events);
                                              EditionActivity.eventNaunceListView.setAdapter(adapter);
 

@@ -24,14 +24,12 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
     int newTempo, mesureFin,mesureDebut;// changement de tempo
     String newNuance; // changement de nuance
     Partition partition;
-    ArrayAdapter<String> nuanceAdapter;
 
 
     //partition est la liste des models à afficher
-    public MesureAdapter(Context context, Partition partition, ArrayAdapter<String> nuanceAdapter) {
+    public MesureAdapter(Context context, Partition partition) {
         super(context, 0, partition.getListMesures());
         this.partition = partition;
-        this.nuanceAdapter = nuanceAdapter;
     }
 
     @Override
