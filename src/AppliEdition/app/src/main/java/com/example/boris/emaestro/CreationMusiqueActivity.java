@@ -172,16 +172,11 @@ public class CreationMusiqueActivity extends Activity {
                         //TODO: seulement trois champs pour musique
                         long err = bdd.save(new Musique(id, nomPartition, Integer.parseInt(nbMesure)));//, Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
 
-                        //on crée les  eventVarTemps et eventVarIntensite initiaux
-                        //    bdd.save(new VariationIntensite(id,-1,0,0,0));
-                        //   bdd.save(new VariationTemps(id,0,Integer.parseInt(tpsParMesure),Integer.parseInt(nbPulsation), Integer.valueOf(unite)));//TODO : Gerer l'unite pulsation
-
                         if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
                         } else {
-                            if (dragActive) {
-                                Toast.makeText(getApplicationContext(), "Drag and drop désactivé, utilisez mode selection", Toast.LENGTH_SHORT).show();
-                            }
+
+                            bdd.close();
                             startActivity(intent);
                             thisActivity.finish();
                         }

@@ -198,7 +198,9 @@ public class EditionActivity  extends Activity {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Mesure m = partition.getMesure(position);
+                final Mesure m = partition.getMesure(position);
+                final int oldTempo = m.getTempo();
+                final int  oldTempsMesure = m.getTempsMesure();
 
 
 
@@ -217,18 +219,18 @@ public class EditionActivity  extends Activity {
 
 
                 //tempo
-                TextView textModifTempo = (TextView) popupView.findViewById(R.id.textModifTempo);
-                textModifTempo.setText("" + m.getTempo());
+                final TextView textModifTempo = (TextView) popupView.findViewById(R.id.textModifTempo);
+                textModifTempo.setText("" + oldTempo);
 
 
                 //nb de temps
-                Spinner spinnerModifNbTemps = (Spinner) popupView.findViewById(R.id.spinnerModifNbTemps);
+                final Spinner spinnerModifNbTemps = (Spinner) popupView.findViewById(R.id.spinnerModifNbTemps);
                 List<Integer> tpsMesure = new ArrayList<Integer>();
                 for(int i=2;i<=8;i++){ tpsMesure.add(i); }
                 ArrayAdapter<Integer> adapterModifNbTemps = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, tpsMesure);
                 adapterModifNbTemps.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerModifNbTemps.setAdapter(adapterModifNbTemps);
-                spinnerModifNbTemps.setSelection(tpsMesure.indexOf(m.getTempsMesure()));
+                spinnerModifNbTemps.setSelection(tpsMesure.indexOf(oldTempsMesure));
 
                 //nuance
                 Spinner spinnerModifNuance = (Spinner) popupView.findViewById(R.id.spinnerModifNuance);
@@ -248,6 +250,23 @@ public class EditionActivity  extends Activity {
                 });
                 popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        int newTempo = Integer.parseInt(textModifTempo.getText().toString());
+                        int newNbTempsMesure = Integer.parseInt(spinnerModifNbTemps.getSelectedItem().toString());
+                        if (newTempo != oldTempo || newNbTempsMesure != oldTempsMesure) {
+                            VariationTemps eventSurMesure = eventTempsDeLaMesure(m.getId());
+                            VariationTemps eventTemps = new VariationTemps(bdd.getMusique(EXTRA_NOMPARTITION).getId(), m.getId(), newNbTempsMesure, newTempo, 1);//TODO mettre la bonne unite
+                            bdd.open();
+                            if (eventSurMesure.getMesure_debut() != -1) {
+                                //event existe deja, on fait une update
+                                eventSurMesure.setTempo(newTempo);
+                                eventSurMesure.setTemps_par_mesure(newNbTempsMesure);
+                                bdd.update(eventSurMesure);
+                            } else {
+                                //on cree l'event
+                                bdd.save(eventTemps);
+                            }
+                            bdd.close();
+                        }
                         //TODO recuperer les infos modifiees et creer les events qui correspondent aux nouvelles infos (ne pas creer d'event doublon ou redondant)
                     }
                 });
@@ -256,6 +275,22 @@ public class EditionActivity  extends Activity {
             }
         });
 
+    }
+
+    private VariationTemps eventTempsDeLaMesure(int numMesure){
+        VariationTemps res = new VariationTemps();
+        VariationTemps event;
+        boolean trouve = false;
+        for(int i =0; i<varTempsList.size() && ! trouve ;i++){
+            event = varTempsList.get(i);
+            if(event.getMesure_debut() == numMesure){
+                res=event;
+                trouve = true;
+            }
+
+        }
+
+        return res;
     }
 
     private List<VariationIntensite> eventsNuanceDeLaMesure(int numMesure){

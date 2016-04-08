@@ -81,8 +81,6 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                 intent.putExtra(EXTRA_NEW_PARTITION,"false");
                 Toast.makeText(getContext(), "id musique" + String.valueOf(musique.getId()), Toast.LENGTH_SHORT).show();
 
-                intent.putExtra(EXTRA_DRAGACTIF, "false");
-
                 getContext().startActivity(intent);
             }
         });

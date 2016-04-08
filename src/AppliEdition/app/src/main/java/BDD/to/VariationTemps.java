@@ -15,7 +15,12 @@ public class VariationTemps {
     /**
      * Default constructor
      */
-    public VariationTemps() {super();
+    public VariationTemps() {
+        this.idmusique = -1;
+        this.mesure_debut = -1;
+        this.temps_par_mesure = -1;
+        this.tempo = -1;
+        this.unite_pulsation =-1;
     }
     public VariationTemps(int idmusique, int mesure_debut, int temps_par_mesure, int tempo, int unite_pulsation){
         this.idmusique = idmusique;
