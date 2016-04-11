@@ -17,6 +17,7 @@ import BDD.to.Catalogue;
 import BDD.to.Musique;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
+import emulateur.EmulateurActivity;
 
 /**
  * Created by Boris on 09/03/2016.
@@ -104,7 +105,16 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                                          }
                                      }
         );
-        //TODO et le bouton Jouer ?
+        jouer = (Button) convertView.findViewById(R.id.jouer);
+        jouer.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EmulateurActivity.class);
+                intent.putExtra("idMusique",musique.getId());
+                v.getContext().startActivity(intent);
+            }
+        });
 
         if(viewHolder == null){
             viewHolder = new CatalogueViewHolder();

@@ -28,12 +28,15 @@ public class EmulateurActivity extends Activity {
 
     int idMusique=-1;
     DataBaseManager bdd;
+    int idMusiqueParDefaut = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emulateur);
+
+        idMusiqueParDefaut = getIntent().getIntExtra("idMusique",-1);
 
         bdd = new DataBaseManager(this);
         bdd.open();
@@ -58,6 +61,17 @@ public class EmulateurActivity extends Activity {
         final Spinner spinner = (Spinner)findViewById(R.id.spinnerMusique);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+
+        //Par defaut on selectionne la musique choisie dans le catalogue
+        if(idMusiqueParDefaut != -1){
+            int positionInit=0;
+            while(listMusique.get(positionInit).getId() != idMusiqueParDefaut){
+                positionInit++;
+            }
+            spinner.setSelection(positionInit);
+        }
+
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
