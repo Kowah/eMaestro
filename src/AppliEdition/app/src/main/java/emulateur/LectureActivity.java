@@ -175,7 +175,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
                     Bitmap bitmapBemol = (mapBemol.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapBemol.get(numeroTemps)) : null;
                     Bitmap bitmapFinal;
-                    if(index >= nbDecompte) {
+                    if(index >= nbDecompte && index < listelecture.size()-1) {
                         bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapBemol);
                     }
                     else{

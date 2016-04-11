@@ -8,12 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
 import BDD.to.VariationIntensite;
-import BDD.to.VariationTemps;
 
 /**
  * Created by Boris on 06/04/2016.
@@ -69,7 +67,7 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
                                              bdd.close();
                                              events.remove(event);
                                              EventNuanceAdapter adapter = new EventNuanceAdapter(v.getContext(), events);
-                                             EditionActivity.eventNaunceListView.setAdapter(adapter);
+                                             EditionActivity.eventNuanceListView.setAdapter(adapter);
 
                                          }
                                      }

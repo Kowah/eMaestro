@@ -2,40 +2,30 @@ package com.example.boris.emaestro;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.EditText;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-import BDD.to.Musique;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 
@@ -78,7 +68,7 @@ public class EditionActivity  extends Activity {
 
 
 
-    static ListView eventNaunceListView;
+    static ListView eventNuanceListView;
     EventNuanceAdapter adapterEventNuance;
 
     List<VariationIntensite> varIntensiteListSurMesureCour;
@@ -196,11 +186,12 @@ public class EditionActivity  extends Activity {
                 popup.setView(popupView);
 
 
+
                 //affiche les event de nuance present sur la mesure
                 varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
                 adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
-                eventNaunceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
-                eventNaunceListView.setAdapter(adapterEventNuance);
+                eventNuanceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
+                eventNuanceListView.setAdapter(adapterEventNuance);
 
 
                 Button newEvent = (Button) popupView.findViewById(R.id.newEvent);
