@@ -21,12 +21,24 @@ nb_temps int (pour crescendo et decrescendo, nombre de temps sur lequel il s'ét
 intensite int (0 pour ppp à 7 pour fff, -1 pour enlever l'affichage)
 passage_reprise int
 
-Partie (genre A, B, C) : // MODIFIE !!
+Partie (genre A, B, C) :
 id_partie int
 id_musique int
 mesure_debut int
 label text (-1 pour ne pas afficher)
 
+// NOUVEAU
+Evenement:
+id_evenement
+id_musique
+type_evenement int (pour reconnaitre le type d'evenement, 0 mesures non lues, 1 reprise, 2 alerte, 3 variation rythme, 4 suspension, 5 armature)
+mesure_debut int
+mesure_fin/temps_debut int (en fonction du type d'event)
+passage_reprise int (qui serait a null pour l'evenement reprise, qui l'utilise pas)
+information_evenement float (couleur/duree/alteration/taux_de_variation, qui serait a null pour ceux qui l'utilisent pas)
+
+
+// Toutes les tables suivantes sont contenues dans la table evenement, on garde la trace juste pour se rappeler quel evenement utilise quel info, le temps de la transition
 MesuresNonLues :
 id_messures_non_lues int
 id_musique int
@@ -34,23 +46,22 @@ mesure_debut int
 mesure_fin int
 passage_reprise int
 
-Reprise : // MODIFIE !!
+Reprise :
 id_reprise int
 id_musique int
-mesure_debut int // MODIFIE !!
-mesure_fin int // MODIFIE !!
+mesure_debut int
+mesure_fin int
 Lors de l'utilisation de l'appli, les mesures non lues lors du second passage seront en fait une plage de mesures non lues avec passage_reprise à 2
 
-Alerte : // MODIFIE !!
+Alerte :
 id_alerte int
 id_musique int
-mesure_debut int // MODIFIE !!
-temps_debut int  // MODIFIE !! (on affichera l'alerte pendant l'intégralité du temps concerné, par simplicité)
-couleur int  // MODIFIE !! (-1 à 7, même code couleur que les intensités, -1 pour la non-alerte)
+mesure_debut int
+temps_debut int (on affichera l'alerte en unité de temps de mesure, pas possible de l'afficher entre 2 temps, par simplicité)
+couleur int (-1 à 7, même code couleur que les intensités, -1 pour la non-alerte)
 passage_reprise int
-(peut être amené à être modifié selon la réponse d'Olivier sur la question)
 
-VariationRythme (pour ralentissements et accelerations) : // MODIFIE !!
+VariationRythme (pour ralentissements et accelerations) :
 id_variation_rythme int
 id_musique int
 mesure_debut int
@@ -67,11 +78,11 @@ duree int
 passage_reprise int
 (c'est mesure et temps, et non pas mesure_debut et temps_debut, parce que c'est le seul truc qui est vraiment ponctuel)
 
-Armature (# et bémols) : // NOUVEAU !!
+Armature (# et bémols) :
 id_armature int
 id_musique int
 mesure_debut int
-temps_debut int (peut être amené à changer/disparaître selon la réponse d'Olivier sur la possibilité d'avoir un changement d'armature au milieu d'une mesure)
+temps_debut int
 alteration int (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
 passage_reprise int
 
