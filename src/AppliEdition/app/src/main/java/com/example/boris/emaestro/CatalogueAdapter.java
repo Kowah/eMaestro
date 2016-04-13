@@ -1,6 +1,8 @@
 package com.example.boris.emaestro;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,19 +88,42 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
             }
         });
         supprimer = (Button) convertView.findViewById(R.id.supprimer);
+        final Context popupContext = this.getContext();
         supprimer.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
-                                             //TODO Confirmation de suppression
-                                             bdd = new DataBaseManager(v.getContext());
-                                             bdd.open();
-                                             bdd.delete(musique);
-                                             bdd.close();
-                                             catalogue.remove(musique);
+                                             final View v2 = v;
+
+                                             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                                 @Override
+                                                 public void onClick(DialogInterface dialog, int which) {
+                                                     switch (which){
+                                                         case DialogInterface.BUTTON_POSITIVE:
+                                                             //Do your Yes progress
+                                                             bdd = new DataBaseManager(v2.getContext());
+                                                             bdd.open();
+                                                             bdd.delete(musique);
+                                                             bdd.close();
+                                                             catalogue.remove(musique);
+                                                             CatalogueAdapter adapter = new CatalogueAdapter(v2.getContext(),catalogue);
+                                                             CatalogueActivity.mListView.setAdapter(adapter);
+                                                             break;
+
+                                                         case DialogInterface.BUTTON_NEGATIVE:
+                                                             //Do your No progress
+                                                             break;
+                                                     }
+                                                 }
+                                             };
+                                             AlertDialog.Builder ab = new AlertDialog.Builder(popupContext);
+                                             ab.setMessage("Êtes-vous sûr(e) de vouloir supprimer "+musique.getName())
+                                                     .setPositiveButton("Oui", dialogClickListener)
+                                                     .setNegativeButton("Non", dialogClickListener)
+                                                     .show();
 
 
-                                             CatalogueAdapter adapter = new CatalogueAdapter(v.getContext(),catalogue);
-                                             CatalogueActivity.mListView.setAdapter(adapter);
+
+
                                              //FIXME: Relance l'application pour mettre a jour la liste? Bonne idée?
                                              //Intent intent = new Intent(v.getContext() , CatalogueActivity.class);
                                              //v.getContext().startActivity(intent);
