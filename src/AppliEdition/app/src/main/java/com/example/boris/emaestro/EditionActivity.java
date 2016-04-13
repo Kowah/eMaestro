@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.view.View.OnClickListener;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -277,16 +278,70 @@ public class EditionActivity  extends Activity {
                                                         }
                                                     });
 
-                                                    popup.setView(popupView);
-                                                    popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            // on ne modifie rien
+                                                    Button newReprise = (Button) popupView.findViewById(R.id.newReprise);
+                                                    newReprise.setOnClickListener(new OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            AlertDialog.Builder popup = new AlertDialog.Builder(context);
+                                                            popup.setTitle("Evenement Reprise");
+                                                            LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                                                            View popupView = inflater.inflate(R.layout.edition_reprise, null);
+                                                            popup.setView(popupView);
+                                                            popup.setNegativeButton("Annuler",null);
+                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    //TODO Enregistrement d'un event reprise
+                                                                    //Lors de l'utilisation de l'appli, les mesures non lues lors du second passage seront en fait une plage de mesures non lues avec passage_reprise à 2
+                                                                }
+                                                            });
+                                                            popup.show();
+
+                                                            //Gestion des elements du popup
+
                                                         }
                                                     });
+
+                                                    Button newArmature = (Button) popupView.findViewById(R.id.newArmature);
+                                                    newArmature.setOnClickListener(new OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            AlertDialog.Builder popup = new AlertDialog.Builder(context);
+                                                            popup.setTitle("Evenement Armature");
+                                                            LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+                                                            View popupView = inflater.inflate(R.layout.edition_armature, null);
+                                                            popup.setView(popupView);
+                                                            popup.setNegativeButton("Annuler",null);
+                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    //TODO Enregistrement d'un event armature
+                                                                    //alteration : (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
+                                                                }
+                                                            });
+                                                            popup.show();
+
+                                                            //Gestion des elements du popup
+                                                            //Spinner du choix du type d'alteration
+                                                            Spinner spinnerAlteration = (Spinner) popupView.findViewById(R.id.spinnerChoixAlteration);
+                                                            String[] alterations = {"Bémol","Dièse"};
+                                                            ArrayAdapter<String> adapterAlteration = new ArrayAdapter<String>(popupView.getContext(),android.R.layout.simple_spinner_item, alterations);
+                                                            adapterAlteration.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                            spinnerAlteration.setAdapter(adapterAlteration);
+
+                                                            //Spinner du choix du nombre d'alterations
+                                                            Spinner spinnerNbAlt = (Spinner) popupView.findViewById(R.id.spinnerNombreAlteration);
+                                                            Integer[] nombreAlt = {0,1,2,3,4,5,6,7};
+                                                            ArrayAdapter<Integer> adapterNbAlt = new ArrayAdapter<Integer>(popupView.getContext(),android.R.layout.simple_spinner_item,nombreAlt);
+                                                            adapterNbAlt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                            spinnerNbAlt.setAdapter(adapterNbAlt);
+
+                                                        }
+                                                    });
+
+                                                    popup.setView(popupView);
                                                     popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
-                                                           //TODO
-
                                                         }
                                                     });
                                                     popup.show();

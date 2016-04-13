@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import BDD.db.DataBaseManager;
+import BDD.to.Armature;
 import BDD.to.VariationIntensite;
 import util.Pair;
 
@@ -103,7 +104,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         final HashMap<Integer,Integer> mapNuance = creerMapNuance();
         final HashMap<Integer,Integer> mapSection = creerMapSection();
         final HashMap<Integer,Integer> mapRepetition = creerMapRepetition();
-        final HashMap<Integer,Integer> mapBemol = creerMapBemol();
+        final HashMap<Integer,Bitmap> mapArmature = creerMapArmature();
         final HashMap<Integer,Integer> mapSignature = creerMapSignature();
 
 
@@ -138,6 +139,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
             Bitmap bitmapMesure = null;
             Bitmap bitmapNuance = null;
+            Bitmap bitmapArmature = null;
 
             public Runnable init(Bitmap bitmapNuanceInit){
                 bitmapNuance = bitmapNuanceInit;
@@ -170,13 +172,15 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                             bitmapNuance = null;
                         }
                     }
+                    if(mapArmature.containsKey(numeroTemps)){
+                        bitmapArmature = mapArmature.get(numeroTemps);
+                    }
                     Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
-                    Bitmap bitmapBemol = (mapBemol.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapBemol.get(numeroTemps)) : null;
                     Bitmap bitmapFinal;
                     if(index >= nbDecompte && index < listelecture.size()-1) {
-                        bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapBemol);
+                        bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapArmature);
                     }
                     else{
                         bitmapFinal = bitmapCercle;
@@ -215,12 +219,13 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         for (VariationIntensite var : variations) {
             int mesure = var.getMesureDebut();
             int tempsMesure = mapMesures.get(mesure);
+            int tpsDebut = var.getTempsDebut();
             int i = var.getIntensite();
             int idImage = -1;
             if(i != -1) {
                 idImage = getResources().getIdentifier("intensite" + i, "drawable", getPackageName());
             }
-            map.put(tempsMesure,idImage);
+            map.put(tempsMesure+tpsDebut-1,idImage);
         }
         return map;
     }
@@ -261,11 +266,56 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         return bitmap;
     }
 
-    private HashMap<Integer,Integer> creerMapBemol() {
-        return new HashMap<>();
+    private HashMap<Integer,Bitmap> creerMapArmature() {
+        HashMap<Integer,Bitmap> mapArmature = new HashMap<>();
+
+        ArrayList<Armature> listeArmature = bdd.getArmature(bdd.getMusique(idMusique));
+
+        for(Armature arm : listeArmature){
+            int tpsDebut = arm.getTemps_debut();
+            int alteration = arm.getAlteration();
+            int mesure = arm.getMesure_debut();
+
+            int tpsMesure = mapMesures.get(mesure);
+            //creer l'image
+            Bitmap image = null;
+            if(alteration != 0){
+                image = creerBitmapArmature(alteration);
+            }
+
+            mapArmature.put(tpsMesure+tpsDebut-1, image);
+        }
+
+
+        return mapArmature;
     }
 
-    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap bemol){
+    private Bitmap creerBitmapArmature(int alteration) {
+        Bitmap bitmapArmature = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("armatureexemple","drawable",getPackageName()));
+
+        Bitmap bitmap = Bitmap.createBitmap(bitmapArmature.getWidth(), bitmapArmature.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        Bitmap armature;
+        if(alteration < 0){
+            //Bemol
+            armature = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("bemol","drawable",getPackageName()));
+            alteration = 0 - alteration;
+        }
+        else{
+            //Diese
+            armature = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("diese","drawable",getPackageName()));
+        }
+
+        Bitmap nbAlt = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesure" + alteration,"drawable",getPackageName()));
+
+        canvas.drawBitmap(nbAlt,0,0,null);
+        canvas.drawBitmap(armature,bitmap.getWidth()/2,0,null);
+
+        return bitmap;
+    }
+
+    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap armature){
         //cercle n'est pas null
 
         Bitmap bitmap = Bitmap.createBitmap(cercle.getWidth(), cercle.getHeight(), cercle.getConfig());
@@ -294,8 +344,8 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             canvas.drawBitmap(section,(5*cercle.getWidth()/8),(cercle.getHeight()/4),null);
             //taille 16x16
         }
-        if(bemol != null){
-            canvas.drawBitmap(bemol,(6*cercle.getWidth()/8),(cercle.getHeight()/2),null);
+        if(armature != null){
+            canvas.drawBitmap(armature,(6*cercle.getWidth()/8),(cercle.getHeight()/2),null);
             //taille 32x16
         }
 

@@ -19,7 +19,7 @@
         android:layout_height="45dp" />
     <Button
         android:id="@+id/newArmature"
-        android:text="Aramature"
+        android:text="Armature"
         android:layout_width="125dp"
         android:layout_height="45dp" />
 </LinearLayout>
