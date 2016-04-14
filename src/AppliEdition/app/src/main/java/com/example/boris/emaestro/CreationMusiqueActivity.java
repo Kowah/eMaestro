@@ -153,7 +153,7 @@ public class CreationMusiqueActivity extends Activity {
                 }
 
                 if (unite.length() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Veuillez choisir l'unité de tmps", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Veuillez choisir l'unité de temps", Toast.LENGTH_SHORT).show();
                 } else if (tpsParMesure.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir le nombre de temps par mesure", Toast.LENGTH_SHORT).show();
                 } else if (pulsation.length() <= 0) {

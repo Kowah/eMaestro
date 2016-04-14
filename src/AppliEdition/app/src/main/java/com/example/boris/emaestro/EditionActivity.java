@@ -176,7 +176,7 @@ public class EditionActivity  extends Activity {
                 final Mesure m = partition.getMesure(position);
                 final int oldTempo = m.getTempo();
                 final int  oldTempsMesure = m.getTempsMesure();
-
+                final String oldUnite = m.getUnite();
 
 
                 AlertDialog.Builder popup = new AlertDialog.Builder(context);
@@ -368,6 +368,16 @@ public class EditionActivity  extends Activity {
                 spinnerModifNbTemps.setSelection(tpsMesure.indexOf(oldTempsMesure));
 
 
+                //unite
+                final Spinner spinnerModifUnite = (Spinner) popupView.findViewById(R.id.spinnerModifUnite);
+                String[] uniteArray = {"ronde","blanche","noire","croche","ronde pointée","blanche pointée","noire pointée","croche pointée"};
+                List<String> uniteList = Arrays.asList(uniteArray);
+                ArrayAdapter<String> dataAdapterUnite = new ArrayAdapter<String>(popupView.getContext() , android.R.layout.simple_spinner_item, uniteList);
+                dataAdapterUnite.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerModifUnite.setAdapter(dataAdapterUnite);
+                String unite = partition.convertNuanceIntStr(Integer.parseInt(m.getUnite()));
+                spinnerModifUnite.setSelection(uniteList.indexOf(unite));
+
                 popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //MAJ affichage
@@ -380,7 +390,8 @@ public class EditionActivity  extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         int newTempo = Integer.parseInt(textModifTempo.getText().toString());
                         int newNbTempsMesure = Integer.parseInt(spinnerModifNbTemps.getSelectedItem().toString());
-                        if (newTempo != oldTempo || newNbTempsMesure != oldTempsMesure) {
+                        String newUnite = spinnerModifUnite.getSelectedItem().toString();
+                        if (newTempo != oldTempo || newNbTempsMesure != oldTempsMesure || newUnite != oldUnite) {
                             VariationTemps eventSurMesure = eventTempsDeLaMesure(m.getId());
 
                             VariationTemps eventTemps = new VariationTemps(bdd.getMusique(EXTRA_NOMPARTITION).getId(), m.getId(), newNbTempsMesure, newTempo, 1);//TODO mettre la bonne unite
@@ -389,6 +400,7 @@ public class EditionActivity  extends Activity {
                                 //event existe deja, on fait une update
                                 eventSurMesure.setTempo(newTempo);
                                 eventSurMesure.setTemps_par_mesure(newNbTempsMesure);
+                                eventSurMesure.setUnite_pulsation(partition.convertUniteStrInt(newUnite));
                                 bdd.update(eventSurMesure);
                             } else {
                                 //on cree l'event
@@ -402,7 +414,6 @@ public class EditionActivity  extends Activity {
                             mGridView.setAdapter(adapter);
 
                         }
-                        //TODO recuperer les infos modifiees et creer les events qui correspondent aux nouvelles infos (ne pas creer d'event doublon ou redondant)
                     }
                 });
                 popup.show();

@@ -42,10 +42,8 @@ public class Mesure {
     public void setTempsMesure(int newTempsMesure){
         this.tempsMesure = newTempsMesure;
     }
-    public void setUnite(String newUnite){
-        this.unite = newUnite
-        ;
-    }
+    public void setUnite(String newUnite){this.unite = newUnite;}
+    public String getUnite() {return unite;}
     public void setTpsDebutNuance(int temps){this.tpsDebutNuance = temps;}
     public void toggleSelec(){
         selectionne = ! selectionne;

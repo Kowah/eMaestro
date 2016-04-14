@@ -127,17 +127,41 @@ public class Partition {
             }
             nuance= convertNuanceIntStr(vT.getIntensite());
             this.setNuance(vT.getMesureDebut(), mesureFin, nuance);
-            this.setTpsDebut(vT.getMesureDebut(), mesureFin,vT.getTempsDebut());
+            this.setTpsDebut(vT.getMesureDebut(), mesureFin, vT.getTempsDebut());
 
         }
     }
 
+
+    public String convertUniteIntStr(int n){
+        String s="";
+        switch(n){
+            case 1:
+                s="ronde"; break;
+            case 2:
+                s="blanche"; break;
+            case 4:
+                s="noire"; break;
+            case 8:
+                s="croche"; break;
+            case 11:
+                s="ronde pointée"; break;
+            case 21:
+                s="blanche pointée"; break;
+            case 41:
+                s="noire pointée"; break;
+            case 81:
+                s="croche pointée"; break;
+        }
+        return s;
+    }
 
     public int convertUniteStrInt(String n) {
         int s;
         switch (n) {
             case "ronde" :
                 s = 1;
+                break;
             case "blanche":
                 s = 2;
                 break;
@@ -155,6 +179,7 @@ public class Partition {
                 break;
             case "noire pointee":
                 s = 41;
+                break;
             case "croche pointee":
                 s = 81;
                 break;
