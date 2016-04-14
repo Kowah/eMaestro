@@ -133,7 +133,7 @@ public class Partition {
     }
 
 
-    public String convertUniteIntStr(int n){
+    public static String convertUniteIntStr(int n){
         String s="";
         switch(n){
             case 1:
@@ -156,7 +156,7 @@ public class Partition {
         return s;
     }
 
-    public int convertUniteStrInt(String n) {
+    public static int convertUniteStrInt(String n) {
         int s;
         switch (n) {
             case "ronde" :
@@ -192,7 +192,7 @@ public class Partition {
 
     }
 
-    public String convertNuanceIntStr(int n) {
+    public static String convertNuanceIntStr(int n) {
         String s;
         switch (n) {
             case 7:
@@ -226,7 +226,7 @@ public class Partition {
         }
         return s;
     }
-    public int convertNuanceStrInt(String n) {
+    public static int convertNuanceStrInt(String n) {
         int s;
         switch (n) {
             case "fortississimo":

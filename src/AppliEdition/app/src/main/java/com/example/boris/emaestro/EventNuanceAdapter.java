@@ -19,7 +19,6 @@ import BDD.to.VariationIntensite;
 public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
 
     List<VariationIntensite> events;
-    List<VariationIntensite> eventDeLaMesure;
     VariationIntensite event;
     Button editer;
     Button supprimer;
@@ -43,7 +42,7 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
 
         EventViewHolder viewHolder = (EventViewHolder) convertView.getTag();
         event = events.get(position);
-        ((TextView) convertView.findViewById(R.id.info)).setText(event.getIntensite() + " sur le temps " + event.getTempsDebut()+1);
+        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.convertNuanceIntStr(event.getIntensite()) + " sur le temps " + event.getTempsDebut());
 
 
         editer = (Button)convertView.findViewById(R.id.editer);
