@@ -1,14 +1,12 @@
 package com.example.boris.emaestro;
 
 
-import android.support.annotation.NonNull;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
+import util.Nuance;
 
 /**
  * Created by Boris on 02/03/2016.
@@ -45,7 +43,7 @@ public class Partition {
             partition.get(i).setTempo(tempo);
         }
     }
-    public void setNuance(int mesureDebut, int mesureFin, String nuance){
+    public void setNuance(int mesureDebut, int mesureFin, Nuance nuance){
 
             //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
@@ -114,7 +112,7 @@ public class Partition {
         VariationIntensite vT;
         int mesureFin;
         int i;
-        String nuance;
+        Nuance nuance;
         for(i =0; i<l.size();i++){
             vT = l.get(i);
             if(i+1<l.size()){
@@ -125,7 +123,7 @@ public class Partition {
                 //sinon jusqu'à la fin de la partition
                 mesureFin = this.partition.size()-1;
             }
-            nuance= convertNuanceIntStr(vT.getIntensite());
+            nuance = ConvertNuanceFromInt(vT.getIntensite());
             this.setNuance(vT.getMesureDebut(), mesureFin, nuance);
             this.setTpsDebut(vT.getMesureDebut(), mesureFin, vT.getTempsDebut());
 
@@ -192,78 +190,76 @@ public class Partition {
 
     }
 
-    public static String convertNuanceIntStr(int n) {
-        String s;
+    public static Nuance ConvertNuanceFromInt(int n) {
+        Nuance s;
         switch (n) {
             case 7:
-                s = "fortississimo";
+                s = Nuance.FORTISSISSIMO;
                 break;
             case 6:
-                s = "fortissimo";
+                s = Nuance.FORTISSIMO;
                 break;
             case 5:
-                s = "forte";
+                s = Nuance.FORTE;
                 break;
             case 4:
-                s = "mezzoforte";
+                s = Nuance.MEZZOFORTE;
                 break;
             case 3:
-                s = "mezzopiano";
+                s = Nuance.MEZZOPIANO;
                 break;
             case 2:
-                s = "piano";
+                s = Nuance.PIANO;
                 break;
             case 1:
-                s = "pianissimo";
+                s = Nuance.PIANISSIMO;
                 break;
             case 0:
-                s = "pianississimo";
+                s = Nuance.PIANISSISSIMO;
                 break;
             default:
-                s = "neutre";
+                s = Nuance.NEUTRE;
                 break;
 
         }
         return s;
     }
-    public static int convertNuanceStrInt(String n) {
+    public static int convertNuanceToInt(Nuance n) {
         int s;
         switch (n) {
-            case "fortississimo":
-                s = 7;
+            case FORTISSISSIMO:
+                s=7;
                 break;
-            case "fortissimo":
-                s = 6;
+            case FORTISSIMO:
+                s=6;
                 break;
-            case "forte":
-                s = 5;
+            case FORTE:
+                s=5;
                 break;
-            case "mezzoforte":
-                s = 4;
+            case MEZZOFORTE:
+                s=4;
                 break;
-            case "mezzopiano":
-                s = 3;
+            case MEZZOPIANO:
+                s=3;
                 break;
-            case "piano":
-                s = 2;
+            case PIANO:
+                s=2;
                 break;
-            case "pianissimo":
-                s = 1;
+            case PIANISSIMO:
+                s=1;
                 break;
-            case "pianississimo":
-                s = 0;
+            case PIANISSISSIMO:
+                s=0;
                 break;
             default:
-                s = -1;
-                break;
-
+                s=-1;
         }
         return s;
 
 
     }
 
-    public void setNuance(List<Integer> l,String nuance){
+    public void setNuance(List<Integer> l, Nuance nuance){
         Integer j;
         for(int i=0;i<l.size();i++){
             j = l.get(i).intValue();

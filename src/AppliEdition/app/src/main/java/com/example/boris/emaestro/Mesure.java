@@ -1,12 +1,12 @@
 package com.example.boris.emaestro;
 
 
-import android.widget.ImageButton;
+import util.Nuance;
 
 public class Mesure {
     private int id;
     private int tempo;
-    private String nuance;
+    private Nuance nuance;
     private int tempsMesure;
     private String unite;
     private int tpsDebutNuance;
@@ -15,7 +15,7 @@ public class Mesure {
 
     public Mesure( int id){
         this.id = id;
-        this.nuance = "neutre";
+        this.nuance = Nuance.NEUTRE;
         selectionne = false;
         this.unite = "1";
         this.tpsDebutNuance=1;
@@ -34,10 +34,10 @@ public class Mesure {
     public int getTempsMesure(){
         return  tempsMesure;
     }
-    public String getNuance(){
+    public Nuance getNuance(){
         return nuance;
     }
-    public void setNuance(String newNuance){ this.nuance = newNuance;}
+    public void setNuance(Nuance newNuance){ this.nuance = newNuance;}
     public int getTempo(){return tempo;}
     public void setTempsMesure(int newTempsMesure){
         this.tempsMesure = newTempsMesure;

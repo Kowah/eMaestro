@@ -44,37 +44,31 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
 
         //MAJ nuance
         switch(mesure.getNuance()){
-            case "fortississimo":
-                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.fortississimmo));
+            case FORTISSISSIMO:
+                convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.fortississimo));
                 break;
-            case "fortissimo":
+            case FORTISSIMO:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.fortissimo));
                 break;
-            case "forte":
+            case FORTE:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.forte));
                 break;
-            case "mezzoforte":
-
+            case MEZZOFORTE:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.mezzoforte));
                 break;
-            case "neutre":
-
+            case NEUTRE:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.neutre));
                 break;
-            case "mezzopiano":
-
+            case MEZZOPIANO:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.mezzopiano));
                 break;
-            case "piano":
-
+            case PIANO:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.piano));
                 break;
-            case "pianissimo":
-
+            case PIANISSIMO:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.pianissimo));
                 break;
-            case "pianississimo":
-
+            case PIANISSISSIMO:
                 convertView.findViewById(R.id.nuance).setBackgroundColor(this.getContext().getResources().getColor(R.color.pianississimo));
                 break;
 

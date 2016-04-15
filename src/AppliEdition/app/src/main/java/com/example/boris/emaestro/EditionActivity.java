@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.view.View.OnClickListener;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import java.util.List;
 import BDD.db.DataBaseManager;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
+import util.Nuance;
 
 public class EditionActivity  extends Activity {
 
@@ -151,7 +151,7 @@ public class EditionActivity  extends Activity {
         //debug msg
         //-----------------------
         for(int i = 0; i<varIntensiteList.size();i++){
-            debug.setText(debug.getText().toString() + varIntensiteList.size() + "\n nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() ) + " nuance : " + partition.convertNuanceIntStr(varIntensiteList.get(i).getIntensite()));
+            debug.setText(debug.getText().toString() + varIntensiteList.size() + "\n nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() ) + " nuance : " + partition.ConvertNuanceFromInt(varIntensiteList.get(i).getIntensite()));
         }
         for(int i = 0; i<varTempsList.size();i++){
             debug.setText(debug.getText().toString() + varTempsList.size() + "\n nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() ) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
@@ -190,8 +190,8 @@ public class EditionActivity  extends Activity {
 
                 //affiche les event de nuance present sur la mesure
                 varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
-                adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                 eventNuanceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
+                adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                 eventNuanceListView.setAdapter(adapterEventNuance);
 
 
@@ -211,13 +211,13 @@ public class EditionActivity  extends Activity {
                                                             AlertDialog.Builder popup = new AlertDialog.Builder(context);
                                                             popup.setTitle("Evenement Nuance");
                                                             LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-                                                            View popupView = inflater.inflate(R.layout.edition_nuance, null);
+                                                            final View popupView = inflater.inflate(R.layout.edition_nuance, null);
                                                             popup.setView(popupView);
 
                                                             //nuance
                                                             final Spinner spinnerModifNuance = (Spinner) popupView.findViewById(R.id.spinnerModifNuance);
                                                             final Spinner spinnerModifNuanceTpsDebut = (Spinner) popupView.findViewById(R.id.spinnerModifTempsDebut);
-                                                            String[] nuancesTab = {"neutre","fortississimo","fortissimo","forte","mezzo forte","mezzo piano","piano","pianissimo","pianississimo"};
+                                                            String[] nuancesTab = Nuance.getAllNuances();
                                                             List<String> nuances = Arrays.asList(nuancesTab);
                                                             ArrayAdapter<String> adapterModifNuance = new ArrayAdapter<>(popupView.getContext(),android.R.layout.simple_spinner_item, nuances);
                                                             adapterModifNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -240,7 +240,8 @@ public class EditionActivity  extends Activity {
                                                             });
                                                             popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
                                                                 public void onClick(DialogInterface dialog, int which) {
-                                                                    int newNuance = partition.convertNuanceStrInt(spinnerModifNuance.getSelectedItem().toString());
+                                                                    String nouvNuance = spinnerModifNuance.getSelectedItem().toString();
+                                                                    int newNuance = partition.convertNuanceToInt(Nuance.convertStringToNuance(nouvNuance));
                                                                     int newTempsDebut =Integer.parseInt(spinnerModifNuanceTpsDebut.getSelectedItem().toString());
                                                                     List<VariationIntensite> eventPresents = eventsNuanceDeLaMesure(m.getId());
                                                                     VariationIntensite eventCour=new VariationIntensite();
@@ -249,8 +250,6 @@ public class EditionActivity  extends Activity {
                                                                         eventCour = eventPresents.get(i);
                                                                         if(eventCour.getTempsDebut()==newTempsDebut){
                                                                             eventDejaPresent = true;
-
-
                                                                         }
                                                                     }
 
@@ -258,8 +257,6 @@ public class EditionActivity  extends Activity {
                                                                         eventCour.setIntensite(newNuance);
                                                                         eventCour.setTempsDebut(newTempsDebut);
                                                                         bdd.update(eventCour);
-
-
                                                                     }else{
                                                                         eventCour = new VariationIntensite(bdd.getMusique(EXTRA_NOMPARTITION).getId(),newNuance,newTempsDebut,m.getId(),0);
                                                                         bdd.save(eventCour);
@@ -270,6 +267,10 @@ public class EditionActivity  extends Activity {
                                                                     //MAJ affichage
                                                                     adapter = new MesureAdapter(EditionActivity.this, partition);
                                                                     mGridView.setAdapter(adapter);
+                                                                    //maj liste events
+                                                                    varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
+                                                                    adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
+                                                                    eventNuanceListView.setAdapter(adapterEventNuance);
 
                                                                 }
                                                             });
@@ -375,7 +376,7 @@ public class EditionActivity  extends Activity {
                 ArrayAdapter<String> dataAdapterUnite = new ArrayAdapter<String>(popupView.getContext() , android.R.layout.simple_spinner_item, uniteList);
                 dataAdapterUnite.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerModifUnite.setAdapter(dataAdapterUnite);
-                String unite = partition.convertNuanceIntStr(Integer.parseInt(m.getUnite()));
+                String unite = Partition.convertUniteIntStr(Integer.parseInt(m.getUnite()));
                 spinnerModifUnite.setSelection(uniteList.indexOf(unite));
 
                 popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -391,7 +392,8 @@ public class EditionActivity  extends Activity {
                         int newTempo = Integer.parseInt(textModifTempo.getText().toString());
                         int newNbTempsMesure = Integer.parseInt(spinnerModifNbTemps.getSelectedItem().toString());
                         String newUnite = spinnerModifUnite.getSelectedItem().toString();
-                        if (newTempo != oldTempo || newNbTempsMesure != oldTempsMesure || newUnite != oldUnite) {
+                        //TODO tester oldUnite aussi
+                        if (newTempo != oldTempo || newNbTempsMesure != oldTempsMesure) {
                             VariationTemps eventSurMesure = eventTempsDeLaMesure(m.getId());
 
                             VariationTemps eventTemps = new VariationTemps(bdd.getMusique(EXTRA_NOMPARTITION).getId(), m.getId(), newNbTempsMesure, newTempo, 1);//TODO mettre la bonne unite

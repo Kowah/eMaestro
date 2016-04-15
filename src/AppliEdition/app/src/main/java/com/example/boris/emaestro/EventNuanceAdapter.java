@@ -42,7 +42,7 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
 
         EventViewHolder viewHolder = (EventViewHolder) convertView.getTag();
         event = events.get(position);
-        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.convertNuanceIntStr(event.getIntensite()) + " sur le temps " + event.getTempsDebut());
+        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.ConvertNuanceFromInt(event.getIntensite()) + " sur le temps " + event.getTempsDebut());
 
 
         editer = (Button)convertView.findViewById(R.id.editer);
