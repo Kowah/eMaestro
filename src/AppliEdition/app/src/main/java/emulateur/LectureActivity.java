@@ -16,10 +16,14 @@ import android.widget.ViewSwitcher;
 import com.example.boris.emaestro.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import BDD.db.DataBaseManager;
 import BDD.to.Armature;
+import BDD.to.MesuresNonLues;
+import BDD.to.Reprise;
 import BDD.to.VariationIntensite;
 import util.Pair;
 
@@ -350,6 +354,73 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         }
 
         return bitmap;
+    }
+
+    private ArrayList<Integer> getOrdreLectureMesures(){
+        //TODO A Tester avec reprises et mesures non lues
+        //Donne l'ordre de lecture en prenant en compte les reprises et les mesures non lues
+        //Considere que les reprises et les parties non lues sont correctement créées et ne s'entrelacent pas
+
+        //Recuperation des reprises et des mesures non lues de la musique
+        ArrayList<Reprise> reprises = bdd.getReprises(bdd.getMusique(idMusique));
+        Collections.sort(reprises, new Comparator<Reprise>() {
+            @Override
+            public int compare(Reprise lhs, Reprise rhs) {
+                return lhs.getMesure_debut() - rhs.getMesure_debut();
+            }
+        });
+        ArrayList<MesuresNonLues> mesuresNonLues = bdd.getMesuresNonLues(bdd.getMusique(idMusique));
+        Collections.sort(mesuresNonLues, new Comparator<MesuresNonLues>() {
+            @Override
+            public int compare(MesuresNonLues lhs, MesuresNonLues rhs) {
+                return lhs.getMesure_debut() - rhs.getMesure_debut();
+            }
+        });
+
+        int indexReprise = 0;
+        int indexMesureNL = 0;
+        Reprise prochaineReprise = reprises.get(indexReprise);
+        MesuresNonLues prochaineMesuresNL = mesuresNonLues.get(indexMesureNL);
+        int repetitionCourante = 1;
+
+        ArrayList<Integer> ordreLecture = new ArrayList<>();
+        int m=mesureDebut;
+        while(m<=mesureFin){
+
+            //On lit la mesure m
+            ordreLecture.add(m);
+
+            //Si la mesure est une fin de reprise
+            if(prochaineReprise.getMesure_fin() == m){
+                if(repetitionCourante == 1){
+                    //premier passage dans la reprise
+
+                    //retourne au debut de la reprise
+                    m = prochaineReprise.getMesure_debut();
+                    repetitionCourante = 2;
+                }
+                else {
+                    //on est passé deux fois dans la reprise, on passe a la suite
+                    m++;
+                    repetitionCourante = 1;
+                    if (indexReprise + 1 < reprises.size()) {
+                        indexReprise++;
+                        prochaineReprise = reprises.get(indexReprise);
+                    }
+                }
+            }
+            //Si la mesure est au debut d'une partie non lue
+            else if(prochaineMesuresNL.getMesure_debut() == m &&
+                    prochaineMesuresNL.getPassage_reprise() == repetitionCourante){
+                //on saute les mesures non lues
+                m = prochaineMesuresNL.getMesure_fin()+1;
+            }
+            else{
+                m++;
+            }
+
+        }
+        return ordreLecture;
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -26,6 +27,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
+import BDD.to.MesuresNonLues;
+import BDD.to.Reprise;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 import util.Nuance;
@@ -244,20 +247,20 @@ public class EditionActivity  extends Activity {
                                                                     int newNuance = partition.convertNuanceToInt(Nuance.convertStringToNuance(nouvNuance));
                                                                     int newTempsDebut =Integer.parseInt(spinnerModifNuanceTpsDebut.getSelectedItem().toString());
                                                                     List<VariationIntensite> eventPresents = eventsNuanceDeLaMesure(m.getId());
-                                                                    VariationIntensite eventCour=new VariationIntensite();
-                                                                    boolean eventDejaPresent=false;
-                                                                    for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
-                                                                        eventCour = eventPresents.get(i);
-                                                                        if(eventCour.getTempsDebut()==newTempsDebut){
-                                                                            eventDejaPresent = true;
+                                                                        VariationIntensite eventCour=new VariationIntensite();
+                                                                        boolean eventDejaPresent=false;
+                                                                        for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
+                                                                            eventCour = eventPresents.get(i);
+                                                                            if(eventCour.getTempsDebut()==newTempsDebut){
+                                                                                eventDejaPresent = true;
+                                                                            }
                                                                         }
-                                                                    }
 
-                                                                    if(eventDejaPresent){
-                                                                        eventCour.setIntensite(newNuance);
-                                                                        eventCour.setTempsDebut(newTempsDebut);
-                                                                        bdd.update(eventCour);
-                                                                    }else{
+                                                                        if(eventDejaPresent){
+                                                                            eventCour.setIntensite(newNuance);
+                                                                            eventCour.setTempsDebut(newTempsDebut);
+                                                                            bdd.update(eventCour);
+                                                                        }else{
                                                                         eventCour = new VariationIntensite(bdd.getMusique(EXTRA_NOMPARTITION).getId(),newNuance,newTempsDebut,m.getId(),0);
                                                                         bdd.save(eventCour);
                                                                     }
@@ -288,17 +291,75 @@ public class EditionActivity  extends Activity {
                                                             LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
                                                             View popupView = inflater.inflate(R.layout.edition_reprise, null);
                                                             popup.setView(popupView);
-                                                            popup.setNegativeButton("Annuler",null);
+
+
+                                                            //Gestion des elements du popup
+                                                            final TextView textMesureDebutRepet = (TextView) popupView.findViewById(R.id.textMesureDebutRepet);
+                                                            final EditText textMesureFinRepet = (EditText) popupView.findViewById(R.id.textMesureFinRepet);
+                                                            final EditText textMesureDebut2eRepet = (EditText) popupView.findViewById(R.id.textMesureDebut2eRepet);
+                                                            final TextView textMesureFin2eRepet = (TextView) popupView.findViewById(R.id.textMesureFin2eRepet);
+
+                                                            //Modif la fin de la partie non lue lors de la 2e repet en meme temps que la fin de la repet car elles doivent etre egales
+                                                            textMesureFinRepet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                                                @Override
+                                                                public void onFocusChange(View v, boolean hasFocus) {
+                                                                    textMesureFin2eRepet.setText(textMesureFinRepet.getText());
+                                                                }
+                                                            });
+
+                                                            //le debut de la repetition est à la mesure sélectionnée
+                                                            textMesureDebutRepet.setText("" + m.getId());
+                                                            textMesureFinRepet.setText("" + m.getId());
+                                                            textMesureDebut2eRepet.setText("" + m.getId());
+                                                            textMesureFin2eRepet.setText("" + m.getId());
+
+                                                            //Gestion des boutons du popup Reprise
+                                                            popup.setNegativeButton("Annuler", null);
                                                             popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(DialogInterface dialog, int which) {
-                                                                    //TODO Enregistrement d'un event reprise
+                                                                    //TODO Enregistrement d'un event reprise (à tester)
+                                                                    //TODO gérer la liste des events de reprise (affichage, edition, suppression)
                                                                     //Lors de l'utilisation de l'appli, les mesures non lues lors du second passage seront en fait une plage de mesures non lues avec passage_reprise à 2
+                                                                    int mesureDebut = Integer.parseInt(textMesureDebutRepet.getText().toString());
+                                                                    int mesureFin = Integer.parseInt(textMesureFinRepet.getText().toString());
+                                                                    int mesureDebutNonLu = Integer.parseInt(textMesureDebut2eRepet.getText().toString());
+                                                                    int mesureFinNonLu = Integer.parseInt(textMesureFin2eRepet.getText().toString());
+
+                                                                    //Conditions d'acceptation d'un event Reprise
+                                                                    if(mesureDebut < mesureDebutNonLu && mesureDebutNonLu <= mesureFin) {
+
+                                                                        Reprise eventUpdate = null;
+                                                                        ArrayList<Reprise> eventsReprise = bdd.getReprises(bdd.getMusique(EXTRA_NOMPARTITION));
+                                                                        for(Reprise rep : eventsReprise){
+                                                                            if(rep.getMesure_debut() == mesureDebut){
+                                                                                eventUpdate = rep;
+                                                                            }
+                                                                        }
+                                                                        if(eventUpdate != null){
+                                                                            ArrayList<MesuresNonLues> eventsMesures = bdd.getMesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION));
+                                                                            MesuresNonLues eventMesureUpdate = null;
+                                                                            for(MesuresNonLues eventM : eventsMesures){
+                                                                                //FIXME Pas sur que ce soit le bon event qu'on récup. Ajouter un id reprise dans mesuresNonLues ?
+                                                                                if(eventM.getMesure_debut() == mesureDebutNonLu){
+                                                                                    eventMesureUpdate = eventM;
+                                                                                }
+                                                                            }
+                                                                            eventUpdate.setMesure_fin(mesureFin);
+                                                                            bdd.update(eventUpdate);
+                                                                            eventMesureUpdate.setMesure_fin(mesureFinNonLu);
+                                                                            eventMesureUpdate.setPassage_reprise(2);
+                                                                            bdd.update(eventMesureUpdate);
+                                                                        }else{
+                                                                            Reprise nouvelEvent = new Reprise(bdd.getMusique(EXTRA_NOMPARTITION).getId(), mesureDebut, mesureFin);
+                                                                            bdd.save(nouvelEvent);
+                                                                            MesuresNonLues eventNonLues = new MesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION).getId(),mesureDebutNonLu, mesureFinNonLu, 2);
+                                                                            bdd.save(eventNonLues);
+                                                                        }
+                                                                    }
                                                                 }
                                                             });
                                                             popup.show();
-
-                                                            //Gestion des elements du popup
 
                                                         }
                                                     });
