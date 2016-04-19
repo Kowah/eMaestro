@@ -175,6 +175,9 @@ public class CreationMusiqueActivity extends Activity {
                         if (err == -1) {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
                         } else {
+                            int idmusique = bdd.getMusique(nomPartition).getId();
+                            bdd.save(new VariationIntensite(idmusique,-1,0,1,0));
+                            bdd.save(new VariationTemps(idmusique, 1, Integer.parseInt(tpsParMesure), Integer.parseInt(nbPulsation), 1));//TODO : Gerer l'unite pulsation
 
                             bdd.close();
                             startActivity(intent);

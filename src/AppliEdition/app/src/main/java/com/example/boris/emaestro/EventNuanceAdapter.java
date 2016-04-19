@@ -60,13 +60,17 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
         supprimer.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
-                                             bdd = new DataBaseManager(v.getContext());
-                                             bdd.open();
-                                             bdd.delete(event);
-                                             bdd.close();
-                                             events.remove(event);
-                                             EventNuanceAdapter adapter = new EventNuanceAdapter(v.getContext(), events);
-                                             EditionActivity.eventNuanceListView.setAdapter(adapter);
+                                             if(event.getMesureDebut()==1 && event.getTempsDebut() == 1){
+
+                                             }else {
+                                                 bdd = new DataBaseManager(v.getContext());
+                                                 bdd.open();
+                                                 bdd.delete(event);
+                                                 bdd.close();
+                                                 events.remove(event);
+                                                 EventNuanceAdapter adapter = new EventNuanceAdapter(v.getContext(), events);
+                                                 EditionActivity.eventNuanceListView.setAdapter(adapter);
+                                             }
 
                                          }
                                      }

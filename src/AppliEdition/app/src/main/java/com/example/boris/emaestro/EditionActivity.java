@@ -135,13 +135,6 @@ public class EditionActivity  extends Activity {
             idMusique = Integer.parseInt(EXTRA_ID_PARTITION);
             partition = new Partition(EXTRA_NBMESURE);
 
-            if(EXTRA_NEW_PARTITION.equals("true")){
-                int id = bdd.getMusique(EXTRA_NOMPARTITION).getId();
-                bdd.save(new VariationIntensite(id,-1,0,1,0));
-                bdd.save(new VariationTemps(id, 1, Integer.parseInt(EXTRA_TPSPARMESURE), Integer.parseInt(EXTRA_PULSATION), Integer.valueOf(EXTRA_UNITE)));//TODO : Gerer l'unite pulsation
-
-            }
-
         }else{
 
             debug.setText("Erreur interne");
@@ -254,6 +247,7 @@ public class EditionActivity  extends Activity {
                                                             popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                                                                 public void onClick(DialogInterface dialog, int which) {
                                                                     // on ne modifie rien
+                                                                    varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
                                                                 }
                                                             });
                                                             popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
@@ -287,6 +281,7 @@ public class EditionActivity  extends Activity {
                                                                     mGridView.setAdapter(adapter);
                                                                     //maj liste events
                                                                     varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
+                                                                    varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
                                                                     adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                                                                     eventNuanceListView.setAdapter(adapterEventNuance);
 
