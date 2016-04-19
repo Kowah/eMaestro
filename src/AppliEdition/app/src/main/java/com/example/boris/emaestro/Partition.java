@@ -4,6 +4,7 @@ package com.example.boris.emaestro;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.to.Armature;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 import util.Nuance;
@@ -39,29 +40,19 @@ public class Partition {
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
         //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut-1;i<=mesureFin;i++){
+        partition.get(mesureDebut-1).setEventTpsSurMesure(true);
+        for(int i=mesureDebut-1;i<=mesureFin; i++) {
             partition.get(i).setTempo(tempo);
+
+
         }
     }
     public void setNuance(int mesureDebut, int mesureFin, Nuance nuance){
 
             //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut-1;i<=mesureFin;i++){
+        for(int i=mesureDebut-1; i <= mesureFin;i++){
             partition.get(i).setNuance(nuance);
-        }
-    }
-    public void setTempo(List<Integer> l,int tempo){
-        Integer j;
-        for(int i=0;i<l.size();i++){
-            j = l.get(i).intValue();
-            partition.get(j-1).setTempo(tempo);
-        }
-    }
-
-    public void setNbTempsAll(int nbTemps){
-        for(int i=0;i<partition.size();i++){
-            partition.get(i).setTempsMesure(nbTemps);
         }
     }
 
@@ -130,6 +121,31 @@ public class Partition {
         }
     }
 
+    public void setArmature  (int mesureDebut, int mesureFin, int alteration){
+        for(int i=mesureDebut-1;i<=mesureFin; i++) {
+                partition.get(i).setArmature(alteration);
+        }
+    }
+
+    public void setArmature(List<Armature> l){
+       Armature vT;
+        int mesureFin;
+        int i;
+      int alteration;
+        for(i =0; i<l.size();i++){
+            vT = l.get(i);
+            if(i+1<l.size()){
+                //si ya dautre event, alors changmeent de nuance se fait jusqu'à l'arrivée du prochain
+                mesureFin = l.get(i+1).getMesure_debut();//mesure juste avant le debut du prochain event
+            }
+            else{
+                //sinon jusqu'à la fin de la partition
+                mesureFin = this.partition.size()-1;
+            }
+            alteration = vT.getAlteration();
+            this.setArmature(vT.getMesure_debut(), mesureFin, alteration);
+        }
+    }
 
     public static String convertUniteIntStr(int n){
         String s="";

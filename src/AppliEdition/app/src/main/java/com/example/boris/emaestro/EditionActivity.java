@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,8 @@ import java.util.List;
 import BDD.db.DataBaseManager;
 import BDD.to.MesuresNonLues;
 import BDD.to.Reprise;
+import BDD.to.Armature;
+import BDD.to.Evenement;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 import util.Nuance;
@@ -48,6 +51,8 @@ public class EditionActivity  extends Activity {
 
     List<VariationTemps> varTempsList;
     List<VariationIntensite> varIntensiteList;
+    List<Armature> varAramtureList;
+
 
     // view du menu
     LinearLayout menu;
@@ -76,6 +81,7 @@ public class EditionActivity  extends Activity {
     EventNuanceAdapter adapterEventNuance;
 
     List<VariationIntensite> varIntensiteListSurMesureCour;
+    List<VariationIntensite> varArmatureListSurMesureCour;
 
     //debug
     TextView debug;
@@ -106,6 +112,7 @@ public class EditionActivity  extends Activity {
         //Variables d'edition
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
+        varAramtureList = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -144,10 +151,12 @@ public class EditionActivity  extends Activity {
         //on recupère les données associées à la musique
         varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
         varTempsList = bdd.getVariationsTemps(bdd.getMusique(EXTRA_NOMPARTITION));
+        varAramtureList = bdd.getArmature(bdd.getMusique(EXTRA_NOMPARTITION));
 
         //On trie nos listes en ordre croissant d'id de mesure
         triListVarIntensite();
         triListVarTemps();
+        triListVarAramature();
 
 
         //-----------------------
@@ -166,6 +175,8 @@ public class EditionActivity  extends Activity {
         //on met ajour tempo et intensite
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
+        partition.setArmature(varAramtureList);
+
 
         adapter = new MesureAdapter(EditionActivity.this, partition);
         mGridView.setAdapter(adapter);
@@ -541,6 +552,22 @@ public class EditionActivity  extends Activity {
             public int compare(VariationTemps lhs, VariationTemps rhs) {
                 int t;
                 if(lhs.getMesure_debut() < rhs.getMesure_debut()){
+                    t=-1;
+                }else{
+                    t=1;
+                }
+                return  t;
+            }
+        });
+    }
+
+    //tri la liste de variations d'intensité
+    private void triListVarAramature(){
+        Collections.sort(varAramtureList, new Comparator<Armature>() {
+            @Override
+            public int compare(Armature lhs, Armature rhs) {
+                int t;
+                if(lhs.getMesure_debut()< rhs.getMesure_debut()){
                     t=-1;
                 }else{
                     t=1;
