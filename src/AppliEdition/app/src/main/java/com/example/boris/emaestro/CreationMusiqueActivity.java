@@ -135,7 +135,9 @@ public class CreationMusiqueActivity extends Activity {
                 nbPulsation = pulsation.getText().toString();
                 nomPartition = nomPartitionE.getText().toString();
                 // permet le passage de message dans un changement d'activité (startActivity)
-                Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
+               // Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
+                Intent intent = new Intent(CreationMusiqueActivity.this,CatalogueActivity.class);
+
                 intent.putExtra(EXTRA_NOMPARTITION, nomPartition);
                 intent.putExtra(EXTRA_NBMESURE, nbMesure);
                 intent.putExtra(EXTRA_PULSATION, nbPulsation);
@@ -176,7 +178,8 @@ public class CreationMusiqueActivity extends Activity {
                             Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
                         } else {
                             int idmusique = bdd.getMusique(nomPartition).getId();
-                            bdd.save(new VariationIntensite(idmusique,-1,0,1,0));
+                            bdd.save(new VariationIntensite(idmusique,-1,1,1,0));
+                      
                             bdd.save(new VariationTemps(idmusique, 1, Integer.parseInt(tpsParMesure), Integer.parseInt(nbPulsation), 1));//TODO : Gerer l'unite pulsation
 
                             bdd.close();

@@ -46,7 +46,6 @@ public class EditionActivity  extends Activity {
     String EXTRA_UNITE = "unite";
     String EXTRA_TPSPARMESURE = "nbTpsMesure";
     String EXTRA_ID_PARTITION = "idMusique";
-    String EXTRA_NEW_PARTITION = "new";
     int idMusique;
 
     List<VariationTemps> varTempsList;
@@ -130,7 +129,6 @@ public class EditionActivity  extends Activity {
             EXTRA_UNITE = intent.getStringExtra(EXTRA_UNITE);
             EXTRA_TPSPARMESURE = intent.getStringExtra(EXTRA_TPSPARMESURE);
             EXTRA_ID_PARTITION = intent.getStringExtra(EXTRA_ID_PARTITION);
-            EXTRA_NEW_PARTITION = intent.getStringExtra(EXTRA_NEW_PARTITION);
 
             idMusique = Integer.parseInt(EXTRA_ID_PARTITION);
             partition = new Partition(EXTRA_NBMESURE);
