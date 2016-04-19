@@ -51,7 +51,7 @@ public class EditionActivity  extends Activity {
 
     List<VariationTemps> varTempsList;
     List<VariationIntensite> varIntensiteList;
-    List<Armature> varAramtureList;
+    List<Armature> varArmatureList;
 
 
     // view du menu
@@ -81,7 +81,7 @@ public class EditionActivity  extends Activity {
     EventNuanceAdapter adapterEventNuance;
 
     List<VariationIntensite> varIntensiteListSurMesureCour;
-    List<VariationIntensite> varArmatureListSurMesureCour;
+    List<Armature> varArmatureListSurMesureCour;
 
     //debug
     TextView debug;
@@ -112,7 +112,7 @@ public class EditionActivity  extends Activity {
         //Variables d'edition
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
-        varAramtureList = new ArrayList<>();
+        varArmatureList = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -151,12 +151,12 @@ public class EditionActivity  extends Activity {
         //on recupère les données associées à la musique
         varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
         varTempsList = bdd.getVariationsTemps(bdd.getMusique(EXTRA_NOMPARTITION));
-        varAramtureList = bdd.getArmature(bdd.getMusique(EXTRA_NOMPARTITION));
+        varArmatureList = bdd.getArmature(bdd.getMusique(EXTRA_NOMPARTITION));
 
         //On trie nos listes en ordre croissant d'id de mesure
         triListVarIntensite();
         triListVarTemps();
-        triListVarAramature();
+        triListVarArmature();
 
 
         //-----------------------
@@ -168,6 +168,10 @@ public class EditionActivity  extends Activity {
         for(int i = 0; i<varTempsList.size();i++){
             debug.setText(debug.getText().toString() + varTempsList.size() + "\n nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() ) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
         }
+
+        for(int i = 0; i<varArmatureList.size();i++){
+            debug.setText(debug.getText().toString() + varArmatureList.size() + "\n nouveau event debut à :" + (varArmatureList.get(i).getMesure_debut() ) + " alteration : " + varArmatureList.get(i).getAlteration());
+        }
         //-----------------------
         //debug msg
         //-----------------------
@@ -175,7 +179,7 @@ public class EditionActivity  extends Activity {
         //on met ajour tempo et intensite
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
-        partition.setArmature(varAramtureList);
+        partition.setArmature(varArmatureList);
 
 
         adapter = new MesureAdapter(EditionActivity.this, partition);
@@ -383,31 +387,66 @@ public class EditionActivity  extends Activity {
                                                             popup.setTitle("Evenement Armature");
                                                             LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
                                                             View popupView = inflater.inflate(R.layout.edition_armature, null);
-                                                            popup.setView(popupView);
-                                                            popup.setNegativeButton("Annuler",null);
-                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    //TODO Enregistrement d'un event armature
-                                                                    //alteration : (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
-                                                                }
-                                                            });
-                                                            popup.show();
-
                                                             //Gestion des elements du popup
                                                             //Spinner du choix du type d'alteration
-                                                            Spinner spinnerAlteration = (Spinner) popupView.findViewById(R.id.spinnerChoixAlteration);
+                                                            final Spinner spinnerAlteration = (Spinner) popupView.findViewById(R.id.spinnerChoixAlteration);
                                                             String[] alterations = {"Bémol","Dièse"};
                                                             ArrayAdapter<String> adapterAlteration = new ArrayAdapter<String>(popupView.getContext(),android.R.layout.simple_spinner_item, alterations);
                                                             adapterAlteration.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                             spinnerAlteration.setAdapter(adapterAlteration);
 
                                                             //Spinner du choix du nombre d'alterations
-                                                            Spinner spinnerNbAlt = (Spinner) popupView.findViewById(R.id.spinnerNombreAlteration);
+                                                            final Spinner spinnerNbAlt = (Spinner) popupView.findViewById(R.id.spinnerNombreAlteration);
                                                             Integer[] nombreAlt = {0,1,2,3,4,5,6,7};
                                                             ArrayAdapter<Integer> adapterNbAlt = new ArrayAdapter<Integer>(popupView.getContext(),android.R.layout.simple_spinner_item,nombreAlt);
                                                             adapterNbAlt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                             spinnerNbAlt.setAdapter(adapterNbAlt);
+                                                            popup.setView(popupView);
+                                                            popup.setNegativeButton("Annuler",null);
+                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    //alteration : (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
+                                                                    int nouvArmature = Integer.parseInt(spinnerNbAlt.getSelectedItem().toString());
+                                                                    String signeArmature = spinnerAlteration.getSelectedItem().toString();
+                                                                    if(signeArmature == "Bémol"){
+                                                                        nouvArmature=nouvArmature*(-1);
+                                                                    }
+
+                                                                    List<Armature> eventPresents = eventsArmatureDeLaMesure(m.getId());
+                                                                    Armature eventCour=new Armature();
+                                                                    boolean eventDejaPresent=false;
+                                                                    for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
+                                                                        eventCour = eventPresents.get(i);
+                                                                        if(eventCour.getMesure_debut()==m.getId()){
+                                                                            eventDejaPresent = true;
+                                                                        }
+                                                                    }
+
+                                                                    if(eventDejaPresent){
+                                                                        eventCour.setAlteration(nouvArmature);
+                                                                        //TODO temps debut
+                                                                        bdd.update(eventCour);
+                                                                    }else{
+                                                                        eventCour = new Armature(bdd.getMusique(EXTRA_NOMPARTITION).getId(),m.getId(),1,nouvArmature,1);//TODO passage reprise et temps debut
+                                                                        bdd.save(eventCour);
+                                                                    }
+                                                                    varArmatureList = bdd.getArmature(bdd.getMusique(idMusique));
+                                                                    triListVarArmature();
+                                                                    partition.setArmature(varArmatureList);
+                                                                    //MAJ affichage
+                                                                    adapter = new MesureAdapter(EditionActivity.this, partition);
+                                                                    mGridView.setAdapter(adapter);
+                                                                    //maj liste events
+                                                                    varArmatureListSurMesureCour = eventsArmatureDeLaMesure(m.getId());
+                                                                    //TODO faire pour les aramture
+                                                                    //adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
+                                                                    //eventNuanceListView.setAdapter(adapterEventNuance);
+                                                                }
+                                                            });
+                                                            popup.show();
+
+
 
                                                         }
                                                     });
@@ -527,6 +566,18 @@ public class EditionActivity  extends Activity {
         return res;
     }
 
+    private List<Armature> eventsArmatureDeLaMesure(int numMesure){
+        List<Armature> res = new ArrayList<>();
+        Armature event;
+        for(int i =0; i<varArmatureList.size();i++){
+            event = varArmatureList.get(i);
+            if(event.getMesure_debut() == numMesure){
+                res.add(event);
+            }
+        }
+        return res;
+    }
+
 
     //tri la liste de variations d'intensité
     private void triListVarIntensite(){
@@ -562,8 +613,8 @@ public class EditionActivity  extends Activity {
     }
 
     //tri la liste de variations d'intensité
-    private void triListVarAramature(){
-        Collections.sort(varAramtureList, new Comparator<Armature>() {
+    private void triListVarArmature(){
+        Collections.sort(varArmatureList, new Comparator<Armature>() {
             @Override
             public int compare(Armature lhs, Armature rhs) {
                 int t;
