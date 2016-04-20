@@ -76,11 +76,19 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         //Cadre jaune de selection
         //necessaire ici aussi car le recyclage des vues modifiait l'affichage des mesures selectionnees
 
-        if(mesure.getSelec()) {
+       /* if(mesure.getSelec()) {
             convertView.findViewById(R.id.selection).setAlpha(0.7f);
 
         }else{
             convertView.findViewById(R.id.selection).setAlpha(0.0f);
+        }*/
+
+        if(mesure.getEventTpsSurMesure()){
+            convertView.findViewById(R.id.tempoModif).setAlpha(1f);
+            TextView t =(TextView)convertView.findViewById(R.id.tempoModif);
+            t.setText(""+mesure.getTempo());
+        }else{
+            convertView.findViewById(R.id.tempoModif).setAlpha(0f);
         }
         //on met a jour l'id de la view de la mesure
         ((TextView)convertView.findViewById(R.id.id)).setText(String.valueOf(mesure.getId()));

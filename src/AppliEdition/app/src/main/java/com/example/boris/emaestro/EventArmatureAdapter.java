@@ -11,20 +11,20 @@ import android.widget.TextView;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
+import BDD.to.Armature;
 import BDD.to.VariationIntensite;
 
 /**
- * Created by Boris on 06/04/2016.
+ * Created by Boris on 20/04/2016.
  */
-public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
+public class EventArmatureAdapter extends ArrayAdapter<Armature> {
 
-    List<VariationIntensite> events;
-    VariationIntensite event;
-    Button editer;
+    List<Armature> events;
+    Armature event;
     Button supprimer;
     DataBaseManager bdd;
 
-    public EventNuanceAdapter(Context context, List<VariationIntensite> events) {
+    public EventArmatureAdapter(Context context, List<Armature> events) {
         super(context, 0, events);
         this.events = events;
     }
@@ -42,25 +42,20 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
 
         EventViewHolder viewHolder = (EventViewHolder) convertView.getTag();
         event = events.get(position);
-        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.ConvertNuanceFromInt(event.getIntensite()) + " sur le temps " + event.getTempsDebut());
+        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.ConvertArmatureFromInt(event.getAlteration()) + " sur le temps " + event.getTemps_debut());
 
 
         supprimer = (Button) convertView.findViewById(R.id.supprimer);
         supprimer.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
-                                             if(event.getMesureDebut()==1 && event.getTempsDebut() == 1){
-
-                                             }else {
                                                  bdd = new DataBaseManager(v.getContext());
                                                  bdd.open();
                                                  bdd.delete(event);
                                                  bdd.close();
                                                  events.remove(event);
-                                                 EventNuanceAdapter adapter = new EventNuanceAdapter(v.getContext(), events);
-                                                 EditionActivity.eventNuanceListView.setAdapter(adapter);
-                                             }
-
+                                                 EventArmatureAdapter adapter = new EventArmatureAdapter(v.getContext(), events);
+                                                 EditionActivity.eventArmatureListView.setAdapter(adapter);
                                          }
                                      }
         );

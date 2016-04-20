@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import BDD.db.*;
+import BDD.to.MesuresNonLues;
 import BDD.to.Musique;
+import BDD.to.Reprise;
 import BDD.to.VariationTemps;
 import util.Pair;
 import util.Triple;
@@ -83,6 +85,7 @@ public class Chargeur_partition {
 					nb_temps = creer_liste_lecture(varI, infos.get(i+1).getMesure_debut() - 1, nb_temps);
 				}
 			}
+
 			this.id_partition_chargee = id_musique;
 		}
 	}
@@ -91,6 +94,7 @@ public class Chargeur_partition {
 	public Map<String, Integer> get_images_ephemeres(){return images_ephemeres;}
 	public List<Pair<String, Integer>> get_liste_de_lecture(){return liste_de_lecture;}
 	public Map<Integer, Integer> get_map_mesures_temps(){return map_mesures_temps;}
+
 
 
 }

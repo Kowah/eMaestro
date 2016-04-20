@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +28,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
+import BDD.to.MesuresNonLues;
+import BDD.to.Reprise;
+import BDD.to.Armature;
+import BDD.to.Evenement;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 import util.Nuance;
@@ -40,11 +46,12 @@ public class EditionActivity  extends Activity {
     String EXTRA_UNITE = "unite";
     String EXTRA_TPSPARMESURE = "nbTpsMesure";
     String EXTRA_ID_PARTITION = "idMusique";
-    String EXTRA_NEW_PARTITION = "new";
     int idMusique;
 
     List<VariationTemps> varTempsList;
     List<VariationIntensite> varIntensiteList;
+    List<Armature> varArmatureList;
+
 
     // view du menu
     LinearLayout menu;
@@ -71,8 +78,12 @@ public class EditionActivity  extends Activity {
 
     static ListView eventNuanceListView;
     EventNuanceAdapter adapterEventNuance;
+    static ListView eventArmatureListView;
+
+    EventArmatureAdapter adapterEventArmature;
 
     List<VariationIntensite> varIntensiteListSurMesureCour;
+    List<Armature> varArmatureListSurMesureCour;
 
     //debug
     TextView debug;
@@ -103,6 +114,7 @@ public class EditionActivity  extends Activity {
         //Variables d'edition
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
+        varArmatureList = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -120,17 +132,9 @@ public class EditionActivity  extends Activity {
             EXTRA_UNITE = intent.getStringExtra(EXTRA_UNITE);
             EXTRA_TPSPARMESURE = intent.getStringExtra(EXTRA_TPSPARMESURE);
             EXTRA_ID_PARTITION = intent.getStringExtra(EXTRA_ID_PARTITION);
-            EXTRA_NEW_PARTITION = intent.getStringExtra(EXTRA_NEW_PARTITION);
 
             idMusique = Integer.parseInt(EXTRA_ID_PARTITION);
             partition = new Partition(EXTRA_NBMESURE);
-
-            if(EXTRA_NEW_PARTITION.equals("true")){
-                int id = bdd.getMusique(EXTRA_NOMPARTITION).getId();
-                bdd.save(new VariationIntensite(id,-1,0,1,0));
-                bdd.save(new VariationTemps(id, 1, Integer.parseInt(EXTRA_TPSPARMESURE), Integer.parseInt(EXTRA_PULSATION), Integer.valueOf(EXTRA_UNITE)));//TODO : Gerer l'unite pulsation
-
-            }
 
         }else{
 
@@ -141,10 +145,12 @@ public class EditionActivity  extends Activity {
         //on recupère les données associées à la musique
         varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
         varTempsList = bdd.getVariationsTemps(bdd.getMusique(EXTRA_NOMPARTITION));
+        varArmatureList = bdd.getArmature(bdd.getMusique(EXTRA_NOMPARTITION));
 
         //On trie nos listes en ordre croissant d'id de mesure
         triListVarIntensite();
         triListVarTemps();
+        triListVarArmature();
 
 
         //-----------------------
@@ -156,6 +162,10 @@ public class EditionActivity  extends Activity {
         for(int i = 0; i<varTempsList.size();i++){
             debug.setText(debug.getText().toString() + varTempsList.size() + "\n nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() ) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
         }
+
+        for(int i = 0; i<varArmatureList.size();i++){
+            debug.setText(debug.getText().toString() + varArmatureList.size() + "\n nouveau event debut à :" + (varArmatureList.get(i).getMesure_debut() ) + " alteration : " + varArmatureList.get(i).getAlteration());
+        }
         //-----------------------
         //debug msg
         //-----------------------
@@ -163,6 +173,8 @@ public class EditionActivity  extends Activity {
         //on met ajour tempo et intensite
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
+        partition.setArmature(varArmatureList);
+
 
         adapter = new MesureAdapter(EditionActivity.this, partition);
         mGridView.setAdapter(adapter);
@@ -193,6 +205,12 @@ public class EditionActivity  extends Activity {
                 eventNuanceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
                 adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                 eventNuanceListView.setAdapter(adapterEventNuance);
+
+                //affiche event d'armature present sur la mesure
+                varArmatureListSurMesureCour = eventsArmatureDeLaMesure(m.getId());
+                eventArmatureListView = (ListView) popupView.findViewById(R.id.listEventArmature);
+                adapterEventArmature = new EventArmatureAdapter(context,varArmatureListSurMesureCour);
+                eventArmatureListView.setAdapter(adapterEventArmature);
 
 
                 Button newEvent = (Button) popupView.findViewById(R.id.newEvent);
@@ -236,6 +254,7 @@ public class EditionActivity  extends Activity {
                                                             popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                                                                 public void onClick(DialogInterface dialog, int which) {
                                                                     // on ne modifie rien
+                                                                    varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
                                                                 }
                                                             });
                                                             popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
@@ -244,20 +263,20 @@ public class EditionActivity  extends Activity {
                                                                     int newNuance = partition.convertNuanceToInt(Nuance.convertStringToNuance(nouvNuance));
                                                                     int newTempsDebut =Integer.parseInt(spinnerModifNuanceTpsDebut.getSelectedItem().toString());
                                                                     List<VariationIntensite> eventPresents = eventsNuanceDeLaMesure(m.getId());
-                                                                    VariationIntensite eventCour=new VariationIntensite();
-                                                                    boolean eventDejaPresent=false;
-                                                                    for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
-                                                                        eventCour = eventPresents.get(i);
-                                                                        if(eventCour.getTempsDebut()==newTempsDebut){
-                                                                            eventDejaPresent = true;
+                                                                        VariationIntensite eventCour=new VariationIntensite();
+                                                                        boolean eventDejaPresent=false;
+                                                                        for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
+                                                                            eventCour = eventPresents.get(i);
+                                                                            if(eventCour.getTempsDebut()==newTempsDebut){
+                                                                                eventDejaPresent = true;
+                                                                            }
                                                                         }
-                                                                    }
 
-                                                                    if(eventDejaPresent){
-                                                                        eventCour.setIntensite(newNuance);
-                                                                        eventCour.setTempsDebut(newTempsDebut);
-                                                                        bdd.update(eventCour);
-                                                                    }else{
+                                                                        if(eventDejaPresent){
+                                                                            eventCour.setIntensite(newNuance);
+                                                                            eventCour.setTempsDebut(newTempsDebut);
+                                                                            bdd.update(eventCour);
+                                                                        }else{
                                                                         eventCour = new VariationIntensite(bdd.getMusique(EXTRA_NOMPARTITION).getId(),newNuance,newTempsDebut,m.getId(),0);
                                                                         bdd.save(eventCour);
                                                                     }
@@ -269,6 +288,7 @@ public class EditionActivity  extends Activity {
                                                                     mGridView.setAdapter(adapter);
                                                                     //maj liste events
                                                                     varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
+                                                                    varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
                                                                     adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                                                                     eventNuanceListView.setAdapter(adapterEventNuance);
 
@@ -288,17 +308,75 @@ public class EditionActivity  extends Activity {
                                                             LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
                                                             View popupView = inflater.inflate(R.layout.edition_reprise, null);
                                                             popup.setView(popupView);
-                                                            popup.setNegativeButton("Annuler",null);
+
+
+                                                            //Gestion des elements du popup
+                                                            final TextView textMesureDebutRepet = (TextView) popupView.findViewById(R.id.textMesureDebutRepet);
+                                                            final EditText textMesureFinRepet = (EditText) popupView.findViewById(R.id.textMesureFinRepet);
+                                                            final EditText textMesureDebut2eRepet = (EditText) popupView.findViewById(R.id.textMesureDebut2eRepet);
+                                                            final TextView textMesureFin2eRepet = (TextView) popupView.findViewById(R.id.textMesureFin2eRepet);
+
+                                                            //Modif la fin de la partie non lue lors de la 2e repet en meme temps que la fin de la repet car elles doivent etre egales
+                                                            textMesureFinRepet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                                                @Override
+                                                                public void onFocusChange(View v, boolean hasFocus) {
+                                                                    textMesureFin2eRepet.setText(textMesureFinRepet.getText());
+                                                                }
+                                                            });
+
+                                                            //le debut de la repetition est à la mesure sélectionnée
+                                                            textMesureDebutRepet.setText("" + m.getId());
+                                                            textMesureFinRepet.setText("" + m.getId());
+                                                            textMesureDebut2eRepet.setText("" + m.getId());
+                                                            textMesureFin2eRepet.setText("" + m.getId());
+
+                                                            //Gestion des boutons du popup Reprise
+                                                            popup.setNegativeButton("Annuler", null);
                                                             popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(DialogInterface dialog, int which) {
-                                                                    //TODO Enregistrement d'un event reprise
+                                                                    //TODO Enregistrement d'un event reprise (à tester)
+                                                                    //TODO gérer la liste des events de reprise (affichage, edition, suppression)
                                                                     //Lors de l'utilisation de l'appli, les mesures non lues lors du second passage seront en fait une plage de mesures non lues avec passage_reprise à 2
+                                                                    int mesureDebut = Integer.parseInt(textMesureDebutRepet.getText().toString());
+                                                                    int mesureFin = Integer.parseInt(textMesureFinRepet.getText().toString());
+                                                                    int mesureDebutNonLu = Integer.parseInt(textMesureDebut2eRepet.getText().toString());
+                                                                    int mesureFinNonLu = Integer.parseInt(textMesureFin2eRepet.getText().toString());
+
+                                                                    //Conditions d'acceptation d'un event Reprise
+                                                                    if(mesureDebut < mesureDebutNonLu && mesureDebutNonLu <= mesureFin) {
+
+                                                                        Reprise eventUpdate = null;
+                                                                        ArrayList<Reprise> eventsReprise = bdd.getReprises(bdd.getMusique(EXTRA_NOMPARTITION));
+                                                                        for(Reprise rep : eventsReprise){
+                                                                            if(rep.getMesure_debut() == mesureDebut){
+                                                                                eventUpdate = rep;
+                                                                            }
+                                                                        }
+                                                                        if(eventUpdate != null){
+                                                                            ArrayList<MesuresNonLues> eventsMesures = bdd.getMesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION));
+                                                                            MesuresNonLues eventMesureUpdate = null;
+                                                                            for(MesuresNonLues eventM : eventsMesures){
+                                                                                //FIXME Pas sur que ce soit le bon event qu'on récup. Ajouter un id reprise dans mesuresNonLues ?
+                                                                                if(eventM.getMesure_debut() == mesureDebutNonLu){
+                                                                                    eventMesureUpdate = eventM;
+                                                                                }
+                                                                            }
+                                                                            eventUpdate.setMesure_fin(mesureFin);
+                                                                            bdd.update(eventUpdate);
+                                                                            eventMesureUpdate.setMesure_fin(mesureFinNonLu);
+                                                                            eventMesureUpdate.setPassage_reprise(2);
+                                                                            bdd.update(eventMesureUpdate);
+                                                                        }else{
+                                                                            Reprise nouvelEvent = new Reprise(bdd.getMusique(EXTRA_NOMPARTITION).getId(), mesureDebut, mesureFin);
+                                                                            bdd.save(nouvelEvent);
+                                                                            MesuresNonLues eventNonLues = new MesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION).getId(),mesureDebutNonLu, mesureFinNonLu, 2);
+                                                                            bdd.save(eventNonLues);
+                                                                        }
+                                                                    }
                                                                 }
                                                             });
                                                             popup.show();
-
-                                                            //Gestion des elements du popup
 
                                                         }
                                                     });
@@ -311,31 +389,66 @@ public class EditionActivity  extends Activity {
                                                             popup.setTitle("Evenement Armature");
                                                             LayoutInflater inflater = (LayoutInflater)context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
                                                             View popupView = inflater.inflate(R.layout.edition_armature, null);
-                                                            popup.setView(popupView);
-                                                            popup.setNegativeButton("Annuler",null);
-                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    //TODO Enregistrement d'un event armature
-                                                                    //alteration : (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
-                                                                }
-                                                            });
-                                                            popup.show();
-
                                                             //Gestion des elements du popup
                                                             //Spinner du choix du type d'alteration
-                                                            Spinner spinnerAlteration = (Spinner) popupView.findViewById(R.id.spinnerChoixAlteration);
+                                                            final Spinner spinnerAlteration = (Spinner) popupView.findViewById(R.id.spinnerChoixAlteration);
                                                             String[] alterations = {"Bémol","Dièse"};
                                                             ArrayAdapter<String> adapterAlteration = new ArrayAdapter<String>(popupView.getContext(),android.R.layout.simple_spinner_item, alterations);
                                                             adapterAlteration.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                             spinnerAlteration.setAdapter(adapterAlteration);
 
                                                             //Spinner du choix du nombre d'alterations
-                                                            Spinner spinnerNbAlt = (Spinner) popupView.findViewById(R.id.spinnerNombreAlteration);
+                                                            final Spinner spinnerNbAlt = (Spinner) popupView.findViewById(R.id.spinnerNombreAlteration);
                                                             Integer[] nombreAlt = {0,1,2,3,4,5,6,7};
                                                             ArrayAdapter<Integer> adapterNbAlt = new ArrayAdapter<Integer>(popupView.getContext(),android.R.layout.simple_spinner_item,nombreAlt);
                                                             adapterNbAlt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                             spinnerNbAlt.setAdapter(adapterNbAlt);
+                                                            popup.setView(popupView);
+                                                            popup.setNegativeButton("Annuler",null);
+                                                            popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    //alteration : (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
+                                                                    int nouvArmature = Integer.parseInt(spinnerNbAlt.getSelectedItem().toString());
+                                                                    String signeArmature = spinnerAlteration.getSelectedItem().toString();
+                                                                    if(signeArmature == "Bémol"){
+                                                                        nouvArmature=nouvArmature*(-1);
+                                                                    }
+
+                                                                    List<Armature> eventPresents = eventsArmatureDeLaMesure(m.getId());
+                                                                    Armature eventCour=new Armature();
+                                                                    boolean eventDejaPresent=false;
+                                                                    for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
+                                                                        eventCour = eventPresents.get(i);
+                                                                        if(eventCour.getMesure_debut()==m.getId()){
+                                                                            eventDejaPresent = true;
+                                                                        }
+                                                                    }
+
+                                                                    if(eventDejaPresent){
+                                                                        eventCour.setAlteration(nouvArmature);
+                                                                        //TODO temps debut
+                                                                        bdd.update(eventCour);
+                                                                    }else{
+                                                                        eventCour = new Armature(bdd.getMusique(EXTRA_NOMPARTITION).getId(),m.getId(),1,nouvArmature,1);//TODO passage reprise et temps debut
+                                                                        bdd.save(eventCour);
+                                                                    }
+                                                                    varArmatureList = bdd.getArmature(bdd.getMusique(idMusique));
+                                                                    triListVarArmature();
+                                                                    partition.setArmature(varArmatureList);
+                                                                    //MAJ affichage
+                                                                    adapter = new MesureAdapter(EditionActivity.this, partition);
+                                                                    mGridView.setAdapter(adapter);
+                                                                    //maj liste events
+                                                                    varArmatureListSurMesureCour = eventsArmatureDeLaMesure(m.getId());
+                                                                    //TODO faire pour les aramture
+                                                                    adapterEventArmature = new EventArmatureAdapter(context,varArmatureListSurMesureCour);
+                                                                    eventArmatureListView.setAdapter(adapterEventArmature);
+                                                                }
+                                                            });
+                                                            popup.show();
+
+
 
                                                         }
                                                     });
@@ -455,6 +568,18 @@ public class EditionActivity  extends Activity {
         return res;
     }
 
+    private List<Armature> eventsArmatureDeLaMesure(int numMesure){
+        List<Armature> res = new ArrayList<>();
+        Armature event;
+        for(int i =0; i<varArmatureList.size();i++){
+            event = varArmatureList.get(i);
+            if(event.getMesure_debut() == numMesure){
+                res.add(event);
+            }
+        }
+        return res;
+    }
+
 
     //tri la liste de variations d'intensité
     private void triListVarIntensite(){
@@ -480,6 +605,22 @@ public class EditionActivity  extends Activity {
             public int compare(VariationTemps lhs, VariationTemps rhs) {
                 int t;
                 if(lhs.getMesure_debut() < rhs.getMesure_debut()){
+                    t=-1;
+                }else{
+                    t=1;
+                }
+                return  t;
+            }
+        });
+    }
+
+    //tri la liste de variations d'intensité
+    private void triListVarArmature(){
+        Collections.sort(varArmatureList, new Comparator<Armature>() {
+            @Override
+            public int compare(Armature lhs, Armature rhs) {
+                int t;
+                if(lhs.getMesure_debut()< rhs.getMesure_debut()){
                     t=-1;
                 }else{
                     t=1;
