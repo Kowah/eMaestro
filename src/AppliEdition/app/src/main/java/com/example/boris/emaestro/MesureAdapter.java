@@ -86,9 +86,16 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         if(mesure.getEventTpsSurMesure()){
             convertView.findViewById(R.id.tempoModif).setAlpha(1f);
             TextView t =(TextView)convertView.findViewById(R.id.tempoModif);
-            t.setText(""+mesure.getTempo());
+            t.setText(mesure.getTempo()+"\n"+mesure.getTempsMesure()+" temps");
         }else{
             convertView.findViewById(R.id.tempoModif).setAlpha(0f);
+        }
+
+        if(mesure.getDebutReprise()){
+            convertView.findViewById(R.id.debutReprise).setAlpha(1f);
+
+        }else{
+            convertView.findViewById(R.id.debutReprise).setAlpha(0f);
         }
         //on met a jour l'id de la view de la mesure
         ((TextView)convertView.findViewById(R.id.id)).setText(String.valueOf(mesure.getId()));

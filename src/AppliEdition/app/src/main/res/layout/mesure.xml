@@ -8,23 +8,61 @@
         android:layout_width="80dp"
         android:layout_height="50dp"
         android:background="@drawable/mesure"/>
+    <ImageView
+        android:id="@+id/PrePassage"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/prem_passage"/>
+    <ImageView
+        android:id="@+id/SecPassage"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/sec_passage"/>
+    <ImageView
+        android:id="@+id/debutReprise"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/debut_rep"/>
+
+    <ImageView
+        android:id="@+id/debutPassage"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/debut_passage"/>
+    <ImageView
+        android:id="@+id/barrePassage"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/barre_passage"/>
+
+    <ImageView
+        android:id="@+id/finPassage"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/debut_passage"/>
+    <ImageView
+        android:id="@+id/finReprise"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:background="@drawable/fin_reprise"/>
 
     <ImageView
         android:id="@+id/nuance"
         android:layout_width="80dp"
-        android:layout_height="50dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="12dp"
         android:alpha=".75"
         android:background="@color/neutre"/>
 
     <TextView
         android:id="@+id/id"
-        android:layout_width="80dp"
+        android:layout_width="40dp"
         android:layout_height="50dp"
         android:textColor="@android:color/black"
         android:textStyle="bold"
-        android:textSize="20px"
-        android:textAlignment="center"
-        android:text="1"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="40dp"
+
         />
 
     <TextView

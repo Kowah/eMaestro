@@ -448,7 +448,6 @@ public class EditionActivity  extends Activity {
                                                                     mGridView.setAdapter(adapter);
                                                                     //maj liste events
                                                                     varArmatureListSurMesureCour = eventsArmatureDeLaMesure(m.getId());
-                                                                    //TODO faire pour les aramture
                                                                     adapterEventArmature = new EventArmatureAdapter(context,varArmatureListSurMesureCour);
                                                                     eventArmatureListView.setAdapter(adapterEventArmature);
                                                                 }
