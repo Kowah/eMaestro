@@ -23,8 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
+import BDD.to.Alertes;
+import BDD.to.Armature;
 import BDD.to.Evenement;
+import BDD.to.MesuresNonLues;
 import BDD.to.Musique;
+import BDD.to.Partie;
+import BDD.to.Reprise;
+import BDD.to.Suspension;
+import BDD.to.VarRythmes;
+import BDD.to.VariationIntensite;
+import BDD.to.VariationTemps;
 import emulateur.EmulateurActivity;
 import telecommande.Telecommande;
 
@@ -37,26 +46,48 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		c = this;
 		setContentView(R.layout.ecran_accueil);
-		/*
+
 		//DataBaseManager.connect(this);
 		DataBaseManager db = new DataBaseManager(this);
 		db.open();
+		db.clean();
+		Musique m = new Musique("TEST",20);
 		long res = db.save(new Musique("TEST",20));
+		m.setId((int) res);
 		db.save(new VariationTemps((int) res,5,5,5,5));
 		db.save(new VariationIntensite((int) res, 6,6,6,6));
 		db.save(new Partie((int) res, 4, "DEBUG"));
-		db.save(new MesuresNonLues((int) res,1,1,1));
-		db.save(new Reprise((int) res, 2,2));
-		db.save(new Alertes((int) res,3,3,3,3));
-		db.save(new VarRythmes((int) res, 7,7,7,7));
-		db.save(new Suspension((int) res, 8,8,8,8));
-		db.save(new Armature((int) res, 9, 9, 9, 9));
+		long t1 = db.save(new MesuresNonLues((int) res,1,1,1));
+		long t2 = db.save(new Reprise((int) res, 2,2));
+		long t7 = db.save(new Reprise((int) res, 2222,2222));
+		long t3 = db.save(new Alertes((int) res,3,3,3,3));
+		long t4 = db.save(new VarRythmes((int) res, 7,7,7,7));
+		long t5 = db.save(new Suspension((int) res, 8,8,8,8));
+		long t6 = db.save(new Armature((int) res, 9, 9, 9, 9));
+		db.getParties(m);
+		db.getMesuresNonLues(m);
+		db.getVarRythmes(m);
+		for(Evenement r : db.getEvenement(m)){
+			System.out.println("ASAP" + r.getArg2());
+		}
+		db.close();
+
+		/*db.delete(new MesuresNonLues((int) t1, (int) res,11,12,13));
+		db.delete(new Reprise ((int) t2, (int) res, 21, 22));
+		db.delete(new Alertes((int) t3, (int) res, 31, 32, 33, 34));
+		db.delete(new VarRythmes((int) t4, (int) res, 71, 72, 73, 74));
+		db.delete(new Suspension((int) t5, (int) res, 81, 82, 83, 84));
+		db.delete(new Armature((int) t6,(int) res, 91, 92, 93, 94));
+		db.deleteArmature(m);
+		db.deleteReprise(m);
+		db.deleteReprise(m);
 		db.close();
 		CatalogueDAO bdd = new CatalogueDAO(this);
 		bdd.open();
-		bdd.save(new Musique((int) res,"TEST",20));
+		bdd.save(new Musique((int) res, "TEST", 20));
 		bdd.close();
 		*/
+
 		final ImageButton nouveau = (ImageButton) findViewById(R.id.nouveau);
 		nouveau.setOnClickListener(new OnClickListener() {
 			@Override
@@ -119,49 +150,50 @@ public class MainActivity extends Activity {
 				Context c = v.getContext();
 
 				WifiManager wifi = (WifiManager) v.getContext().getSystemService(v.getContext().WIFI_SERVICE);
-				List<android.net.wifi.ScanResult> scan = wifi.getScanResults();
+				if (wifi.isWifiEnabled()) {
+					List<android.net.wifi.ScanResult> scan = wifi.getScanResults();
 
-				final List<String> name = new ArrayList<String>();
-				for (android.net.wifi.ScanResult s : scan) {
-					//TODO: Garder que les reseaux commencant par maestro
-					name.add(s.SSID);
-				}
-				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-				LayoutInflater inflater = getLayoutInflater();
-				View convertView = (View) inflater.inflate(R.layout.wifi, null);
-				builder.setView(convertView);
-				ListView lv = (ListView) convertView.findViewById(R.id.listWifi);
-
-				lv.setOnItemClickListener(new OnItemClickListener() {
-					public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-						// Affichage de la donnée sélectionnée dans un textview
-						selected = position;
-						System.out.println(id +"asap touche" + position);
+					final List<String> name = new ArrayList<String>();
+					for (android.net.wifi.ScanResult s : scan) {
+						//TODO: Garder que les reseaux commencant par maestro
+						name.add(s.SSID);
 					}
-				});
+					AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+					LayoutInflater inflater = getLayoutInflater();
+					View convertView = (View) inflater.inflate(R.layout.wifi, null);
+					builder.setView(convertView);
+					ListView lv = (ListView) convertView.findViewById(R.id.listWifi);
 
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(),android.R.layout.simple_list_item_1,name.toArray(new String[name.size()]));
-				lv.setAdapter(adapter);
-				builder.setTitle("Wifi")
+					lv.setOnItemClickListener(new OnItemClickListener() {
+						public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+							// Affichage de la donnée sélectionnée dans un textview
+							selected = position;
+							System.out.println(id + "asap touche" + position);
+						}
+					});
 
-						.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								DataBaseManager.connect(getApplicationContext(), name.get(selected));
-								System.out.println("asap OK");
-							}
-						})
-						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								//TODO:
-								System.out.println("asap Cancel");
-							}
-						});
-				builder.show();
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, name.toArray(new String[name.size()]));
+					lv.setAdapter(adapter);
+					builder.setTitle("Wifi")
+
+							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									DataBaseManager.connect(getApplicationContext(), name.get(selected));
+									System.out.println("asap OK");
+								}
+							})
+							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									//TODO:
+									System.out.println("asap Cancel");
+								}
+							});
+					builder.show();
+				}
+
 			}
-
-
 		});
 	}
 

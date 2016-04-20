@@ -2,17 +2,17 @@ package BDD.to;
 
 
 public class Evenement {
-    private int id = -1;
-    private int idMusique;
-    private int flag;
-    private int mesure_debut;
-    private int arg2;
-    private int passage_reprise;
-    private int arg3;
+    protected int id = -1;
+    protected int idMusique;
+    protected int flag;
+    protected int mesure_debut;
+    protected int arg2;
+    protected int passage_reprise;
+    protected float arg3;
 
     public Evenement(){}
 
-    public Evenement(int id, int idMusique, int flag, int mesure_debut, int arg2, int passage_reprise, int arg3){
+    public Evenement(int id, int idMusique, int flag, int mesure_debut, int arg2, int passage_reprise, float arg3){
         this.id = id;
         this.idMusique = idMusique;
         this.flag = flag;
@@ -32,7 +32,7 @@ public class Evenement {
     }
 
     public void setId(int id){this.id = id;}
-    public void setFlag(int flaf){this.flag = flag;}
+    public void setFlag(int flag){this.flag = flag;}
     public void setIdMusiquet(int idMusique) {this.idMusique = idMusique;}
     public void setMesure_debut(int mesure_debut) {this.mesure_debut = mesure_debut;}
     public void setArg2(int arg2) {this.arg2 = arg2;}
@@ -44,6 +44,6 @@ public class Evenement {
     public int getMesure_debut() {return mesure_debut;}
     public int getArg2(){return arg2;}
     public int getPassage_reprise(){return passage_reprise;}
-    public int getArg3() {return arg3;}
+    public float getArg3() {return arg3;}
 
 }

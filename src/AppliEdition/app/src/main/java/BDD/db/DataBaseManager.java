@@ -69,9 +69,11 @@ public class DataBaseManager {
 		database.delete(DataBaseHelper.MUSIQUE_TABLE, null, null);
 		database.delete(DataBaseHelper.VarIntensite_Table, null, null);
 		database.delete(DataBaseHelper.VarTemps_Table, null, null);
-        database.delete(DataBaseHelper.Evenement_Table,null,null);
+        database.delete(DataBaseHelper.Evenement_Table, null, null);
         database.delete(DataBaseHelper.Partie_Table, null, null);
 		database.delete(DataBaseHelper.CATALOGUE_TABLE, null, null);
+        database.delete(DataBaseHelper.Armature_Table, null, null);
+        database.delete(DataBaseHelper.Suspension_Table, null, null);
 	}
 
 	//Ferme la connection avec la bdd
@@ -128,13 +130,15 @@ public class DataBaseManager {
 
 		return database.insert(DataBaseHelper.Partie_Table, null, values);
 	}
+    /*
     //Permet de sauvegarder les mesures non lues en paramétres dans la base
     //@return l'id dans la BDD
     public long save(MesuresNonLues m) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, m.getIdMusique());
+        values.put(DataBaseHelper.FLAG, m.getFlag());
         values.put(DataBaseHelper.MESURE_DEBUT, m.getMesure_debut());
-        values.put(DataBaseHelper.MESURE_FIN, m.getMesure_fin());
+        values.put(DataBaseHelper.ARG2, m.getArg2());
         values.put(DataBaseHelper.PASSAGE_REPRISE, m.getPassage_reprise());
 
         return database.insert(DataBaseHelper.Mesures_non_lues_Table, null, values);
@@ -144,8 +148,10 @@ public class DataBaseManager {
     public long save(Reprise reprise) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, reprise.getIdMusique());
+        values.put(DataBaseHelper.FLAG, reprise.getFlag());
         values.put(DataBaseHelper.MESURE_DEBUT, reprise.getMesure_debut());
-        values.put(DataBaseHelper.MESURE_FIN, reprise.getMesure_fin());
+        values.put(DataBaseHelper.ARG2, reprise.getArg2());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, reprise.getPassage_reprise());
 
         return database.insert(DataBaseHelper.Reprises_Table, null, values);
     }
@@ -203,7 +209,7 @@ public class DataBaseManager {
 
 
         return database.insert(DataBaseHelper.Armature_Table, null, values);
-    }
+    }*/
     public long save(Evenement e){
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, e.getIdMusique());
@@ -214,6 +220,7 @@ public class DataBaseManager {
         values.put(DataBaseHelper.ARG3, e.getArg3());
         return database.insert(DataBaseHelper.Evenement_Table, null, values);
     }
+
 	/****************
 	 * Update
 	 ****************/
@@ -273,12 +280,13 @@ public class DataBaseManager {
 		Log.d("Update Result:", "=" + result);
 		return result;
 	}
+    /*
     //Permet de mettre a jour la mesure non lue passé en paramétre dans la table mesure non lue
     public long update(MesuresNonLues m) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, m.getIdMusique());
         values.put(DataBaseHelper.MESURE_DEBUT, m.getMesure_debut());
-        values.put(DataBaseHelper.MESURE_FIN, m.getMesure_fin());
+        values.put(DataBaseHelper.ARG2, m.getArg2());
         values.put(DataBaseHelper.PASSAGE_REPRISE, m.getPassage_reprise());
 
         long result = database.update(DataBaseHelper.Mesures_non_lues_Table, values,
@@ -362,6 +370,7 @@ public class DataBaseManager {
         Log.d("Update Result:", "=" + result);
         return result;
     }
+    */
     //Permet de mettre a jour l'evenement passé en paramétre dans la table evenement
     public long update(Evenement e) {
         ContentValues values = new ContentValues();
@@ -389,13 +398,13 @@ public class DataBaseManager {
 		this.deletePartie(musique);
         this.deleteEvenement(musique);
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
-				WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
+                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
 	}
 
 	//Permet de supprimer toute les variations de temps associés à une musique
 	public int deleteVarTemps(Musique musique) {
 		return database.delete(DataBaseHelper.VarTemps_Table,
-				WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
+                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
 	}
 
 	//Permet de supprimer une variation de temps de la table VarTemps
@@ -422,67 +431,67 @@ public class DataBaseManager {
 				WHERE_ID_PARTIE_EQUALS, new String[]{partie.getId() + ""});
 	}
 
-    public int deleteMesureNonLue(Musique musique) {
-        return database.delete(DataBaseHelper.Mesures_non_lues_Table,
-                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
-    }
+    /*
     public int delete(MesuresNonLues m){
         return database.delete(DataBaseHelper.Mesures_non_lues_Table,
                 WHERE_ID_MESURE_NON_LUE_EQUALS, new String[]{m.getId() + ""});
-    }
-
-    public int deleteReprise(Musique musique) {
-        return database.delete(DataBaseHelper.Reprises_Table,
-                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
     }
     public int delete(Reprise reprise){
         return database.delete(DataBaseHelper.Reprises_Table,
                 WHERE_ID_Reprise_EQUALS, new String[]{reprise.getId() + ""});
     }
-
-    public int deleteAlerte(Musique musique) {
-        return database.delete(DataBaseHelper.Alerte_Table,
-                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
-    }
     public int delete(Alertes alertes){
         return database.delete(DataBaseHelper.Alerte_Table,
                 WHERE_ID_ALERTES_EQUALS, new String[]{alertes.getId() + ""});
-    }
-
-    public int deleteVarRythmes(Musique musique) {
-        return database.delete(DataBaseHelper.Variation_Rythme_Table,
-                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
     }
     public int delete(VarRythmes varRythmes){
         return database.delete(DataBaseHelper.Variation_Rythme_Table,
                 WHERE_ID_VAR_RYTHMES_EQUALS, new String[]{varRythmes.getId() + ""});
     }
-
-    public int deleteSuspension(Musique musique) {
-        return database.delete(DataBaseHelper.Suspension_Table,
-                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
-    }
     public int delete(Suspension suspension){
         return database.delete(DataBaseHelper.Suspension_Table,
                 WHERE_ID_SUSPENSION_EQUALS, new String[]{suspension.getId() + ""});
     }
-
-    public int deleteArmature(Musique musique) {
-        return database.delete(DataBaseHelper.Armature_Table,
-                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
-    }
-    public int delete(Armature armature){
+     public int delete(Armature armature){
         return database.delete(DataBaseHelper.Armature_Table,
                 WHERE_ID_ARMATURE_EQUALS, new String[]{armature.getId() + ""});
+    }*/
+    //Permet de supprimer un evenement particulier
+    public int delete(Evenement e) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_EVENEMENT_EQUALS, new String[]{e.getId() + ""});
     }
+/********************************/
+    String and = " AND " + DataBaseHelper.FLAG + " =?";
     public int deleteEvenement(Musique musique) {
         return database.delete(DataBaseHelper.Evenement_Table,
                 WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
     }
-    public int delete(Evenement e){
+    public int deleteMesureNonLue(Musique musique) {
         return database.delete(DataBaseHelper.Evenement_Table,
-                WHERE_ID_EVENEMENT_EQUALS, new String[]{e.getId() + ""});
+                WHERE_ID_MUSIQUE_EQUALS + and, new String[]{musique.getId() + "", String.valueOf(DataBaseHelper.FLAG_MNL)});
     }
+    public int deleteReprise(Musique musique) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_MUSIQUE_EQUALS + and, new String[]{musique.getId() + "", String.valueOf(DataBaseHelper.FLAG_REPRISE)});
+    }
+    public int deleteArmature(Musique musique) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_MUSIQUE_EQUALS + and, new String[]{musique.getId() + "", String.valueOf(DataBaseHelper.FLAG_ARMATURE)});
+    }
+    public int deleteSuspension(Musique musique) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_MUSIQUE_EQUALS + and, new String[]{musique.getId() + "", String.valueOf(DataBaseHelper.FLAG_SUSPENSION)});
+    }
+    public int deleteVarRythmes(Musique musique) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_MUSIQUE_EQUALS + and, new String[]{musique.getId() + "", String.valueOf(DataBaseHelper.FLAG_VARRYTHMES)});
+    }
+    public int deleteAlerte(Musique musique) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_MUSIQUE_EQUALS + and, new String[]{musique.getId() + "", String.valueOf(DataBaseHelper.FLAG_ALERTE)});
+    }
+
 	/****************
 	 * GET
 	 *************/
@@ -620,18 +629,18 @@ public class DataBaseManager {
     public ArrayList<MesuresNonLues> getMesuresNonLues(Musique musique) {
         ArrayList<MesuresNonLues> mnl = new ArrayList<>();
         final String query = "SELECT * FROM "
-                + DataBaseHelper.Mesures_non_lues_Table
-                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=?  AND "+ DataBaseHelper.FLAG+" =?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId()), Integer.toString(DataBaseHelper.FLAG_MNL)});
         while (cursor.moveToNext()) {
             MesuresNonLues m = new MesuresNonLues();
             m.setId(cursor.getInt(0));
             m.setIdMusiquet(cursor.getInt(1));
             m.setMesure_debut(cursor.getInt(2));
-            m.setMesure_fin(cursor.getInt(3));
+            m.setArg2(cursor.getInt(3));
             m.setPassage_reprise(cursor.getInt(4));
 
             mnl.add(m);
@@ -644,12 +653,12 @@ public class DataBaseManager {
     public ArrayList<Reprise> getReprises(Musique musique) {
         ArrayList<Reprise> reprises = new ArrayList<>();
         final String query = "SELECT * FROM "
-                + DataBaseHelper.Mesures_non_lues_Table
-                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=?  AND "+ DataBaseHelper.FLAG+" =?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId()), Integer.toString(DataBaseHelper.FLAG_REPRISE)});
         while (cursor.moveToNext()) {
             Reprise reprise = new Reprise();
             reprise.setId(cursor.getInt(0));
@@ -667,12 +676,12 @@ public class DataBaseManager {
     public ArrayList<Alertes> getAlertes(Musique musique) {
         ArrayList<Alertes> alertes = new ArrayList<>();
         final String query = "SELECT * FROM "
-                + DataBaseHelper.Alerte_Table
-                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=?  AND "+ DataBaseHelper.FLAG+" =?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId()), Integer.toString(DataBaseHelper.FLAG_ALERTE)});
         while (cursor.moveToNext()) {
             Alertes alerte = new Alertes();
             alerte.setId(cursor.getInt(0));
@@ -691,12 +700,12 @@ public class DataBaseManager {
     public ArrayList<VarRythmes> getVarRythmes(Musique musique) {
         ArrayList<VarRythmes> varRythmes = new ArrayList<>();
         final String query = "SELECT * FROM "
-                + DataBaseHelper.Variation_Rythme_Table
-                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=?  AND "+ DataBaseHelper.FLAG+" =?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId()), Integer.toString(DataBaseHelper.FLAG_VARRYTHMES)});
         while (cursor.moveToNext()) {
             VarRythmes varRythme = new VarRythmes();
             varRythme.setId(cursor.getInt(0));
@@ -711,16 +720,16 @@ public class DataBaseManager {
         cursor.close();
         return varRythmes;
     }
-    //Permet d'obtenir toutes les reprises non lues asscociés à cette musqiue
+    //Permet d'obtenir toutes les suspensions asscociés à cette musqiue
     public ArrayList<Suspension> getSuspension(Musique musique) {
         ArrayList<Suspension> suspensions = new ArrayList<>();
         final String query = "SELECT * FROM "
-                + DataBaseHelper.Suspension_Table
-                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=?  AND "+ DataBaseHelper.FLAG+" =?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId()), Integer.toString(DataBaseHelper.FLAG_SUSPENSION)});
         while (cursor.moveToNext()) {
             Suspension suspension = new Suspension();
             suspension.setId(cursor.getInt(0));
@@ -735,16 +744,16 @@ public class DataBaseManager {
         cursor.close();
         return suspensions;
     }
-    //Permet d'obtenir toutes les armatures non lues asscociés à cette musqiue
+    //Permet d'obtenir toutes les armatures asscociés à cette musqiue
     public ArrayList<Armature> getArmature(Musique musique) {
         ArrayList<Armature> armatures = new ArrayList<>();
         final String query = "SELECT * FROM "
-                + DataBaseHelper.Armature_Table
-                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=?  AND "+ DataBaseHelper.FLAG+" =?;";
 
 
         Log.d("query", query);
-        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId()), Integer.toString(DataBaseHelper.FLAG_ARMATURE)});
         while (cursor.moveToNext()) {
             Armature armature = new Armature();
             armature.setId(cursor.getInt(0));
@@ -759,7 +768,7 @@ public class DataBaseManager {
         cursor.close();
         return armatures;
     }
-    //Permet d'obtenir toutes les armatures non lues asscociés à cette musqiue
+    //Permet d'obtenir toutes les evenenements asscociés à cette musqiue
     public ArrayList<Evenement> getEvenement(Musique musique) {
         ArrayList<Evenement> events = new ArrayList<>();
         final String query = "SELECT * FROM "
