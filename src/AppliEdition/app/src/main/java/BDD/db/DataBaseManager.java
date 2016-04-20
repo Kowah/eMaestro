@@ -721,12 +721,14 @@ public class DataBaseManager {
         return armatures;
     }
 
-	public static void connect(Context c) {
+	public static void connect(Context c, String Ssid) {
 		//String networkSSID = "\"wifsic-free\"";
-		String networkSSID = "\"Maestro\"";
+		String networkSSID = "\""+Ssid+"\"";
 		WifiManager wifi = (WifiManager) c.getSystemService(c.WIFI_SERVICE);
 		ConnectivityManager wifi_manager = (ConnectivityManager) c.getSystemService(c.CONNECTIVITY_SERVICE);
-		boolean exist = false;
+        Toast.makeText(c, "Connection a : " + Ssid, Toast.LENGTH_LONG).show();
+
+        boolean exist = false;
 		int res = -1;
 		if (!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
 			wifi.disconnect();
@@ -760,15 +762,11 @@ public class DataBaseManager {
 	}
 
 	public static void disconnect(Context c) {
-		//String networkSSID = "\"wifsic-free\"";
-		String networkSSID = "\"Maestro\"";
 		WifiManager wifi = (WifiManager) c.getSystemService(c.WIFI_SERVICE);
-		ConnectivityManager wifi_manager = (ConnectivityManager) c.getSystemService(c.CONNECTIVITY_SERVICE);
-		if(wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
-			wifi.removeNetwork(wifi.getConnectionInfo().getNetworkId());
+        wifi.disconnect();
 		}
 	}
-}
+
 
 
 
