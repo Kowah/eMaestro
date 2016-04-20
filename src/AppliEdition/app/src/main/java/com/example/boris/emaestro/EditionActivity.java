@@ -51,6 +51,7 @@ public class EditionActivity  extends Activity {
     List<VariationTemps> varTempsList;
     List<VariationIntensite> varIntensiteList;
     List<Armature> varArmatureList;
+    List<Reprise> varRepriseList;
 
 
     // view du menu
@@ -63,26 +64,22 @@ public class EditionActivity  extends Activity {
 
 
     //modif nuance
-    Spinner mNuanceSpinner;
-    Spinner mNuanceDebutSpinner;
     ArrayAdapter<String> dataAdapterNuance;
-    String nuance;
-    List<VariationIntensite> chevaucheNuanceList;
-    int tpsDebut;
-    //spinner chgt tempsMesure Nuance
-    List<String> tempsMesure = new ArrayList<>();
 
 
 
 
     static ListView eventNuanceListView;
-    EventNuanceAdapter adapterEventNuance;
+     EventNuanceAdapter adapterEventNuance;
     static ListView eventArmatureListView;
+    static ListView eventRepriseListView;
 
     EventArmatureAdapter adapterEventArmature;
+    EventRepriseAdapter adapterEventReprise;
 
     List<VariationIntensite> varIntensiteListSurMesureCour;
     List<Armature> varArmatureListSurMesureCour;
+    List<Reprise> varRepriseListSurMesureCour;
 
     //debug
     TextView debug;
@@ -114,6 +111,7 @@ public class EditionActivity  extends Activity {
         varIntensiteList = new ArrayList<>();
         varTempsList = new ArrayList<>();
         varArmatureList = new ArrayList<>();
+        varRepriseList = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -145,11 +143,13 @@ public class EditionActivity  extends Activity {
         varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
         varTempsList = bdd.getVariationsTemps(bdd.getMusique(EXTRA_NOMPARTITION));
         varArmatureList = bdd.getArmature(bdd.getMusique(EXTRA_NOMPARTITION));
+        varRepriseList = bdd.getReprises(bdd.getMusique(EXTRA_NOMPARTITION));
 
         //On trie nos listes en ordre croissant d'id de mesure
         triListVarIntensite();
         triListVarTemps();
         triListVarArmature();
+        triListVarReprise();
 
 
         //-----------------------
@@ -165,6 +165,9 @@ public class EditionActivity  extends Activity {
         for(int i = 0; i<varArmatureList.size();i++){
             debug.setText(debug.getText().toString() + varArmatureList.size() + "\n nouveau event debut à :" + (varArmatureList.get(i).getMesure_debut() ) + " alteration : " + varArmatureList.get(i).getAlteration());
         }
+        for(int i = 0; i<varRepriseList.size();i++){
+            debug.setText(debug.getText().toString() + varRepriseList.size() + "\n nouveau event debut à :" + (varRepriseList.get(i).getMesure_debut() ) + " reprise jusqu'au temps: " + varRepriseList.get(i).getMesure_fin());
+        }
         //-----------------------
         //debug msg
         //-----------------------
@@ -173,6 +176,7 @@ public class EditionActivity  extends Activity {
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
         partition.setArmature(varArmatureList);
+        partition.setReprise(varRepriseList);
 
 
         adapter = new MesureAdapter(EditionActivity.this, partition);
@@ -208,6 +212,12 @@ public class EditionActivity  extends Activity {
                 eventArmatureListView = (ListView) popupView.findViewById(R.id.listEventArmature);
                 adapterEventArmature = new EventArmatureAdapter(context,varArmatureListSurMesureCour);
                 eventArmatureListView.setAdapter(adapterEventArmature);
+
+                //affiche event de Reprise present sur la mesure
+                varRepriseListSurMesureCour = eventsRepriseDeLaMesure(m.getId());
+                eventRepriseListView = (ListView) popupView.findViewById(R.id.listEventReprise);
+                adapterEventReprise = new EventRepriseAdapter(context,varRepriseListSurMesureCour);
+                eventRepriseListView.setAdapter(adapterEventReprise);
 
 
                 Button newEvent = (Button) popupView.findViewById(R.id.newEvent);
@@ -531,10 +541,7 @@ public class EditionActivity  extends Activity {
 
                 popup.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //MAJ affichage
-                        adapter = new MesureAdapter(EditionActivity.this, partition);
-                        mGridView.setAdapter(adapter);
-                        // on ne modifie rien
+                        MAJAffichage();
                     }
                 });
                 popup.setPositiveButton("Confirmer", new DialogInterface.OnClickListener() {
@@ -562,17 +569,7 @@ public class EditionActivity  extends Activity {
 
                         }
                         //MAJ affichage
-                        varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
-                        varIntensiteList =  bdd.getVariationsIntensite(bdd.getMusique(idMusique));
-                        varArmatureList =  bdd.getArmature(bdd.getMusique(idMusique));
-                        triListVarIntensite();
-                        triListVarArmature();
-                        triListVarTemps();
-                        partition.setTempo(varTempsList);
-                        partition.setNuance(varIntensiteList);
-                        partition.setArmature(varArmatureList);
-                        adapter = new MesureAdapter(EditionActivity.this, partition);
-                        mGridView.setAdapter(adapter);
+                       MAJAffichage();
                     }
                 });
                 popup.show();
@@ -598,6 +595,18 @@ public class EditionActivity  extends Activity {
         return res;
     }
 
+
+            private List<Reprise> eventsRepriseDeLaMesure(int numMesure){
+        List<Reprise> res = new ArrayList<>();
+        Reprise event;
+        for(int i =0; i<varRepriseList.size();i++){
+            event = varRepriseList.get(i);
+            if(event.getMesure_debut() == numMesure){
+                res.add(event);
+            }
+        }
+        return res;
+    }
     private List<VariationIntensite> eventsNuanceDeLaMesure(int numMesure){
         List<VariationIntensite> res = new ArrayList<>();
         VariationIntensite event;
@@ -674,6 +683,40 @@ public class EditionActivity  extends Activity {
         });
     }
 
+    private void triListVarReprise(){
+        Collections.sort(varRepriseList, new Comparator<Reprise>() {
+            @Override
+            public int compare(Reprise lhs, Reprise rhs) {
+                int t;
+                if(lhs.getMesure_debut()< rhs.getMesure_debut()){
+                    t=-1;
+                }else{
+                    t=1;
+                }
+                return  t;
+            }
+        });
+    }
+
+
+    public void MAJAffichage(){
+        varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
+        varIntensiteList =  bdd.getVariationsIntensite(bdd.getMusique(idMusique));
+        varArmatureList =  bdd.getArmature(bdd.getMusique(idMusique));
+        varRepriseList = bdd.getReprises(bdd.getMusique(idMusique));
+        triListVarIntensite();
+        triListVarArmature();
+        triListVarTemps();
+        triListVarReprise();
+        partition.setTempo(varTempsList);
+        partition.setNuance(varIntensiteList);
+        partition.setArmature(varArmatureList);
+        partition.setReprise(varRepriseList);
+        adapter = new MesureAdapter(EditionActivity.this, partition);
+        mGridView.setAdapter(adapter);
+
+
+    }
 
     @Override
     public void onBackPressed() {
