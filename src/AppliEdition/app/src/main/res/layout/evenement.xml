@@ -13,12 +13,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Editer"
-        android:id="@+id/editer" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Supprimer"
         android:id="@+id/supprimer" />
 

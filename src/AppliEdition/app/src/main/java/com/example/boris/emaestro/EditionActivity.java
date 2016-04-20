@@ -78,6 +78,9 @@ public class EditionActivity  extends Activity {
 
     static ListView eventNuanceListView;
     EventNuanceAdapter adapterEventNuance;
+    static ListView eventArmatureListView;
+
+    EventArmatureAdapter adapterEventArmature;
 
     List<VariationIntensite> varIntensiteListSurMesureCour;
     List<Armature> varArmatureListSurMesureCour;
@@ -202,6 +205,12 @@ public class EditionActivity  extends Activity {
                 eventNuanceListView = (ListView) popupView.findViewById(R.id.listEventNuance);
                 adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
                 eventNuanceListView.setAdapter(adapterEventNuance);
+
+                //affiche event d'armature present sur la mesure
+                varArmatureListSurMesureCour = eventsArmatureDeLaMesure(m.getId());
+                eventArmatureListView = (ListView) popupView.findViewById(R.id.listEventArmature);
+                adapterEventArmature = new EventArmatureAdapter(context,varArmatureListSurMesureCour);
+                eventArmatureListView.setAdapter(adapterEventArmature);
 
 
                 Button newEvent = (Button) popupView.findViewById(R.id.newEvent);
@@ -433,8 +442,8 @@ public class EditionActivity  extends Activity {
                                                                     //maj liste events
                                                                     varArmatureListSurMesureCour = eventsArmatureDeLaMesure(m.getId());
                                                                     //TODO faire pour les aramture
-                                                                    //adapterEventNuance = new EventNuanceAdapter(context,varIntensiteListSurMesureCour);
-                                                                    //eventNuanceListView.setAdapter(adapterEventNuance);
+                                                                    adapterEventArmature = new EventArmatureAdapter(context,varArmatureListSurMesureCour);
+                                                                    eventArmatureListView.setAdapter(adapterEventArmature);
                                                                 }
                                                             });
                                                             popup.show();

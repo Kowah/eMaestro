@@ -206,6 +206,25 @@ public class Partition {
 
     }
 
+
+    public static String ConvertArmatureFromInt(int n) {
+      String s="";
+        if(n>0){
+            s = n + " Dièse";
+        }
+        else if( n<0){
+            s = -n + " Bémol";
+        }
+        else{
+            s="Sans altération";
+        }
+
+        if(n>1 || n<-1){
+            s+="s";
+        }
+        return s;
+    }
+    
     public static Nuance ConvertNuanceFromInt(int n) {
         Nuance s;
         switch (n) {
