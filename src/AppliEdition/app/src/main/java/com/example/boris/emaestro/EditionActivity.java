@@ -52,6 +52,7 @@ public class EditionActivity  extends Activity {
     List<VariationIntensite> varIntensiteList;
     List<Armature> varArmatureList;
     List<Reprise> varRepriseList;
+    List<MesuresNonLues> varMesuresNonLues;
 
 
     // view du menu
@@ -112,6 +113,7 @@ public class EditionActivity  extends Activity {
         varTempsList = new ArrayList<>();
         varArmatureList = new ArrayList<>();
         varRepriseList = new ArrayList<>();
+        varMesuresNonLues = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -144,12 +146,14 @@ public class EditionActivity  extends Activity {
         varTempsList = bdd.getVariationsTemps(bdd.getMusique(EXTRA_NOMPARTITION));
         varArmatureList = bdd.getArmature(bdd.getMusique(EXTRA_NOMPARTITION));
         varRepriseList = bdd.getReprises(bdd.getMusique(EXTRA_NOMPARTITION));
+        varMesuresNonLues = bdd.getMesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION));
 
         //On trie nos listes en ordre croissant d'id de mesure
         triListVarIntensite();
         triListVarTemps();
         triListVarArmature();
         triListVarReprise();
+        //TODO trier varMesuresNonLues
 
 
         //-----------------------
@@ -168,6 +172,9 @@ public class EditionActivity  extends Activity {
         for(int i = 0; i<varRepriseList.size();i++){
             debug.setText(debug.getText().toString() + varRepriseList.size() + "\n nouveau event debut à :" + (varRepriseList.get(i).getMesure_debut() ) + " reprise jusqu'au temps: " + varRepriseList.get(i).getMesure_fin());
         }
+        for(int i = 0; i<varMesuresNonLues.size();i++){
+            debug.setText(debug.getText().toString() +varMesuresNonLues.size() + "\n nouveau event debut à :" + (varMesuresNonLues.get(i).getMesure_debut() ) + " Mesure non lues jusqu'à: " + varMesuresNonLues.get(i).getMesure_fin());
+        }//TODO faire un affiche plus complet de l'event mesure non lues
         //-----------------------
         //debug msg
         //-----------------------
