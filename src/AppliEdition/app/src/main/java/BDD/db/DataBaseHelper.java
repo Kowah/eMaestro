@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "emaestro";
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 6;
     //LES TABLES
 	public static final String MUSIQUE_TABLE = "Musique";
 	public static final String CATALOGUE_TABLE = "Catalogue";
@@ -21,7 +21,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	public static final String Variation_Rythme_Table = "VariationRythme";
 	public static final String Suspension_Table = "Suspension";
 	public static final String Armature_Table = "Armature";
-
+	public static final String Evenement_Table = "Evenement";
 
 
 	/***********************************************************************/
@@ -269,6 +269,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	private static final String Armature_TABLE_DROP = "DROP TABLE IF EXISTS "
 			+ Armature_Table;
 
+	/***********************************************************************/
+	/******************************Evenement********************************/
+	/***********************************************************************/
+	//Colonnes
+	public static final String IDEvenement = "id_evenement";
+	public static final String FLAG = "flag";
+	//public static final String MESURE_DEBUT = "mesure";
+	public static final String ARG2 = "arg2";
+	public static final String ARG3 = "arg3";
+	//public static final String PASSAGE_REPRISE = "passage_reprise";
+	//Creation de la table
+	private static final String CREATE_EVENEMENT_TABLE =
+			"CREATE TABLE " + Evenement_Table + " ("
+					+ IDEvenement + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ IDMusique + " INTEGER, "
+					+ FLAG + " INTEGER, "
+					+ MESURE_DEBUT + " INTEGER, "
+					+ ARG2 + " INTEGER, "
+					+ PASSAGE_REPRISE + " INTEGER, "
+					+ ARG3 + " INTEGER "
+					+ ");";
+	//Destruction de la table
+	private static final String EVENEMENT_TABLE_DROP = "DROP TABLE IF EXISTS "
+			+ Evenement_Table;
+
 	/*
 	//L'instance de notre base de données
 		private static DataBaseHelper instance;
@@ -308,6 +333,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_VariationRythme_TABLE);
 		db.execSQL(CREATE_Suspension_TABLE);
 		db.execSQL(CREATE_Armature_TABLE);
+		db.execSQL(CREATE_EVENEMENT_TABLE);
 	}
 
 	//Supprime et recrée les tables si mises a jour de la base de données
@@ -324,6 +350,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 		db.execSQL(VaritationRythme_TABLE_DROP);
 		db.execSQL(Suspension_TABLE_DROP);
 		db.execSQL(Armature_TABLE_DROP);
+		db.execSQL(EVENEMENT_TABLE_DROP);
 		this.onCreate(db);
 	}
 }

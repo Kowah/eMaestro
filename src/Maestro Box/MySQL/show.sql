@@ -8,3 +8,4 @@ SELECT * FROM Alerte;
 SELECT * FROM VariationRythme;
 SELECT * FROM Suspension;
 SELECT * FROM Armature;
+SELECT * FROM Evenement;

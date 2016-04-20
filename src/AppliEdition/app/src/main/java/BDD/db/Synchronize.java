@@ -15,6 +15,7 @@ import java.util.List;
 
 import BDD.to.Alertes;
 import BDD.to.Armature;
+import BDD.to.Evenement;
 import BDD.to.MesuresNonLues;
 import BDD.to.Musique;
 import BDD.to.Partie;
@@ -90,6 +91,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
         List<VarRythmes> varRythmes;
         List<Suspension> suspensions;
         List<Armature> armatures;
+        List<Evenement> evenements;
         DataBaseManager bdd = new DataBaseManager(context);
         bdd.open();
 
@@ -107,6 +109,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
         String queryCleanVarRythme = "TRUNCATE TABLE " + DataBaseHelper.Variation_Rythme_Table;
         String queryCleanSuspension = "TRUNCATE TABLE " + DataBaseHelper.Suspension_Table;
         String queryCleanArmature = "TRUNCATE TABLE " + DataBaseHelper.Armature_Table;
+        String queryCleanEvenement = "TRUNCATE TABLE " + DataBaseHelper.Evenement_Table;
 
         String queryMusic = "Insert into " + DataBaseHelper.MUSIQUE_TABLE + " ("
                 + DataBaseHelper.IDMusique + ","
@@ -180,6 +183,15 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
                 + DataBaseHelper.Alteration  + ","
                 + DataBaseHelper.PASSAGE_REPRISE + ")"
                 +" values(?,?,?,?,?,?);";
+        String queryEvenement = "Insert into " + DataBaseHelper.Evenement_Table + " ("
+                + DataBaseHelper.IDEvenement + ","
+                + DataBaseHelper.IDMusique + ","
+                + DataBaseHelper.FLAG + ","
+                + DataBaseHelper.MESURE_DEBUT + ","
+                + DataBaseHelper.ARG2 + ","
+                + DataBaseHelper.PASSAGE_REPRISE  + ","
+                + DataBaseHelper.ARG3 + ")"
+                +" values(?,?,?,?,?,?);";
         //Etape 0 : Connection a la bdd distante
         Connection co = ConnectonJDBC.getConnection();
         if (co == null) {
@@ -209,6 +221,8 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
                 st = co.prepareStatement(queryCleanSuspension);
                 st.execute();
                 st = co.prepareStatement(queryCleanArmature);
+                st.execute();
+                st = co.prepareStatement(queryCleanEvenement);
                 st.execute();
 
                 //Etape 2: remplir la table musique
@@ -312,6 +326,18 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
                         st.setInt(4, v.getTemps_debut());
                         st.setInt(5, v.getAlteration());
                         st.setInt(6, v.getPassage_reprise());
+                        st.execute();
+                    }
+                    evenements = bdd.getEvenement(m);
+                    for (Evenement e : evenements){
+                        st = co.prepareStatement(queryEvenement);
+                        st.setInt(1, e.getId());
+                        st.setInt(2, e.getIdMusique());
+                        st.setInt(3, e.getFlag());
+                        st.setInt(4, e.getMesure_debut());
+                        st.setInt(5, e.getArg2());
+                        st.setInt(6, e.getPassage_reprise());
+                        st.setInt(7, e.getArg3());
                         st.execute();
                     }
                 }

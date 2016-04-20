@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import BDD.to.Alertes;
 import BDD.to.Armature;
+import BDD.to.Evenement;
 import BDD.to.MesuresNonLues;
 import BDD.to.Musique;
 import BDD.to.Partie;
@@ -46,6 +47,8 @@ public class DataBaseManager {
             + " =?";
     private static final String WHERE_ID_ARMATURE_EQUALS = DataBaseHelper.IDArmature
             + " =?";
+    private static final String WHERE_ID_EVENEMENT_EQUALS = DataBaseHelper.IDEvenement
+            + " =?";
 
     protected SQLiteDatabase database;
 	private BDD.db.DataBaseHelper dbHelper;
@@ -66,6 +69,8 @@ public class DataBaseManager {
 		database.delete(DataBaseHelper.MUSIQUE_TABLE, null, null);
 		database.delete(DataBaseHelper.VarIntensite_Table, null, null);
 		database.delete(DataBaseHelper.VarTemps_Table, null, null);
+        database.delete(DataBaseHelper.Evenement_Table,null,null);
+        database.delete(DataBaseHelper.Partie_Table, null, null);
 		database.delete(DataBaseHelper.CATALOGUE_TABLE, null, null);
 	}
 
@@ -199,7 +204,16 @@ public class DataBaseManager {
 
         return database.insert(DataBaseHelper.Armature_Table, null, values);
     }
-
+    public long save(Evenement e){
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, e.getIdMusique());
+        values.put(DataBaseHelper.FLAG, e.getFlag());
+        values.put(DataBaseHelper.MESURE_DEBUT, e.getMesure_debut());
+        values.put(DataBaseHelper.ARG2, e.getArg2());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, e.getPassage_reprise());
+        values.put(DataBaseHelper.ARG3, e.getArg3());
+        return database.insert(DataBaseHelper.Evenement_Table, null, values);
+    }
 	/****************
 	 * Update
 	 ****************/
@@ -348,6 +362,22 @@ public class DataBaseManager {
         Log.d("Update Result:", "=" + result);
         return result;
     }
+    //Permet de mettre a jour l'evenement passé en paramétre dans la table evenement
+    public long update(Evenement e) {
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.IDMusique, e.getIdMusique());
+        values.put(DataBaseHelper.FLAG, e.getFlag());
+        values.put(DataBaseHelper.MESURE_DEBUT, e.getMesure_debut());
+        values.put(DataBaseHelper.ARG2, e.getArg2());
+        values.put(DataBaseHelper.PASSAGE_REPRISE, e.getPassage_reprise());
+        values.put(DataBaseHelper.ARG3, e.getArg3());
+
+        long result = database.update(DataBaseHelper.Evenement_Table, values,
+                WHERE_ID_EVENEMENT_EQUALS,
+                new String[]{String.valueOf(e.getId())});
+        Log.d("Update Result:", "=" + result);
+        return result;
+    }
 	/***************
 	 * Delete
 	 *****************/
@@ -357,6 +387,7 @@ public class DataBaseManager {
 		this.deleteVarTemps(musique);
 		this.deleteVarIntensite(musique);
 		this.deletePartie(musique);
+        this.deleteEvenement(musique);
 		return database.delete(DataBaseHelper.MUSIQUE_TABLE,
 				WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
 	}
@@ -443,6 +474,14 @@ public class DataBaseManager {
     public int delete(Armature armature){
         return database.delete(DataBaseHelper.Armature_Table,
                 WHERE_ID_ARMATURE_EQUALS, new String[]{armature.getId() + ""});
+    }
+    public int deleteEvenement(Musique musique) {
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_MUSIQUE_EQUALS, new String[]{musique.getId() + ""});
+    }
+    public int delete(Evenement e){
+        return database.delete(DataBaseHelper.Evenement_Table,
+                WHERE_ID_EVENEMENT_EQUALS, new String[]{e.getId() + ""});
     }
 	/****************
 	 * GET
@@ -719,6 +758,31 @@ public class DataBaseManager {
         }
         cursor.close();
         return armatures;
+    }
+    //Permet d'obtenir toutes les armatures non lues asscociés à cette musqiue
+    public ArrayList<Evenement> getEvenement(Musique musique) {
+        ArrayList<Evenement> events = new ArrayList<>();
+        final String query = "SELECT * FROM "
+                + DataBaseHelper.Evenement_Table
+                + " WHERE " + DataBaseHelper.IDMusique + "=? ;";
+
+
+        Log.d("query", query);
+        Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(musique.getId())});
+        while (cursor.moveToNext()) {
+            Evenement e = new Evenement();
+            e.setId(cursor.getInt(0));
+            e.setIdMusiquet(cursor.getInt(1));
+            e.setFlag(cursor.getInt(2));
+            e.setMesure_debut(cursor.getInt(3));
+            e.setArg2(cursor.getInt(4));
+            e.setPassage_reprise(cursor.getInt(5));
+            e.setArg3(cursor.getInt(6));
+
+            events.add(e);
+        }
+        cursor.close();
+        return events;
     }
 
 	public static void connect(Context c, String Ssid) {
