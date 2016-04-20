@@ -42,7 +42,7 @@ public class EventArmatureAdapter extends ArrayAdapter<Armature> {
 
         EventViewHolder viewHolder = (EventViewHolder) convertView.getTag();
         event = events.get(position);
-        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.ConvertArmatureFromInt(event.getAlteration()) + " sur le temps " + event.getTemps_debut());
+        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.ConvertNuanceFromInt(event.getAlteration()) + " sur le temps " + event.getTemps_debut());
 
 
         supprimer = (Button) convertView.findViewById(R.id.supprimer);
@@ -55,7 +55,7 @@ public class EventArmatureAdapter extends ArrayAdapter<Armature> {
                                                  bdd.close();
                                                  events.remove(event);
                                                  EventArmatureAdapter adapter = new EventArmatureAdapter(v.getContext(), events);
-                                                 EditionActivity.eventArmatureListView.setAdapter(adapter);
+                                                 EditionActivity.eventNuanceListView.setAdapter(adapter);
                                          }
                                      }
         );

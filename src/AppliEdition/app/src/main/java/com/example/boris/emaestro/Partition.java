@@ -224,7 +224,7 @@ public class Partition {
         }
         return s;
     }
-    
+
     public static Nuance ConvertNuanceFromInt(int n) {
         Nuance s;
         switch (n) {
