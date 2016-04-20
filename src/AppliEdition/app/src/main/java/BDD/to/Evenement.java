@@ -33,7 +33,7 @@ public class Evenement {
 
     public void setId(int id){this.id = id;}
     public void setFlag(int flag){this.flag = flag;}
-    public void setIdMusiquet(int idMusique) {this.idMusique = idMusique;}
+    public void setIdMusique(int idMusique) {this.idMusique = idMusique;}
     public void setMesure_debut(int mesure_debut) {this.mesure_debut = mesure_debut;}
     public void setArg2(int arg2) {this.arg2 = arg2;}
     public void setPassage_reprise(int passage_reprise){this.passage_reprise=passage_reprise;}

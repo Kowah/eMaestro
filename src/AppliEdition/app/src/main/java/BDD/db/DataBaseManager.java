@@ -616,7 +616,7 @@ public class DataBaseManager {
 		while (cursor.moveToNext()) {
 			Partie partie = new Partie();
 			partie.setId(cursor.getInt(0));
-			partie.setIdMusiquet(cursor.getInt(1));
+			partie.setIdMusique(cursor.getInt(1));
 			partie.setMesure_debut(cursor.getInt(2));
 			partie.setLabel(cursor.getString(3));
 
@@ -638,10 +638,11 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             MesuresNonLues m = new MesuresNonLues();
             m.setId(cursor.getInt(0));
-            m.setIdMusiquet(cursor.getInt(1));
-            m.setMesure_debut(cursor.getInt(2));
-            m.setArg2(cursor.getInt(3));
-            m.setPassage_reprise(cursor.getInt(4));
+            m.setIdMusique(cursor.getInt(1));
+            m.setFlag(cursor.getInt(2));
+            m.setMesure_debut(cursor.getInt(3));
+            m.setArg2(cursor.getInt(4));
+            m.setPassage_reprise(cursor.getInt(5));
 
             mnl.add(m);
         }
@@ -662,9 +663,10 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             Reprise reprise = new Reprise();
             reprise.setId(cursor.getInt(0));
-            reprise.setIdMusiquet(cursor.getInt(1));
-            reprise.setMesure_debut(cursor.getInt(2));
-            reprise.setMesure_fin(cursor.getInt(3));
+            reprise.setIdMusique(cursor.getInt(1));
+            reprise.setFlag(cursor.getInt(2));
+            reprise.setMesure_debut(cursor.getInt(3));
+            reprise.setMesure_fin(cursor.getInt(4));
 
             reprises.add(reprise);
         }
@@ -685,11 +687,12 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             Alertes alerte = new Alertes();
             alerte.setId(cursor.getInt(0));
-            alerte.setIdMusiquet(cursor.getInt(1));
-            alerte.setMesure_debut(cursor.getInt(2));
-            alerte.setTemps_debut(cursor.getInt(3));
-            alerte.setCouleur(cursor.getInt(4));
-            alerte.setPassage_reprise(cursor.getInt(5));
+            alerte.setIdMusique(cursor.getInt(1));
+            alerte.setFlag(cursor.getInt(2));
+            alerte.setMesure_debut(cursor.getInt(3));
+            alerte.setTemps_debut(cursor.getInt(4));
+            alerte.setCouleur(cursor.getInt(5));
+            alerte.setPassage_reprise(cursor.getInt(6));
 
             alertes.add(alerte);
         }
@@ -709,11 +712,12 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             VarRythmes varRythme = new VarRythmes();
             varRythme.setId(cursor.getInt(0));
-            varRythme.setIdMusiquet(cursor.getInt(1));
-            varRythme.setMesure_debut(cursor.getInt(2));
-            varRythme.setTemps_debut(cursor.getInt(3));
-            varRythme.setTauxVariation(cursor.getInt(4));
-            varRythme.setPassage_reprise(cursor.getInt(5));
+            varRythme.setIdMusique(cursor.getInt(1));
+            varRythme.setFlag(cursor.getInt(2));
+            varRythme.setMesure_debut(cursor.getInt(3));
+            varRythme.setTemps_debut(cursor.getInt(4));
+            varRythme.setTauxVariation(cursor.getInt(5));
+            varRythme.setPassage_reprise(cursor.getInt(6));
 
             varRythmes.add(varRythme);
         }
@@ -733,11 +737,12 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             Suspension suspension = new Suspension();
             suspension.setId(cursor.getInt(0));
-            suspension.setIdMusiquet(cursor.getInt(1));
-            suspension.setMesure_debut(cursor.getInt(2));
-            suspension.setTemps(cursor.getInt(3));
-            suspension.setDuree(cursor.getInt(4));
-            suspension.setPassage_reprise(cursor.getInt(5));
+            suspension.setIdMusique(cursor.getInt(1));
+            suspension.setFlag(cursor.getInt(2));
+            suspension.setMesure_debut(cursor.getInt(3));
+            suspension.setTemps(cursor.getInt(4));
+            suspension.setDuree(cursor.getInt(5));
+            suspension.setPassage_reprise(cursor.getInt(6));
 
             suspensions.add(suspension);
         }
@@ -757,11 +762,12 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             Armature armature = new Armature();
             armature.setId(cursor.getInt(0));
-            armature.setIdMusiquet(cursor.getInt(1));
-            armature.setMesure_debut(cursor.getInt(2));
-            armature.setTemps_debut(cursor.getInt(3));
-            armature.setAlteration(cursor.getInt(4));
-            armature.setPassage_reprise(cursor.getInt(5));
+            armature.setIdMusique(cursor.getInt(1));
+            armature.setFlag(cursor.getInt(2));
+            armature.setMesure_debut(cursor.getInt(3));
+            armature.setTemps_debut(cursor.getInt(4));
+            armature.setAlteration(cursor.getInt(5));
+            armature.setPassage_reprise(cursor.getInt(6));
 
             armatures.add(armature);
         }
@@ -781,7 +787,7 @@ public class DataBaseManager {
         while (cursor.moveToNext()) {
             Evenement e = new Evenement();
             e.setId(cursor.getInt(0));
-            e.setIdMusiquet(cursor.getInt(1));
+            e.setIdMusique(cursor.getInt(1));
             e.setFlag(cursor.getInt(2));
             e.setMesure_debut(cursor.getInt(3));
             e.setArg2(cursor.getInt(4));

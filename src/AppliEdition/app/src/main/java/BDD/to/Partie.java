@@ -12,13 +12,13 @@ public class Partie extends Evenement {
 
     public Partie(int id, int idMusique, int mesure_debut, String label){
         this.setId(id);
-        this.setIdMusiquet(idMusique);
+        this.setIdMusique(idMusique);
         this.setMesure_debut(mesure_debut);
         this.label = label;
     }
 
     public Partie(int idMusique, int mesure_debut, String label){
-        this.setIdMusiquet(idMusique);
+        this.setIdMusique(idMusique);
         this.setMesure_debut(mesure_debut);
         this.label = label;
     }
