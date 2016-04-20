@@ -12,39 +12,46 @@
         android:id="@+id/PrePassage"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/prem_passage"/>
+        android:background="@drawable/prem_passage"
+        android:alpha=".0"/>
     <ImageView
         android:id="@+id/SecPassage"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/sec_passage"/>
+        android:background="@drawable/sec_passage"
+        android:alpha=".0"/>
     <ImageView
         android:id="@+id/debutReprise"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/debut_rep"/>
+        android:background="@drawable/debut_rep"
+        android:alpha=".0"/>
 
     <ImageView
         android:id="@+id/debutPassage"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/debut_passage"/>
+        android:background="@drawable/debut_passage"
+        android:alpha=".0"/>
     <ImageView
         android:id="@+id/barrePassage"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/barre_passage"/>
+        android:background="@drawable/barre_passage"
+        android:alpha=".0"/>
 
     <ImageView
         android:id="@+id/finPassage"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/debut_passage"/>
+        android:background="@drawable/debut_passage"
+        android:alpha=".0"/>
     <ImageView
         android:id="@+id/finReprise"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/fin_reprise"/>
+        android:background="@drawable/fin_reprise"
+        android:alpha=".0"/>
 
     <ImageView
         android:id="@+id/nuance"
