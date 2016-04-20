@@ -1,37 +1,36 @@
 package BDD.to;
 
 
+import BDD.db.DataBaseHelper;
+
 public class Armature extends Evenement {
-    private int temps_debut;
-    private int alteration;
-    private int passage_reprise;
 
     public Armature(){
         super();
     }
 
     public Armature(int id, int idMusique,int mesure_debut, int temps_debut, int alteration, int passage_reprise){
-        this.setId(id);
-        this.setIdMusiquet(idMusique);
-        this.setMesure_debut(mesure_debut);
-        this.temps_debut = temps_debut;
-        this.alteration = alteration;
+        this.id = id;
+        this.idMusique = idMusique;
+        this.flag = DataBaseHelper.FLAG_ARMATURE;
+        this.mesure_debut = mesure_debut;
+        this.arg2 = temps_debut;
         this.passage_reprise = passage_reprise;
+        this.arg3 = alteration;
     }
     public Armature(int idMusique,int mesure_debut, int temps_debut, int alteration, int passage_reprise){
-        this.setIdMusiquet(idMusique);
-        this.setMesure_debut(mesure_debut);
-        this.temps_debut = temps_debut;
-        this.alteration = alteration;
+        this.idMusique = idMusique;
+        this.flag = DataBaseHelper.FLAG_ARMATURE;
+        this.mesure_debut = mesure_debut;
+        this.arg2 = temps_debut;
         this.passage_reprise = passage_reprise;
+        this.arg3 = alteration;
     }
 
-    public int getTemps_debut() {return temps_debut;}
-    public int getAlteration() {return alteration;}
-    public int getPassage_reprise() {return passage_reprise;}
+    public int getTemps_debut() {return arg2;}
+    public int getAlteration() {return (int) arg3;}
 
-    public void setTemps_debut(int temps_debut) {this.temps_debut = temps_debut;}
-    public void setAlteration(int alteration) {this.alteration = alteration;}
-    public void setPassage_reprise(int passage_reprise) {this.passage_reprise = passage_reprise;}
+    public void setTemps_debut(int temps_debut) {this.arg2 = temps_debut;}
+    public void setAlteration(int alteration) {this.arg3 = alteration;}
 }
 

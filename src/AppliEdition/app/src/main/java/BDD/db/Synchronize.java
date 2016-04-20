@@ -337,7 +337,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
                         st.setInt(4, e.getMesure_debut());
                         st.setInt(5, e.getArg2());
                         st.setInt(6, e.getPassage_reprise());
-                        st.setInt(7, e.getArg3());
+                        st.setFloat(7, e.getArg3());
                         st.execute();
                     }
                 }

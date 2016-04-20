@@ -1,39 +1,36 @@
 package BDD.to;
 
 
-public class VarRythmes extends Evenement{
+import BDD.db.DataBaseHelper;
 
-    private int temps_debut;
-    private float delta;
-    private int passage_reprise;
+public class VarRythmes extends Evenement{
 
     public VarRythmes(){
         super();
     }
 
     public VarRythmes(int id, int idMusique,int mesure_debut, int temps_debut, float delta, int passage_reprise){
-        this.setId(id);
-        this.setIdMusiquet(idMusique);
-        this.setMesure_debut(mesure_debut);
-        this.temps_debut = temps_debut;
-        this.delta = delta;
+        this.id = id;
+        this.idMusique = idMusique;
+        this.flag = DataBaseHelper.FLAG_VARRYTHMES;
+        this.mesure_debut = mesure_debut;
+        this.arg2 = temps_debut;
         this.passage_reprise = passage_reprise;
+        this.arg3 = delta;
     }
     public VarRythmes(int idMusique,int mesure_debut, int temps_debut, float delta, int passage_reprise){
-        this.setIdMusiquet(idMusique);
-        this.setMesure_debut(mesure_debut);
-        this.temps_debut = temps_debut;
-        this.delta = delta;
+        this.idMusique = idMusique;
+        this.flag = DataBaseHelper.FLAG_VARRYTHMES;
+        this.mesure_debut = mesure_debut;
+        this.arg2 = temps_debut;
         this.passage_reprise = passage_reprise;
+        this.arg3 = delta;
     }
 
-    public int getTemps_debut() {return temps_debut;}
-    public float getTauxVariation() {return delta;}
-    public int getPassage_reprise() {return passage_reprise;}
+    public int getTemps_debut() {return arg2;}
+    public float getTauxVariation() {return arg3;}
 
-
-    public void setTemps_debut(int temps_debut) {this.temps_debut = temps_debut;}
-    public void setTauxVariation(int delta) {this.delta = delta;}
-    public void setPassage_reprise(int passage_reprise) {this.passage_reprise = passage_reprise;}
+    public void setTemps_debut(int temps_debut) {this.arg2 = temps_debut;}
+    public void setTauxVariation(float delta) {this.arg3 = delta;}
 
 }

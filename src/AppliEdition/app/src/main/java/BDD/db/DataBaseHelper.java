@@ -23,6 +23,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	public static final String Armature_Table = "Armature";
 	public static final String Evenement_Table = "Evenement";
 
+	public static final int FLAG_MNL = 1;
+	public static final int FLAG_REPRISE = 2;
+	public static final int FLAG_ALERTE = 3;
+	public static final int FLAG_VARRYTHMES = 4;
+	public static final int FLAG_SUSPENSION = 5;
+	public static final int FLAG_ARMATURE = 6;
+
+
+
 
 	/***********************************************************************/
 	/********************************MUSIQUE********************************/
