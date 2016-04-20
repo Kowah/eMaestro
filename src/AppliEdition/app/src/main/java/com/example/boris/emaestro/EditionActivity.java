@@ -71,7 +71,6 @@ public class EditionActivity  extends Activity {
     int tpsDebut;
     //spinner chgt tempsMesure Nuance
     List<String> tempsMesure = new ArrayList<>();
-    ArrayAdapter<String> dataAdapterNuanceTpsMesure;
 
 
 
@@ -179,8 +178,6 @@ public class EditionActivity  extends Activity {
         adapter = new MesureAdapter(EditionActivity.this, partition);
         mGridView.setAdapter(adapter);
 
-        dataAdapterNuanceTpsMesure = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, tempsMesure);
-        dataAdapterNuanceTpsMesure.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -271,7 +268,6 @@ public class EditionActivity  extends Activity {
                                                                             eventDejaPresent = true;
                                                                         }
                                                                     }
-
                                                                     if (eventDejaPresent) {
                                                                         eventCour.setIntensite(newNuance);
                                                                         eventCour.setTempsDebut(newTempsDebut);
@@ -286,6 +282,7 @@ public class EditionActivity  extends Activity {
                                                                     //MAJ affichage
                                                                     adapter = new MesureAdapter(EditionActivity.this, partition);
                                                                     mGridView.setAdapter(adapter);
+
                                                                     //maj liste events
                                                                     varIntensiteListSurMesureCour = eventsNuanceDeLaMesure(m.getId());
                                                                     varIntensiteList = bdd.getVariationsIntensite(bdd.getMusique(EXTRA_NOMPARTITION));
@@ -561,14 +558,21 @@ public class EditionActivity  extends Activity {
                                 //on cree l'event
                                 bdd.save(eventTemps);
                             }
-                            varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
-                            triListVarTemps();
-                            partition.setTempo(varTempsList);
-                            //MAJ affichage
-                            adapter = new MesureAdapter(EditionActivity.this, partition);
-                            mGridView.setAdapter(adapter);
+
 
                         }
+                        //MAJ affichage
+                        varTempsList = bdd.getVariationsTemps(bdd.getMusique(idMusique));
+                        varIntensiteList =  bdd.getVariationsIntensite(bdd.getMusique(idMusique));
+                        varArmatureList =  bdd.getArmature(bdd.getMusique(idMusique));
+                        triListVarIntensite();
+                        triListVarArmature();
+                        triListVarTemps();
+                        partition.setTempo(varTempsList);
+                        partition.setNuance(varIntensiteList);
+                        partition.setArmature(varArmatureList);
+                        adapter = new MesureAdapter(EditionActivity.this, partition);
+                        mGridView.setAdapter(adapter);
                     }
                 });
                 popup.show();
@@ -669,66 +673,6 @@ public class EditionActivity  extends Activity {
             }
         });
     }
-
-
-    //nuance
-    private OnClickListener NuanceListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            View layout = LayoutInflater.from(context).inflate(R.layout.popup_changement_nuance, null);
-
-            //nuance selection
-            mNuanceSpinner = (Spinner) layout.findViewById(R.id.nuance);
-            mNuanceDebutSpinner = (Spinner) layout.findViewById(R.id.tempsDebut);
-            // attaching data adapter to spinner
-
-            mNuanceSpinner.setAdapter(dataAdapterNuance);
-            mNuanceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    // On selecting a spinner item
-                    nuance = parent.getItemAtPosition(position).toString();
-                    nuance = nuance.replace(" ", "");
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-                    // TODO Auto-generated method stub
-                }
-            });
-
-            mNuanceDebutSpinner.setAdapter(dataAdapterNuanceTpsMesure);
-            mNuanceDebutSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    tpsDebut = Integer.parseInt(parent.getItemAtPosition(position).toString());
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-
-
-                new AlertDialog.Builder(context)
-                        .setTitle("Changement de nuance")
-                        .setView(layout)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                               //TODO do something
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
-
-    };
 
 
     @Override
