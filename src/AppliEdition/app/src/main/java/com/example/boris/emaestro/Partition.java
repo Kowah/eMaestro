@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.to.Armature;
+import BDD.to.Reprise;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
 import util.Nuance;
@@ -135,8 +136,7 @@ public class Partition {
         for(i =0; i<l.size();i++){
             vT = l.get(i);
             if(i+1<l.size()){
-                //si ya dautre event, alors changmeent de nuance se fait jusqu'à l'arrivée du prochain
-                mesureFin = l.get(i+1).getMesure_debut();//mesure juste avant le debut du prochain event
+                mesureFin = l.get(i+1).getMesure_debut();
             }
             else{
                 //sinon jusqu'à la fin de la partition
@@ -145,6 +145,24 @@ public class Partition {
             alteration = vT.getAlteration();
             this.setArmature(vT.getMesure_debut(), mesureFin, alteration);
         }
+    }
+
+    public void setReprise(List<Reprise> l ){
+
+        Reprise vT;
+        int i;
+        for(i =0; i<l.size();i++){
+            vT = l.get(i);
+            this.setReprise(vT.getMesure_debut(), vT.getMesure_fin());
+        }
+    }
+
+    public void setReprise(int debut, int fin){
+        Mesure m=partition.get(debut-1);
+        m.setDebutReprise(true);
+        m=partition.get(fin-1);
+        m.setFinReprise(true);
+
     }
 
     public static String convertUniteIntStr(int n){
@@ -294,16 +312,6 @@ public class Partition {
 
     }
 
-    public void setNuance(List<Integer> l, Nuance nuance){
-        Integer j;
-        for(int i=0;i<l.size();i++){
-            j = l.get(i).intValue();
-            partition.get(j-1).setNuance(nuance);
-        }
-    }
-    public void unselectAll(){
-        for(int i=0;i<partition.size();i++){
-            partition.get(i).selectionne=false;
-        }
-    }
+
+
 }
