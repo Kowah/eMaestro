@@ -14,13 +14,13 @@ public class Mesure {
     private boolean eventTpsSurMesure;//indique si un event de temps est présent sur la mesure, sert pour l'affichage
 
     //variable pour affichage reprise
-    private boolean debutReprise;
-    private boolean barrePassage;
-    private boolean debutPassage;
-    private boolean premPassage;
-    private boolean finReprise;
-    private boolean secPassage;
-    private boolean finPassage;
+    private boolean debutReprise;// affichage double barre double point en début
+    private boolean barrePassage; //barre horizontale
+    private boolean debutPassage;//pour afficher petite barre verticale en debut de passage
+    private boolean premPassage;//mesure joué pendant 1passage
+    private boolean finReprise;// affichage double barre double point en fin
+    private boolean secPassage;//mesure joué pendant 2eme passage
+    private boolean finPassage;//pour afficher petite barre verticale en fin de passage
 
     public Mesure( int id){
         this.id = id;
@@ -91,6 +91,16 @@ public class Mesure {
     }
     public void setFinPassage(boolean visible){
         this.finPassage = visible;
+    }
+
+    public void setAllReprise(boolean visible){
+        this.setBarrePassage(visible);
+        this.setDebutPassage(visible);
+        this.setPremPassage(visible);
+        this.setFinPassage(visible);
+        this.setSecPassage(visible);
+        this.setDebutReprise(visible);
+        this.setFinReprise(visible);
     }
 
     public boolean getDebutReprise(){return debutReprise;}

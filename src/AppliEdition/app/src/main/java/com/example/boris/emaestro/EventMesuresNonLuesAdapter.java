@@ -11,20 +11,20 @@ import android.widget.TextView;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
-import BDD.to.Reprise;
-import BDD.to.VariationIntensite;
+import BDD.to.Armature;
+import BDD.to.MesuresNonLues;
 
 /**
- * Created by Boris on 20/04/2016.
+ * Created by Boris on 21/04/2016.
  */
-public class EventRepriseAdapter extends ArrayAdapter<Reprise> {
+public class EventMesuresNonLuesAdapter extends ArrayAdapter<MesuresNonLues> {
 
-    List<Reprise> events;
-    Reprise event;
+    List<MesuresNonLues> events;
+    MesuresNonLues event;
     Button supprimer;
     DataBaseManager bdd;
 
-    public EventRepriseAdapter(Context context, List<Reprise> events) {
+    public EventMesuresNonLuesAdapter(Context context, List<MesuresNonLues> events) {
         super(context, 0, events);
         this.events = events;
     }
@@ -42,21 +42,20 @@ public class EventRepriseAdapter extends ArrayAdapter<Reprise> {
 
         EventViewHolder viewHolder = (EventViewHolder) convertView.getTag();
         event = events.get(position);
-        ((TextView) convertView.findViewById(R.id.info)).setText("Reprise de la mesure n°"+event.getMesure_debut() + " à la mesure n°"+event.getMesure_fin());
+        ((TextView) convertView.findViewById(R.id.info)).setText("Mesures n°"+event.getMesure_debut()+" à n°"+event.getMesure_fin()+ " sont non jouées");
 
 
         supprimer = (Button) convertView.findViewById(R.id.supprimer);
         supprimer.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
-                                                 bdd = new DataBaseManager(v.getContext());
-                                                 bdd.open();
-                                                 bdd.delete(event);
-                                                 bdd.close();
-                                                 events.remove(event);
-                                                 EventRepriseAdapter adapter = new EventRepriseAdapter(v.getContext(), events);
-                                                 EditionActivity.eventRepriseListView.setAdapter(adapter);
-
+                                             bdd = new DataBaseManager(v.getContext());
+                                             bdd.open();
+                                             bdd.delete(event);
+                                             bdd.close();
+                                             events.remove(event);
+                                             EventMesuresNonLuesAdapter adapter = new EventMesuresNonLuesAdapter(v.getContext(), events);
+                                             EditionActivity.eventMesuresNonLuesListView.setAdapter(adapter);
                                          }
                                      }
         );

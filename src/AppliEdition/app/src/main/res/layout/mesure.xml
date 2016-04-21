@@ -44,7 +44,7 @@
         android:id="@+id/finPassage"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:background="@drawable/debut_passage"
+        android:background="@drawable/fin_passage"
         android:alpha=".0"/>
     <ImageView
         android:id="@+id/finReprise"

@@ -86,17 +86,51 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         if(mesure.getEventTpsSurMesure()){
             convertView.findViewById(R.id.tempoModif).setAlpha(1f);
             TextView t =(TextView)convertView.findViewById(R.id.tempoModif);
-            t.setText(mesure.getTempo()+"\n"+mesure.getTempsMesure()+" temps");
+            t.setText(mesure.getTempo() + "\n" + mesure.getTempsMesure() + " temps");
         }else{
             convertView.findViewById(R.id.tempoModif).setAlpha(0f);
         }
-
         if(mesure.getDebutReprise()){
             convertView.findViewById(R.id.debutReprise).setAlpha(1f);
 
         }else{
             convertView.findViewById(R.id.debutReprise).setAlpha(0f);
         }
+
+        if(mesure.getFinReprise()){
+            convertView.findViewById(R.id.finReprise).setAlpha(1f);
+
+        }else{
+            convertView.findViewById(R.id.finReprise).setAlpha(0f);
+        }
+        if(mesure.getBarrePassage()){
+            convertView.findViewById(R.id.barrePassage).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.barrePassage).setAlpha(0f);
+        }
+
+        if(mesure.getDebutPassage()){
+            convertView.findViewById(R.id.debutPassage).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.debutPassage).setAlpha(0f);
+        }
+        if(mesure.getFinPassage()){
+            convertView.findViewById(R.id.finPassage).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.finPassage).setAlpha(0f);
+        }
+        if(mesure.getPremPassage()){
+            convertView.findViewById(R.id.PrePassage).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.PrePassage).setAlpha(0f);
+        }
+        if(mesure.getSecPassage()){
+            convertView.findViewById(R.id.SecPassage).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.SecPassage).setAlpha(0f);
+        }
+
+
         //on met a jour l'id de la view de la mesure
         ((TextView)convertView.findViewById(R.id.id)).setText(String.valueOf(mesure.getId()));
 
@@ -109,6 +143,8 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
         viewHolder.id.setText(String.valueOf(mesure.getId()));
         return convertView;
     }
+
+
 
     private class MesureViewHolder{
         public TextView id;

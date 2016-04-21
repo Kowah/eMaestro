@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.to.Armature;
+import BDD.to.MesuresNonLues;
 import BDD.to.Reprise;
 import BDD.to.VariationIntensite;
 import BDD.to.VariationTemps;
@@ -24,8 +25,6 @@ public class Partition {
     public Partition(String nbMesure){
         int id=1;
         int nbM = Integer.parseInt(nbMesure);
-
-        int tpsParMesureM = 0;//Integer.parseInt(tpsParMesure);//TODO probleme
         partition = new ArrayList<Mesure>();
 
         for(int i=0;i<nbM;i++){
@@ -165,6 +164,40 @@ public class Partition {
 
     }
 
+    public void setMesuresNonLues(List<MesuresNonLues> l ){
+
+        MesuresNonLues vT;
+        int i;
+        for(i =0; i<l.size();i++){
+            vT = l.get(i);
+            this.setMesuresNonLues(vT.getMesure_debut(), vT.getMesure_fin(),vT.getPassage_reprise());
+        }
+    }
+
+    public void setMesuresNonLues(int debut, int fin,int passageReprise){
+        Mesure m;
+        for(int i=debut-1; i<fin; i++){
+            m=partition.get(i);
+            m.setBarrePassage(true);
+        }
+       m=partition.get(debut-1);
+        m.setDebutPassage(true);
+        if (passageReprise ==2) {
+            m.setPremPassage(true);
+        }else if(passageReprise ==1){
+                m.setSecPassage(true);
+            }
+
+        m=partition.get(fin-1);
+        m.setFinPassage(true);
+        if(m.getId()<partition.size()){
+            m=partition.get(fin);
+            m.setDebutPassage(true);
+            m.setBarrePassage(true);
+            m.setSecPassage(true);
+        }
+
+    }
     public static String convertUniteIntStr(int n){
         String s="";
         switch(n){
