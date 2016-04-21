@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -284,7 +285,7 @@ public class EditionActivity  extends Activity {
                                                                             eventDejaPresent = true;
                                                                         }
                                                                     }
-                                                                    if (eventDejaPresent) {
+                                                                    if (eventDejaPresent && eventPresents.size()!=0) {
                                                                         eventCour.setIntensite(newNuance);
                                                                         eventCour.setTempsDebut(newTempsDebut);
                                                                         bdd.update(eventCour);
@@ -515,8 +516,6 @@ public class EditionActivity  extends Activity {
                                                                     }
 
                                                                     if(eventDejaPresent ) {
-                                                                        Toast.makeText(context,"event deja preset",Toast.LENGTH_SHORT).show();
-
                                                                         eventCour.setCouleur(nouvCouleur);
                                                                         eventCour.setTemps_debut(temps_debut);
                                                                         bdd.update(eventCour);
@@ -824,6 +823,7 @@ public class EditionActivity  extends Activity {
         triListVarReprise();
         triListVarMesuresNonLues();
         triListVarAlertes();
+        partition = new Partition(EXTRA_NBMESURE);
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
         partition.setArmature(varArmatureList);

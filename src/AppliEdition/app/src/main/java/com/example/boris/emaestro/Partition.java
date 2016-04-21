@@ -1,6 +1,8 @@
 package com.example.boris.emaestro;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +43,9 @@ public class Partition {
     public void setTempo(int mesureDebut, int mesureFin, int tempo){
         //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        partition.get(mesureDebut-1).setEventTpsSurMesure(true);
-        for(int i=mesureDebut-1;i<=mesureFin; i++) {
+        Log.d("blabla",mesureDebut +" "+ mesureFin);
+        partition.get(mesureDebut).setEventTpsSurMesure(true);
+        for(int i=mesureDebut;i<=mesureFin; i++) {
             partition.get(i).setTempo(tempo);
 
 
@@ -52,7 +55,7 @@ public class Partition {
 
             //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut-1; i <= mesureFin;i++){
+        for(int i=mesureDebut; i <= mesureFin;i++){
             partition.get(i).setNuance(nuance);
         }
     }
@@ -60,7 +63,7 @@ public class Partition {
     public void setNbTemps(int mesureDebut, int mesureFin, int temps){
         //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut-1;i<=mesureFin;i++){
+        for(int i=mesureDebut;i<=mesureFin;i++){
             partition.get(i).setTempsMesure(temps);
         }
     }
@@ -72,15 +75,15 @@ public class Partition {
             vT = l.get(i);
             if(i+1<l.size()){
                 //si ya dautre event, alors changmeent de tempo se fait jusqu'à jusqu'à l'arrivée du prochain
-                mesureFin = l.get(i+1).getMesure_debut();//mesure juste avant le debut du prochain event
+                mesureFin = l.get(i+1).getMesure_debut()-1;//mesure juste avant le debut du prochain event
             }
             else{
                 //sinon jusqu'à la fin de la partition
                 mesureFin = this.partition.size()-1;
             }
 
-            this.setTempo(vT.getMesure_debut(), mesureFin, vT.getTempo());
-            this.setNbTemps(vT.getMesure_debut(), mesureFin, vT.getTemps_par_mesure());
+            this.setTempo(vT.getMesure_debut()-1, mesureFin, vT.getTempo());
+            this.setNbTemps(vT.getMesure_debut()-1, mesureFin, vT.getTemps_par_mesure());
 
 
         }
@@ -90,7 +93,7 @@ public class Partition {
     public void setTpsDebut(int mesureDebut, int mesureFin, int tpsDebut){
         //mesureDebut est l'id de la mesure, donc toute première mesure id à 1
         //mesure de fin est inclus
-        for(int i=mesureDebut-1;i<=mesureFin;i++){
+        for(int i=mesureDebut;i<=mesureFin;i++){
             if(i==mesureDebut){
                 partition.get(i).setTpsDebutNuance(tpsDebut);
             }
@@ -109,21 +112,21 @@ public class Partition {
             vT = l.get(i);
             if(i+1<l.size()){
                 //si ya dautre event, alors changmeent de nuance se fait jusqu'à l'arrivée du prochain
-                mesureFin = l.get(i+1).getMesureDebut();//mesure juste avant le debut du prochain event
+                mesureFin = l.get(i+1).getMesureDebut()-1;//mesure juste avant le debut du prochain event
             }
             else{
                 //sinon jusqu'à la fin de la partition
                 mesureFin = this.partition.size()-1;
             }
             nuance = ConvertNuanceFromInt(vT.getIntensite());
-            this.setNuance(vT.getMesureDebut(), mesureFin, nuance);
-            this.setTpsDebut(vT.getMesureDebut(), mesureFin, vT.getTempsDebut());
+            this.setNuance(vT.getMesureDebut()-1, mesureFin, nuance);
+            this.setTpsDebut(vT.getMesureDebut()-1, mesureFin, vT.getTempsDebut());
 
         }
     }
 
     public void setArmature  (int mesureDebut, int mesureFin, int alteration){
-        for(int i=mesureDebut-1;i<=mesureFin; i++) {
+        for(int i=mesureDebut;i<=mesureFin; i++) {
                 partition.get(i).setArmature(alteration);
         }
     }
@@ -136,14 +139,14 @@ public class Partition {
         for(i =0; i<l.size();i++){
             vT = l.get(i);
             if(i+1<l.size()){
-                mesureFin = l.get(i+1).getMesure_debut();
+                mesureFin = l.get(i+1).getMesure_debut()-1;
             }
             else{
                 //sinon jusqu'à la fin de la partition
                 mesureFin = this.partition.size()-1;
             }
             alteration = vT.getAlteration();
-            this.setArmature(vT.getMesure_debut(), mesureFin, alteration);
+            this.setArmature(vT.getMesure_debut()-1, mesureFin, alteration);
         }
     }
 
@@ -153,7 +156,7 @@ public class Partition {
         int i;
         for(i =0; i<l.size();i++){
             vT = l.get(i);
-            this.setAlerte(vT.getMesure_debut(), vT.getTemps_debut(), vT.getCouleur());
+            this.setAlerte(vT.getMesure_debut()-1, vT.getTemps_debut(), vT.getCouleur());
         }
     }
 
@@ -188,7 +191,7 @@ public class Partition {
         int i;
         for(i =0; i<l.size();i++){
             vT = l.get(i);
-            this.setMesuresNonLues(vT.getMesure_debut(), vT.getMesure_fin(),vT.getPassage_reprise());
+            this.setMesuresNonLues(vT.getMesure_debut(), vT.getMesure_fin(), vT.getPassage_reprise());
         }
     }
 
