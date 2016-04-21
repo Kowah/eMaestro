@@ -4,6 +4,7 @@ package com.example.boris.emaestro;
 import java.util.ArrayList;
 import java.util.List;
 
+import BDD.to.Alertes;
 import BDD.to.Armature;
 import BDD.to.MesuresNonLues;
 import BDD.to.Reprise;
@@ -144,6 +145,23 @@ public class Partition {
             alteration = vT.getAlteration();
             this.setArmature(vT.getMesure_debut(), mesureFin, alteration);
         }
+    }
+
+    public void setAlertes(List<Alertes> l ){
+
+        Alertes vT;
+        int i;
+        for(i =0; i<l.size();i++){
+            vT = l.get(i);
+            this.setAlerte(vT.getMesure_debut(), vT.getTemps_debut(), vT.getCouleur());
+        }
+    }
+
+    public void setAlerte(int mesure_debut, int temps_debut, int couleur){
+        Mesure m = this.partition.get(mesure_debut-1);
+        m.setAlertePresente(true);
+        m.setCouleur(couleur);
+        m.setAlerteTpsDebut(temps_debut);
     }
 
     public void setReprise(List<Reprise> l ){

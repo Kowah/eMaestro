@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import BDD.db.DataBaseManager;
+import BDD.to.Alertes;
 import BDD.to.MesuresNonLues;
 import BDD.to.Reprise;
 import BDD.to.Armature;
@@ -53,6 +54,7 @@ public class EditionActivity  extends Activity {
     List<Armature> varArmatureList;
     List<Reprise> varRepriseList;
     List<MesuresNonLues> varMesuresNonLues;
+    List<Alertes> varAlertesList;
 
 
     // view du menu
@@ -74,15 +76,20 @@ public class EditionActivity  extends Activity {
     static ListView eventArmatureListView;
     static ListView eventRepriseListView;
     static ListView eventMesuresNonLuesListView;
+    static ListView eventAlerteListView;
 
     EventArmatureAdapter adapterEventArmature;
     EventRepriseAdapter adapterEventReprise;
     EventMesuresNonLuesAdapter adapterEventMesuresNonLues;
 
+    EventAlerteAdapter adapterEventAlertes;
+
+
     List<VariationIntensite> varIntensiteListSurMesureCour;
     List<Armature> varArmatureListSurMesureCour;
     List<Reprise> varRepriseListSurMesureCour;
     List<MesuresNonLues> varMesuresNonLuesListSurMesureCour;
+    List<Alertes> varAlertesListSurMesureCour;
 
     //debug
     TextView debug;
@@ -116,6 +123,7 @@ public class EditionActivity  extends Activity {
         varArmatureList = new ArrayList<>();
         varRepriseList = new ArrayList<>();
         varMesuresNonLues = new ArrayList<>();
+        varArmatureList = new ArrayList<>();
 
         dataAdapterNuance = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, nuanceList);
         dataAdapterNuance.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -147,22 +155,24 @@ public class EditionActivity  extends Activity {
         //-----------------------
         //debug msg
         //-----------------------
-        for(int i = 0; i<varIntensiteList.size();i++){
-            debug.setText(debug.getText().toString() + varIntensiteList.size() + "\n nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() ) + " nuance : " + partition.ConvertNuanceFromInt(varIntensiteList.get(i).getIntensite()));
+       for(int i = 0; i<varIntensiteList.size();i++){
+            debug.setText(debug.getText().toString()+"\n" + "NUANCE" + " nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() ) + " nuance : " + partition.ConvertNuanceFromInt(varIntensiteList.get(i).getIntensite()));
         }
         for(int i = 0; i<varTempsList.size();i++){
-            debug.setText(debug.getText().toString() + varTempsList.size() + "\n nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() ) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
+            debug.setText(debug.getText().toString()+"\n" + "TEMPS" + " nouveau event debut à :" + (varTempsList.get(i).getMesure_debut() ) + " tempo : " + varTempsList.get(i).getTempo() + " nb temps " +varTempsList.get(i).getTemps_par_mesure());
         }
-
         for(int i = 0; i<varArmatureList.size();i++){
-            debug.setText(debug.getText().toString() + varArmatureList.size() + "\n nouveau event debut à :" + (varArmatureList.get(i).getMesure_debut() ) + " alteration : " + varArmatureList.get(i).getAlteration());
+            debug.setText(debug.getText().toString() +"\n"+ "ARMATURE" + " nouveau event debut à :" + (varArmatureList.get(i).getMesure_debut() ) + " alteration : " + varArmatureList.get(i).getAlteration());
         }
         for(int i = 0; i<varRepriseList.size();i++){
-            debug.setText(debug.getText().toString() + varRepriseList.size() + "\n nouveau event debut à :" + (varRepriseList.get(i).getMesure_debut() ) + " reprise jusqu'au temps: " + varRepriseList.get(i).getMesure_fin()+".");
+            debug.setText(debug.getText().toString() +"\n"+ "REPRISE" + " nouveau event debut à :" + (varRepriseList.get(i).getMesure_debut() ) + " reprise jusqu'au temps: " + varRepriseList.get(i).getMesure_fin()+".");
         }
         for(int i = 0; i<varMesuresNonLues.size();i++){
-            debug.setText(debug.getText().toString() +varMesuresNonLues.size() + "\n nouveau event debut à :" + (varMesuresNonLues.get(i).getMesure_debut() ) + " Mesure non lues jusqu'à: " + varMesuresNonLues.get(i).getMesure_fin()+".");
+            debug.setText(debug.getText().toString()+"\n" +"MESURESNONLUES" + " nouveau event debut à :" + (varMesuresNonLues.get(i).getMesure_debut() ) + " Mesure non lues jusqu'à: " + varMesuresNonLues.get(i).getMesure_fin());
         }//TODO faire un affiche plus complet de l'event mesure non lues, si besoin
+        for(int i = 0; i<varAlertesList.size();i++){
+            debug.setText(debug.getText().toString()+"\n" +"ALERTE" + " nouveau event debut à :" + (varAlertesList.get(i).getMesure_debut() ) + " sur le temps " + varAlertesList.get(i).getTemps_debut());
+        }
         //-----------------------
         //debug msg
         //-----------------------
@@ -208,6 +218,12 @@ public class EditionActivity  extends Activity {
                 eventMesuresNonLuesListView = (ListView) popupView.findViewById(R.id.listEventMesuresNonLues);
                 adapterEventMesuresNonLues = new EventMesuresNonLuesAdapter(context,varMesuresNonLuesListSurMesureCour);
                 eventMesuresNonLuesListView.setAdapter(adapterEventMesuresNonLues);
+
+                //affiche event d'Alertes present sur la mesure
+                varAlertesListSurMesureCour = eventsAlertesDeLaMesure(m.getId());
+                eventAlerteListView = (ListView) popupView.findViewById(R.id.listEventAlertes);
+                adapterEventAlertes = new EventAlerteAdapter(context,varAlertesListSurMesureCour);
+                eventAlerteListView.setAdapter(adapterEventAlertes);
 
 
                 Button newEvent = (Button) popupView.findViewById(R.id.newEvent);
@@ -433,10 +449,9 @@ public class EditionActivity  extends Activity {
 
                                                                     if(eventDejaPresent){
                                                                         eventCour.setAlteration(nouvArmature);
-                                                                        //TODO temps debut
                                                                         bdd.update(eventCour);
                                                                     }else{
-                                                                        eventCour = new Armature(bdd.getMusique(EXTRA_NOMPARTITION).getId(),m.getId(),1,nouvArmature,1);//TODO passage reprise et temps debut
+                                                                        eventCour = new Armature(bdd.getMusique(EXTRA_NOMPARTITION).getId(),m.getId(),1,nouvArmature,1);//TODO passage reprise
                                                                         bdd.save(eventCour);
                                                                     }
                                                                     MAJAffichage();
@@ -461,14 +476,14 @@ public class EditionActivity  extends Activity {
                                                             View popupView = inflater.inflate(R.layout.edition_alerte, null);
 
                                                             //Gestion des elements du popup
-                                                            Spinner spinnerCouleur = (Spinner) popupView.findViewById(R.id.spinnerChoixCouleurAlerte);
-                                                            String[] couleurs = {"bleu","vert","jaune","rouge"};
-                                                            ArrayAdapter<String> adapterCouleur = new ArrayAdapter<String>(popupView.getContext(),android.R.layout.simple_spinner_item,couleurs);
+                                                            final Spinner spinnerCouleur = (Spinner) popupView.findViewById(R.id.spinnerChoixCouleurAlerte);
+                                                            final String[] couleurs = {"bleu","vert","jaune","rouge"};
+                                                            final ArrayAdapter<String> adapterCouleur = new ArrayAdapter<String>(popupView.getContext(),android.R.layout.simple_spinner_item,couleurs);
                                                             adapterCouleur.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                             spinnerCouleur.setAdapter(adapterCouleur);
                                                             spinnerCouleur.setSelection(0);
 
-                                                            Spinner spinnerTemps = (Spinner) popupView.findViewById(R.id.spinnerChoixTempsAlerte);
+                                                            final Spinner spinnerTemps = (Spinner) popupView.findViewById(R.id.spinnerChoixTempsAlerte);
                                                             List<String> nbTempsMesure = new ArrayList<>();
                                                             for (int i = 1; i <= m.getTempsMesure(); i++) {
                                                                 nbTempsMesure.add(i + "");
@@ -487,6 +502,60 @@ public class EditionActivity  extends Activity {
                                                                 public void onClick(DialogInterface dialog, int which) {
                                                                     //TODO Enregistrement d'un event alerte
                                                                     //Pour rappel, il faut suivre un event alerte par un event qui efface l'alerte avec la couleur -1
+                                                                    int nouvCouleur=spinnerCouleur.getSelectedItemPosition();
+                                                                    int temps_debut = Integer.parseInt(spinnerTemps.getSelectedItem().toString());
+                                                                    List<Alertes> eventPresents = eventsAlertesDeLaMesure(m.getId());
+                                                                    Alertes eventCour=new Alertes();
+                                                                    boolean eventDejaPresent=false;
+                                                                    for(int i =0; i< eventPresents.size() && !eventDejaPresent;i++){
+                                                                        eventCour = eventPresents.get(i);
+                                                                        if(eventCour.getMesure_debut()==m.getId() && eventCour.getTemps_debut() == temps_debut){
+                                                                            eventDejaPresent = true;
+                                                                        }
+                                                                    }
+
+                                                                    if(eventDejaPresent ) {
+                                                                        Toast.makeText(context,"event deja preset",Toast.LENGTH_SHORT).show();
+
+                                                                        eventCour.setCouleur(nouvCouleur);
+                                                                        eventCour.setTemps_debut(temps_debut);
+                                                                        bdd.update(eventCour);
+
+
+                                                                    //si deja un event et que ce n'est pas un event pour supprimer la couleur
+                                                                       /* if (eventPresents.get(0).getCouleur()!=-1){
+                                                                            eventCour.setCouleur(nouvCouleur);
+                                                                            bdd.update(eventCour);
+                                                                        }else {
+                                                                            eventCour.setCouleur(nouvCouleur);
+                                                                            bdd.update(eventCour);
+                                                                            if (temps_debut == m.getTempsMesure() && m.getId() < partition.getListMesures().size()) {//si alerte sur dernier temps de la mesure
+                                                                                eventCour = new Alertes(idMusique, m.getId() + 1, 1, -1, 1);
+
+                                                                            } else {
+                                                                                eventCour = new Alertes(idMusique, m.getId(), temps_debut + 1, -1, 1);
+                                                                            }
+                                                                            bdd.save(eventCour);
+                                                                        }*/
+
+
+
+                                                                    }else{
+                                                                        eventCour = new Alertes(idMusique,m.getId(),temps_debut,nouvCouleur,1);//TODO passage reprise
+                                                                        bdd.save(eventCour);/*
+                                                                        if(temps_debut==m.getTempsMesure() && m.getId()<partition.getListMesures().size()){//si alerte sur dernier temps de la mesure
+                                                                            eventCour = new Alertes(idMusique, m.getId()+1, 1,-1,1);
+
+                                                                        }else {
+                                                                            eventCour = new Alertes(idMusique, m.getId(), temps_debut+1,-1,1);
+                                                                        }
+                                                                        bdd.save(eventCour);*/
+                                                                    }
+                                                                    MAJAffichage();
+                                                                    //maj liste events
+                                                                    varAlertesListSurMesureCour = eventsAlertesDeLaMesure(m.getId());
+                                                                    adapterEventAlertes = new EventAlerteAdapter(context,varAlertesListSurMesureCour);
+                                                                    eventAlerteListView.setAdapter(adapterEventAlertes);
                                                                 }
                                                             });
                                                             popup.show();
@@ -596,7 +665,20 @@ public class EditionActivity  extends Activity {
         return res;
     }
 
-            private List<Reprise> eventsRepriseDeLaMesure(int numMesure){
+    private List<Alertes> eventsAlertesDeLaMesure(int numMesure){
+        List<Alertes> res = new ArrayList<>();
+       Alertes event;
+        for(int i =0; i<varAlertesList.size();i++){
+            event = varAlertesList.get(i);
+            if(event.getMesure_debut() == numMesure){
+                res.add(event);
+            }
+        }
+        return res;
+    }
+
+
+    private List<Reprise> eventsRepriseDeLaMesure(int numMesure){
         List<Reprise> res = new ArrayList<>();
         Reprise event;
         for(int i =0; i<varRepriseList.size();i++){
@@ -682,6 +764,22 @@ public class EditionActivity  extends Activity {
         });
     }
 
+    private void triListVarAlertes(){
+        Collections.sort(varAlertesList, new Comparator<Alertes>() {
+            @Override
+            public int compare(Alertes lhs, Alertes rhs) {
+                int t;
+                if(lhs.getMesure_debut()< rhs.getMesure_debut()){
+                    t=-1;
+                }else{
+                    t=1;
+                }
+                return  t;
+            }
+        });
+    }
+
+
     private void triListVarReprise(){
         Collections.sort(varRepriseList, new Comparator<Reprise>() {
             @Override
@@ -719,16 +817,19 @@ public class EditionActivity  extends Activity {
         varArmatureList =  bdd.getArmature(bdd.getMusique(idMusique));
         varRepriseList = bdd.getReprises(bdd.getMusique(idMusique));
         varMesuresNonLues = bdd.getMesuresNonLues(bdd.getMusique(idMusique));
+        varAlertesList = bdd.getAlertes(bdd.getMusique(idMusique));
         triListVarIntensite();
         triListVarArmature();
         triListVarTemps();
         triListVarReprise();
         triListVarMesuresNonLues();
+        triListVarAlertes();
         partition.setTempo(varTempsList);
         partition.setNuance(varIntensiteList);
         partition.setArmature(varArmatureList);
         partition.setReprise(varRepriseList);
         partition.setMesuresNonLues(varMesuresNonLues);
+        partition.setAlertes(varAlertesList);
         adapter = new MesureAdapter(EditionActivity.this, partition);
         mGridView.setAdapter(adapter);
 

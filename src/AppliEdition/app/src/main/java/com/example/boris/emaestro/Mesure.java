@@ -22,6 +22,12 @@ public class Mesure {
     private boolean secPassage;//mesure joué pendant 2eme passage
     private boolean finPassage;//pour afficher petite barre verticale en fin de passage
 
+
+    //Alertes
+    private int couleur;
+    private boolean alertePresente;
+    private int alerteTpsDebut;
+
     public Mesure( int id){
         this.id = id;
         this.nuance = Nuance.NEUTRE;
@@ -36,6 +42,10 @@ public class Mesure {
         this.finPassage=false;
         this.finReprise = false;
         this.secPassage= false;
+
+        this.couleur=-1;
+        this.alertePresente = false;
+        this.alerteTpsDebut = 0;
 
     }
 //TODO gestion des events
@@ -110,4 +120,11 @@ public class Mesure {
     public boolean getFinReprise(){return this.finReprise;}
     public boolean getSecPassage(){return this.secPassage;}
     public boolean getFinPassage(){return this.finPassage;}
+
+    public void setCouleur(int couleur){this.couleur=couleur;}
+    public void setAlertePresente(boolean present){ this.alertePresente = present;}
+    public void setAlerteTpsDebut(int alerteTpsDebut){ this.alerteTpsDebut = alerteTpsDebut;}
+
+
 }
+
