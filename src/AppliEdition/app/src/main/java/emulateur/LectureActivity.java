@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
@@ -184,12 +185,16 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     switcher.removeCallbacks(runnable);
                 }
                 else{
+
                     int temps=0;
 
                     if(mapCercle.containsKey(index)){
                         bitmapCercle = BitmapFactory.decodeResource(getResources(), mapCercle.get(index).getLeft());
                         temps = 60000/mapCercle.get(index).getRight();
                     }
+
+                    switcher.postDelayed(this, temps);
+
                     if(mapMesure.containsKey(numeroTemps)){
                         bitmapMesure = mapMesure.get(numeroTemps);
                     }
@@ -206,13 +211,10 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                         bitmapArmature = mapArmature.get(numeroTemps);
                     }
                     if(mapAlerte.containsKey(numeroTemps)){
-                        int idAlerte = mapAlerte.get(numeroTemps);
-                        if(idAlerte != -1){
-                            bitmapAlerte = BitmapFactory.decodeResource(getResources(), mapAlerte.get(numeroTemps));
-                        }
-                        else{
-                            bitmapAlerte = null;
-                        }
+                        bitmapAlerte = BitmapFactory.decodeResource(getResources(), mapAlerte.get(numeroTemps));
+                    }
+                    else{
+                        bitmapAlerte = null;
                     }
                     Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
@@ -264,8 +266,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     }
 
 
-
-                    switcher.postDelayed(this, temps);
                 }
             }
         }.init(bitmapNuance,bitmapArmature,bitmapAlerte);//initialisation avec les images de départ récupérées avant le premier temps

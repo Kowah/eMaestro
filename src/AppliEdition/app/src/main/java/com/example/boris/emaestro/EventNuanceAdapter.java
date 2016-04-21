@@ -1,6 +1,7 @@
 package com.example.boris.emaestro;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,8 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
 
         EventViewHolder viewHolder = (EventViewHolder) convertView.getTag();
         event = events.get(position);
-        ((TextView) convertView.findViewById(R.id.info)).setText(Partition.ConvertNuanceFromInt(event.getIntensite()) + " sur le temps " + event.getTempsDebut());
+       final TextView t = ((TextView) convertView.findViewById(R.id.info));
+        t.setText(Partition.ConvertNuanceFromInt(event.getIntensite()) + " sur le temps " + event.getTempsDebut());
 
 
         supprimer = (Button) convertView.findViewById(R.id.supprimer);
@@ -59,6 +61,7 @@ public class EventNuanceAdapter extends ArrayAdapter<VariationIntensite>{
                                                  events.remove(event);
                                                  EventNuanceAdapter adapter = new EventNuanceAdapter(v.getContext(), events);
                                                  EditionActivity.eventNuanceListView.setAdapter(adapter);
+
                                              }
 
                                          }
