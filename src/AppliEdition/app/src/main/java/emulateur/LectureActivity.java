@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import BDD.db.DataBaseManager;
+import BDD.to.Alertes;
 import BDD.to.Armature;
 import BDD.to.MesuresNonLues;
 import BDD.to.Reprise;
@@ -101,16 +102,19 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         listelecture.add(new Pair<>("fin",1));
 
 
+        //mapCercle
+        // format : nbTemps -> (idImage,tempsAffichage)
         //maps pour les autres informations
-        // format : nbTemps -> id image
+        // format : nbTemps -> idImage ou image
 
+        final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle(listelecture,banqueImages);
         final HashMap<Integer,Bitmap> mapMesure = creerMapMesure();
         final HashMap<Integer,Integer> mapNuance = creerMapNuance();
         final HashMap<Integer,Integer> mapSection = creerMapSection();
         final HashMap<Integer,Integer> mapRepetition = creerMapRepetition();
         final HashMap<Integer,Bitmap> mapArmature = creerMapArmature();
         final HashMap<Integer,Integer> mapSignature = creerMapSignature();
-
+        final HashMap<Integer,Integer> mapAlerte = creerMapAlerte();
 
         //lancement de l'animation
 
@@ -119,16 +123,31 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
         int tempsDebut = mapMesures.get(mesureDebut);
         Bitmap bitmapNuance = null;
+        Bitmap bitmapArmature = null;
+        Bitmap bitmapAlerte = null;
 
         //initialisation de la nuance. On recupere la derniere image de nuance avant le temps de debut
-        for(int t=1; t<tempsDebut; t++){
-            if(mapNuance.containsKey(t)){
-                int idNuance = mapNuance.get(t);
+        //idem pour l'armature et les alertes
+        for(int numeroTemps=1; numeroTemps<tempsDebut; numeroTemps++){
+            if(mapNuance.containsKey(numeroTemps)){
+                int idNuance = mapNuance.get(numeroTemps);
                 if(idNuance != -1){
-                    bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(t));
+                    bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps));
                 }
                 else{
                     bitmapNuance = null;
+                }
+            }
+            if(mapArmature.containsKey(numeroTemps)){
+                bitmapArmature = mapArmature.get(numeroTemps);
+            }
+            if(mapAlerte.containsKey(numeroTemps)){
+                int idAlerte = mapAlerte.get(numeroTemps);
+                if(idAlerte != -1){
+                    bitmapAlerte = BitmapFactory.decodeResource(getResources(), mapAlerte.get(numeroTemps));
+                }
+                else{
+                    bitmapAlerte = null;
                 }
             }
         }
@@ -141,12 +160,20 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             int index = 0;
             int numeroTemps= tempsDebut-nbDecompte;
 
+            HashMap<Integer,Integer> mapReprises = creerMapReprise();
+            HashMap<Integer,Pair<Integer,Integer>> mapNonLues = creerMapNonLues();
+            int numeroPassageReprise = 1;
+
+            Bitmap bitmapCercle = null;
             Bitmap bitmapMesure = null;
             Bitmap bitmapNuance = null;
             Bitmap bitmapArmature = null;
+            Bitmap bitmapAlerte = null;
 
-            public Runnable init(Bitmap bitmapNuanceInit){
-                bitmapNuance = bitmapNuanceInit;
+            public Runnable init(Bitmap bitNuanceInit, Bitmap bitArmature, Bitmap bitAlerte){
+                bitmapNuance = bitNuanceInit;
+                bitmapArmature = bitArmature;
+                bitmapAlerte = bitAlerte;
                 return this;
             }
 
@@ -157,13 +184,12 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     switcher.removeCallbacks(runnable);
                 }
                 else{
-                    String key = listelecture.get(index).getLeft();
-                    int temps = listelecture.get(index).getRight();
-                    temps = 60000/temps;
-                    int id = banqueImages.get(key);
+                    int temps=0;
 
-                    Bitmap bitmapCercle = BitmapFactory.decodeResource(getResources(), id);
-
+                    if(mapCercle.containsKey(index)){
+                        bitmapCercle = BitmapFactory.decodeResource(getResources(), mapCercle.get(index).getLeft());
+                        temps = 60000/mapCercle.get(index).getRight();
+                    }
                     if(mapMesure.containsKey(numeroTemps)){
                         bitmapMesure = mapMesure.get(numeroTemps);
                     }
@@ -179,12 +205,21 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     if(mapArmature.containsKey(numeroTemps)){
                         bitmapArmature = mapArmature.get(numeroTemps);
                     }
+                    if(mapAlerte.containsKey(numeroTemps)){
+                        int idAlerte = mapAlerte.get(numeroTemps);
+                        if(idAlerte != -1){
+                            bitmapAlerte = BitmapFactory.decodeResource(getResources(), mapAlerte.get(numeroTemps));
+                        }
+                        else{
+                            bitmapAlerte = null;
+                        }
+                    }
                     Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
                     Bitmap bitmapFinal;
                     if(index >= nbDecompte && index < listelecture.size()-1) {
-                        bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapArmature);
+                        bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapArmature, bitmapAlerte);
                     }
                     else{
                         bitmapFinal = bitmapCercle;
@@ -192,16 +227,101 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     BitmapDrawable draw = new BitmapDrawable(getResources(),bitmapFinal);
                     switcher.setImageDrawable(draw);
 
-                    index++;
-                    numeroTemps++;
+
+                    //verifier les sauts liés aux reprises et mesures non lues
+                    if(mapReprises.containsKey(numeroTemps)){
+                        if(numeroPassageReprise == 1){
+                            //saut de reprise
+                            numeroTemps = mapReprises.get(numeroTemps);
+                            index = numeroTemps + nbDecompte;
+                            numeroPassageReprise = 2;
+                        }
+                        else{
+                            //on ne fait le saut qu'une fois
+                            mapReprises.remove(numeroTemps);
+                            numeroPassageReprise = 1;
+                            index++;
+                            numeroTemps++;
+                        }
+                    }
+                    else if(mapNonLues.containsKey(numeroTemps)){
+                        Pair<Integer,Integer> tempsEtPassage = mapNonLues.get(numeroTemps);
+                       if(numeroPassageReprise == tempsEtPassage.getRight()){
+                           //on effectue le saut
+                           numeroTemps = tempsEtPassage.getLeft();
+                           index = numeroTemps + nbDecompte;
+                           numeroPassageReprise = 1;
+                       }
+                        else{
+                           //on est pas dans le bon passage donc on lit
+                           index++;
+                           numeroTemps++;
+                       }
+                    }
+                    else{
+                        index++;
+                        numeroTemps++;
+                    }
+
+
 
                     switcher.postDelayed(this, temps);
                 }
             }
-        }.init(bitmapNuance);//initialisation avec les images de départ récupérées avant le premier temps
+        }.init(bitmapNuance,bitmapArmature,bitmapAlerte);//initialisation avec les images de départ récupérées avant le premier temps
 
         switcher.postDelayed(runnable,500);
 
+    }
+
+    private HashMap<Integer,Integer> creerMapReprise(){
+        //format : nbTemps -> nbTemps apres Jump
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        ArrayList<Reprise> reprises = bdd.getReprises(bdd.getMusique(idMusique));
+
+        for(Reprise rep : reprises){
+            int mesureDebut = rep.getMesure_debut();
+            int mesureFin = rep.getMesure_fin();
+
+            int premierTempsReprise = mapMesures.get(mesureDebut);
+            int dernierTempsReprise;
+            if(mapMesures.containsKey(mesureFin+1)){
+                dernierTempsReprise = mapMesures.get(mesureFin+1)-1;
+            }
+            else{
+                dernierTempsReprise = listeImages.size()-1;
+            }
+
+            map.put(dernierTempsReprise,premierTempsReprise);
+        }
+        return map;
+    }
+
+    private HashMap<Integer,Pair<Integer,Integer>> creerMapNonLues(){
+        //format : nbTemps -> (nbTemps apres Jump, passage reprise)
+        HashMap<Integer,Pair<Integer,Integer>> map = new HashMap<>();
+
+        ArrayList<MesuresNonLues> mesuresNonLues = bdd.getMesuresNonLues(bdd.getMusique(idMusique));
+
+        for(MesuresNonLues mnl : mesuresNonLues){
+            int mesureDebut = mnl.getMesure_debut();
+            int mesureFin = mnl.getMesure_fin();
+            int passage = mnl.getPassage_reprise();
+
+            int premierTemps = mapMesures.get(mesureDebut)-1;
+            int tempsJump;
+            if(mapMesures.containsKey(mesureFin+1)){
+                tempsJump = mapMesures.get(mesureFin+1);
+            }
+            else{
+                tempsJump = listeImages.size();
+            }
+
+            map.put(premierTemps, new Pair(tempsJump,passage));
+        }
+
+        return map;
     }
 
     private HashMap<Integer, Integer> creerMapSignature() {
@@ -319,7 +439,42 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         return bitmap;
     }
 
-    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap armature){
+    private HashMap<Integer,Integer> creerMapAlerte(){
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        ArrayList<Alertes> alertes = bdd.getAlertes(bdd.getMusique(idMusique));
+        for (Alertes al : alertes) {
+            int mesure = al.getMesure_debut();
+            int tempsMesure = mapMesures.get(mesure);
+            int tpsDebut = al.getTemps_debut();
+            int i = al.getCouleur();
+            int idImage = -1;
+            if(i != -1) {
+                idImage = getResources().getIdentifier("alerte" + i, "drawable", getPackageName());
+            }
+            map.put(tempsMesure+tpsDebut-1,idImage);
+        }
+        return map;
+    }
+
+    private HashMap<Integer,Pair<Integer,Integer>> creerMapCercle(ArrayList<Pair<String, Integer>> listelecture, HashMap<String, Integer> banqueImages){
+        // format : nbTemps -> (idImage,tempsAffichage)
+        HashMap<Integer,Pair<Integer,Integer>> map = new HashMap<>();
+
+        for(int index=0; index<listelecture.size(); index++){
+            String key = listelecture.get(index).getLeft();
+            int temps = listelecture.get(index).getRight();
+            int id = banqueImages.get(key);
+
+            map.put(index,new Pair<>(id,temps));
+        }
+
+
+
+        return map;
+    }
+
+    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap armature, Bitmap alerte){
         //cercle n'est pas null
 
         Bitmap bitmap = Bitmap.createBitmap(cercle.getWidth(), cercle.getHeight(), cercle.getConfig());
@@ -352,6 +507,10 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             canvas.drawBitmap(armature,(6*cercle.getWidth()/8),(cercle.getHeight()/2),null);
             //taille 32x16
         }
+        if(alerte != null){
+            canvas.drawBitmap(alerte,(5*cercle.getWidth()/8),(3*cercle.getHeight()/4),null);
+            //taille 16x16
+        }
 
         return bitmap;
     }
@@ -382,13 +541,25 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         Reprise prochaineReprise = reprises.get(indexReprise);
         MesuresNonLues prochaineMesuresNL = mesuresNonLues.get(indexMesureNL);
         int repetitionCourante = 1;
+        boolean enregistrer = true;
 
         ArrayList<Integer> ordreLecture = new ArrayList<>();
         int m=mesureDebut;
         while(m<=mesureFin){
 
-            //On lit la mesure m
-            ordreLecture.add(m);
+            //Si la mesure est au debut d'une partie non lue
+            if(prochaineMesuresNL.getMesure_debut() == m &&
+                    prochaineMesuresNL.getPassage_reprise() == repetitionCourante){
+                //on saute les mesures non lues
+                m = prochaineMesuresNL.getMesure_fin();
+                enregistrer = false;
+            }
+
+            if(enregistrer){
+                //On lit la mesure m
+                ordreLecture.add(m);
+            }
+            enregistrer = true;
 
             //Si la mesure est une fin de reprise
             if(prochaineReprise.getMesure_fin() == m){
@@ -408,12 +579,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                         prochaineReprise = reprises.get(indexReprise);
                     }
                 }
-            }
-            //Si la mesure est au debut d'une partie non lue
-            else if(prochaineMesuresNL.getMesure_debut() == m &&
-                    prochaineMesuresNL.getPassage_reprise() == repetitionCourante){
-                //on saute les mesures non lues
-                m = prochaineMesuresNL.getMesure_fin()+1;
             }
             else{
                 m++;
