@@ -1,14 +1,14 @@
 from lecteur_bdd import *
 
-#host="localhost"
-#user="guest"
-#pwd="guest"
-#db="emaestro"
-
 host="localhost"
-user="tristan"
-pwd="1234"
+user="guest"
+pwd="guest"
 db="emaestro"
+
+#host="localhost"
+#user="tristan"
+#pwd="1234"
+#db="emaestro"
 
 class Chargeur_partition:
 

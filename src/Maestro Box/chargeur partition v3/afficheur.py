@@ -100,13 +100,23 @@ class afficheur :
         del descripteur["nb_temps_intensite_"+str(t)]
         scheduler.enter((t - 1) * tempo_en_seconde, 1, afficher_intensite, (descripteur["intensite_courante"],))
 
-#      if ("temps_alerte_" + str(t))
+      if ("temps_alerte_" + str(t) in descripteur):
+        scheduler.enter((t - 1) * tempo_en_seconde, 1, afficher_alerte, (descripteur["couleur_alerte_" + str(t)],))
+        if (descripteur["couleur_alerte_" + str(t)] != -1) and ("temps_alerte_" + str(t+1) not in descripteur):
+          descripteur["temps_alerte_" + str(t+1)] = True
+          descripteur["couleur_alerte_" + str(t+1)] = -1
+        del descripteur["temps_alerte_" + str(t)]
+        del descripteur["couleur_alerte_" + str(t)]
+
+      if ("temps_debut_armature_" + str(t) in descripteur):
+        scheduler.enter((t - 1) * tempo_en_seconde, 1, afficher_armature, (descripteur["alteration_" + str(t)],))
+        del descripteur["temps_debut_armature_" + str(t)]
+        del descripteur["alteration_" + str(t)]
 
     scheduler.enter(descripteur["temps_par_mesure"] * tempo_en_seconde, 1, wait, ())
 
     scheduler.run()
 
-# TODO armature, alerte
 
   def afficher_logo(self):
     image = Image.open(chemin_images + 'ema logo.png')
