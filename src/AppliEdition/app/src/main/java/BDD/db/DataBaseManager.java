@@ -35,18 +35,6 @@ public class DataBaseManager {
 			+ " =?";
 	private static final String WHERE_ID_PARTIE_EQUALS = DataBaseHelper.IDPartie
 			+ " =?";
-    private static final String WHERE_ID_MESURE_NON_LUE_EQUALS = DataBaseHelper.IDMesuresNonLues
-            + " =?";
-    private static final String WHERE_ID_Reprise_EQUALS = DataBaseHelper.IDReprises
-            + " =?";
-    private static final String WHERE_ID_ALERTES_EQUALS = DataBaseHelper.IDAlertes
-            + " =?";
-    private static final String WHERE_ID_VAR_RYTHMES_EQUALS = DataBaseHelper.IDVarRythme
-            + " =?";
-    private static final String WHERE_ID_SUSPENSION_EQUALS = DataBaseHelper.IDSuspension
-            + " =?";
-    private static final String WHERE_ID_ARMATURE_EQUALS = DataBaseHelper.IDArmature
-            + " =?";
     private static final String WHERE_ID_EVENEMENT_EQUALS = DataBaseHelper.IDEvenement
             + " =?";
 
@@ -72,8 +60,6 @@ public class DataBaseManager {
         database.delete(DataBaseHelper.Evenement_Table, null, null);
         database.delete(DataBaseHelper.Partie_Table, null, null);
 		database.delete(DataBaseHelper.CATALOGUE_TABLE, null, null);
-        database.delete(DataBaseHelper.Armature_Table, null, null);
-        database.delete(DataBaseHelper.Suspension_Table, null, null);
 	}
 
 	//Ferme la connection avec la bdd
@@ -130,86 +116,7 @@ public class DataBaseManager {
 
 		return database.insert(DataBaseHelper.Partie_Table, null, values);
 	}
-    /*
-    //Permet de sauvegarder les mesures non lues en paramétres dans la base
-    //@return l'id dans la BDD
-    public long save(MesuresNonLues m) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, m.getIdMusique());
-        values.put(DataBaseHelper.FLAG, m.getFlag());
-        values.put(DataBaseHelper.MESURE_DEBUT, m.getMesure_debut());
-        values.put(DataBaseHelper.ARG2, m.getArg2());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, m.getPassage_reprise());
 
-        return database.insert(DataBaseHelper.Mesures_non_lues_Table, null, values);
-    }
-    //Permet de sauvegarder les reprises dans la base
-    //@return l'id dans la BDD
-    public long save(Reprise reprise) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, reprise.getIdMusique());
-        values.put(DataBaseHelper.FLAG, reprise.getFlag());
-        values.put(DataBaseHelper.MESURE_DEBUT, reprise.getMesure_debut());
-        values.put(DataBaseHelper.ARG2, reprise.getArg2());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, reprise.getPassage_reprise());
-
-        return database.insert(DataBaseHelper.Reprises_Table, null, values);
-    }
-
-    //Permet de sauvegarder les alertes dans la base
-    //@return l'id dans la BDD
-    public long save(Alertes alertes) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, alertes.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, alertes.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS_DEBUT, alertes.getTemps_debut());
-        values.put(DataBaseHelper.Couleur, alertes.getCouleur());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, alertes.getPassage_reprise());
-
-        return database.insert(DataBaseHelper.Alerte_Table, null, values);
-    }
-
-    //Permet de sauvegarder les variations de rythmes dans la base
-    //@return l'id dans la BDD
-    public long save(VarRythmes varRythmes) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, varRythmes.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, varRythmes.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS_DEBUT, varRythmes.getTemps_debut());
-        values.put(DataBaseHelper.Taux_Varitation, varRythmes.getTauxVariation());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, varRythmes.getPassage_reprise());
-
-
-        return database.insert(DataBaseHelper.Variation_Rythme_Table, null, values);
-    }
-
-    //Permet de sauvegarder les suspensions dans la base
-    //@return l'id dans la BDD
-    public long save(Suspension suspension) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, suspension.getIdMusique());
-        values.put(DataBaseHelper.MESURE, suspension.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS, suspension.getTemps());
-        values.put(DataBaseHelper.DUREE, suspension.getDuree());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, suspension.getPassage_reprise());
-
-
-        return database.insert(DataBaseHelper.Suspension_Table, null, values);
-    }
-
-    //Permet de sauvegarder les armatures dans la base
-    //@return l'id dans la BDD
-    public long save(Armature armature) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, armature.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, armature.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS_DEBUT, armature.getTemps_debut());
-        values.put(DataBaseHelper.Alteration, armature.getAlteration());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, armature.getPassage_reprise());
-
-
-        return database.insert(DataBaseHelper.Armature_Table, null, values);
-    }*/
     public long save(Evenement e){
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.IDMusique, e.getIdMusique());
@@ -280,97 +187,7 @@ public class DataBaseManager {
 		Log.d("Update Result:", "=" + result);
 		return result;
 	}
-    /*
-    //Permet de mettre a jour la mesure non lue passé en paramétre dans la table mesure non lue
-    public long update(MesuresNonLues m) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, m.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, m.getMesure_debut());
-        values.put(DataBaseHelper.ARG2, m.getArg2());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, m.getPassage_reprise());
 
-        long result = database.update(DataBaseHelper.Mesures_non_lues_Table, values,
-                WHERE_ID_MESURE_NON_LUE_EQUALS,
-                new String[]{String.valueOf(m.getId())});
-        Log.d("Update Result:", "=" + result);
-        return result;
-    }
-    //Permet de mettre a jour la reprise passé en paramétre dans la table reprise
-    public long update(Reprise reprise) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, reprise.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, reprise.getMesure_debut());
-        values.put(DataBaseHelper.MESURE_FIN, reprise.getMesure_fin());
-
-        long result = database.update(DataBaseHelper.Reprises_Table, values,
-                WHERE_ID_Reprise_EQUALS,
-                new String[]{String.valueOf(reprise.getId())});
-        Log.d("Update Result:", "=" + result);
-        return result;
-    }
-
-    //Permet de mettre a jour l'alerte passé en paramétre dans la table alerte
-    public long update(Alertes alertes) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, alertes.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, alertes.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS_DEBUT, alertes.getTemps_debut());
-        values.put(DataBaseHelper.Couleur, alertes.getCouleur());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, alertes.getPassage_reprise());
-
-        long result = database.update(DataBaseHelper.Alerte_Table, values,
-                WHERE_ID_ALERTES_EQUALS,
-                new String[]{String.valueOf(alertes.getId())});
-        Log.d("Update Result:", "=" + result);
-        return result;
-    }
-    //Permet de mettre a jour la variation de rythme passé en paramétre dans la table VarRythmes
-    public long update(VarRythmes varRythmes) {
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, varRythmes.getIdMusique());
-        values.put(DataBaseHelper.MESURE_DEBUT, varRythmes.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS_DEBUT, varRythmes.getTemps_debut());
-        values.put(DataBaseHelper.Taux_Varitation, varRythmes.getTauxVariation());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, varRythmes.getPassage_reprise());
-
-        long result = database.update(DataBaseHelper.Variation_Rythme_Table, values,
-                WHERE_ID_VAR_RYTHMES_EQUALS,
-                new String[]{String.valueOf(varRythmes.getId())});
-        Log.d("Update Result:", "=" + result);
-        return result;
-    }
-
-    //Permet de mettre a jour la suspension passé en paramétre dans la table suspension
-    public long update(Suspension suspension){
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, suspension.getIdMusique());
-        values.put(DataBaseHelper.MESURE, suspension.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS, suspension.getTemps());
-        values.put(DataBaseHelper.DUREE, suspension.getDuree());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, suspension.getPassage_reprise());
-
-        long result = database.update(DataBaseHelper.Suspension_Table, values,
-                WHERE_ID_SUSPENSION_EQUALS,
-                new String[]{String.valueOf(suspension.getId())});
-        Log.d("Update Result:", "=" + result);
-        return result;
-    }
-    //Permet de mettre a jour l'armature passé en paramétre dans la table armature
-    public long update(Armature armature){
-        ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.IDMusique, armature.getIdMusique());
-        values.put(DataBaseHelper.MESURE, armature.getMesure_debut());
-        values.put(DataBaseHelper.TEMPS, armature.getTemps_debut());
-        values.put(DataBaseHelper.DUREE, armature.getAlteration());
-        values.put(DataBaseHelper.PASSAGE_REPRISE, armature.getPassage_reprise());
-
-        long result = database.update(DataBaseHelper.Armature_Table, values,
-                WHERE_ID_ARMATURE_EQUALS,
-                new String[]{String.valueOf(armature.getId())});
-        Log.d("Update Result:", "=" + result);
-        return result;
-    }
-    */
     //Permet de mettre a jour l'evenement passé en paramétre dans la table evenement
     public long update(Evenement e) {
         ContentValues values = new ContentValues();
@@ -431,31 +248,6 @@ public class DataBaseManager {
 				WHERE_ID_PARTIE_EQUALS, new String[]{partie.getId() + ""});
 	}
 
-    /*
-    public int delete(MesuresNonLues m){
-        return database.delete(DataBaseHelper.Mesures_non_lues_Table,
-                WHERE_ID_MESURE_NON_LUE_EQUALS, new String[]{m.getId() + ""});
-    }
-    public int delete(Reprise reprise){
-        return database.delete(DataBaseHelper.Reprises_Table,
-                WHERE_ID_Reprise_EQUALS, new String[]{reprise.getId() + ""});
-    }
-    public int delete(Alertes alertes){
-        return database.delete(DataBaseHelper.Alerte_Table,
-                WHERE_ID_ALERTES_EQUALS, new String[]{alertes.getId() + ""});
-    }
-    public int delete(VarRythmes varRythmes){
-        return database.delete(DataBaseHelper.Variation_Rythme_Table,
-                WHERE_ID_VAR_RYTHMES_EQUALS, new String[]{varRythmes.getId() + ""});
-    }
-    public int delete(Suspension suspension){
-        return database.delete(DataBaseHelper.Suspension_Table,
-                WHERE_ID_SUSPENSION_EQUALS, new String[]{suspension.getId() + ""});
-    }
-     public int delete(Armature armature){
-        return database.delete(DataBaseHelper.Armature_Table,
-                WHERE_ID_ARMATURE_EQUALS, new String[]{armature.getId() + ""});
-    }*/
     //Permet de supprimer un evenement particulier
     public int delete(Evenement e) {
         return database.delete(DataBaseHelper.Evenement_Table,
@@ -802,7 +594,7 @@ public class DataBaseManager {
 
 	public static void connect(Context c, String Ssid) {
 		//String networkSSID = "\"wifsic-free\"";
-		String networkSSID = "\""+Ssid+"\"";
+		String networkSSID = "\"" +Ssid+"\"";
 		WifiManager wifi = (WifiManager) c.getSystemService(c.WIFI_SERVICE);
 		ConnectivityManager wifi_manager = (ConnectivityManager) c.getSystemService(c.CONNECTIVITY_SERVICE);
         Toast.makeText(c, "Connection a : " + Ssid, Toast.LENGTH_LONG).show();
@@ -824,12 +616,13 @@ public class DataBaseManager {
 				conf.SSID = networkSSID;
 				conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 				res = wifi.addNetwork(conf);
+                wifi.enableNetwork(res, true);
 				Toast.makeText(c, "SSID created: " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
 			}
-			if (!wifi_manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-				Toast.makeText(c, "Impossible de se connecter a la maestrobox", Toast.LENGTH_LONG).show();
-			}
-			while (!wifi.reconnect()) ;
+			while (!wifi.reconnect());
+            if (!wifi_manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+                Toast.makeText(c, "Impossible de se connecter a la maestrobox", Toast.LENGTH_LONG).show();
+            }
 		} else {
 			if (!wifi_manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
 				Toast.makeText(c, " Impossible de se connecter a  " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();

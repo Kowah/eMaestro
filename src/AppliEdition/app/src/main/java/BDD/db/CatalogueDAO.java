@@ -75,8 +75,8 @@ public class CatalogueDAO extends DataBaseManager {
         Log.d("Update Result:", "=" + result);
         return result;
     }
-
-    public int deleteMusic(Musique musique) {
+    @Override
+    public int delete(Musique musique) {
         return database.delete(DataBaseHelper.CATALOGUE_TABLE,
                 WHERE_ID_EQUALS, new String[] { musique.getId() + "" });
     }
@@ -124,6 +124,21 @@ public class CatalogueDAO extends DataBaseManager {
         cursor.close();
 
         return musiques;
+    }
+
+    public ArrayList<Integer> getIdMusiques() {
+        ArrayList<Integer> ident = new ArrayList<>();
+        String query = "SELECT "+ DataBaseHelper.IDMusique +" FROM "
+                + DataBaseHelper.CATALOGUE_TABLE;
+
+        Log.d("query", query);
+        Cursor cursor = database.rawQuery(query, null);
+
+        while (cursor.moveToNext()) {
+                ident.add(cursor.getInt(0));
+        }
+        cursor.close();
+        return ident;
     }
 
     public int synchronizer()  {

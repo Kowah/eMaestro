@@ -38,6 +38,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape" >
         </activity>
+        <activity
+            android:name=".ChangeCatalogueActivity"
+            android:label="@string/title_activity_change_catalogue"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape" >
+        </activity>
 
         <activity
             android:name="emulateur.EmulateurActivity"

@@ -8,27 +8,21 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "emaestro";
-	private static final int DATABASE_VERSION = 6;
+	private static final int DATABASE_VERSION = 7;
     //LES TABLES
 	public static final String MUSIQUE_TABLE = "Musique";
 	public static final String CATALOGUE_TABLE = "Catalogue";
 	public static final String VarTemps_Table = "VariationTemps";
 	public static final String VarIntensite_Table = "VariationIntensite";
 	public static final String Partie_Table = "Partie";
-	public static final String Mesures_non_lues_Table = "MesuresNonLues";
-	public static final String Reprises_Table = "Reprise";
-	public static final String Alerte_Table = "Alerte";
-	public static final String Variation_Rythme_Table = "VariationRythme";
-	public static final String Suspension_Table = "Suspension";
-	public static final String Armature_Table = "Armature";
 	public static final String Evenement_Table = "Evenement";
 
-	public static final int FLAG_MNL = 1;
-	public static final int FLAG_REPRISE = 2;
-	public static final int FLAG_ALERTE = 3;
-	public static final int FLAG_VARRYTHMES = 4;
-	public static final int FLAG_SUSPENSION = 5;
-	public static final int FLAG_ARMATURE = 6;
+	public static final int FLAG_MNL = 0;
+	public static final int FLAG_REPRISE = 1;
+	public static final int FLAG_ALERTE = 2;
+	public static final int FLAG_VARRYTHMES = 3;
+	public static final int FLAG_SUSPENSION = 4;
+	public static final int FLAG_ARMATURE = 5;
 
 
 
@@ -139,155 +133,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	private static final String Partie_TABLE_DROP = "DROP TABLE IF EXISTS "
 			+ Partie_Table;
 
-	/***********************************************************************/
-	/****************************MesuresNonLues*****************************/
-	/***********************************************************************/
-
-	//Colonnes de la table MesuresNonLues
-	public static final String IDMesuresNonLues = "id_mesures_non_lues";
-	//public static final String MESURE_DEBUT = "mesure_debut";
-	public static final String MESURE_FIN = "mesure_fin";
-	public static final String PASSAGE_REPRISE = "passage_reprise";
-
-	//Construction de la table Mesures Non lues
-	private static final String CREATE_MesuresNonLues_TABLE =
-			"CREATE TABLE " + Mesures_non_lues_Table + " ("
-					+ IDMesuresNonLues + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ IDMusique + " INTEGER, "
-					+ MESURE_DEBUT + " INTEGER, "
-					+ MESURE_FIN + " INTEGER, "
-					+ PASSAGE_REPRISE + " INTEGER "
-					+ ");";
-	//Destruction de la table Mesure Non Lues
-	private static final String MesuresNonLues_TABLE_DROP = "DROP TABLE IF EXISTS "
-			+ Mesures_non_lues_Table;
-
-	/***********************************************************************/
-	/*******************************Reprises********************************/
-	/***********************************************************************/
-	//Colonnes
-	public static final String IDReprises = "id_reprise";
-	//public static final String MESURE_DEBUT = "mesure_debut";
-	//public static final String MESURE_FIN = "mesure_fin";
-	//Creation de la table
-	private static final String CREATE_Reprise_TABLE =
-			"CREATE TABLE " + Reprises_Table + " ("
-			+ IDReprises + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ IDMusique + " INTEGER, "
-			+ MESURE_DEBUT + " INTEGER, "
-			+ MESURE_FIN + " INTEGER "
-			+ ");";
-	//Destruction de la table
-	private static final String Reprise_TABLE_DROP = "DROP TABLE IF EXISTS "
-			+ Reprises_Table;
-
-	/***********************************************************************/
-	/*******************************Alertes********************************/
-	/***********************************************************************/
-	//Colonnes
-	public static final String IDAlertes = "id_alerte";
-	//public static final String MESURE_DEBUT = "mesure_debut";
-	//public static final String TEMPS_DEBUT = "temps_debut";
-	public static final String Couleur = "couleur";
-	//public static final String PASSAGE_REPRISE = "passage_reprise";
-
-	//Creation de la table
-	private static final String CREATE_Alerte_TABLE =
-			"CREATE TABLE " + Alerte_Table + " ("
-					+ IDAlertes + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ IDMusique + " INTEGER, "
-					+ MESURE_DEBUT + " INTEGER, "
-					+ TEMPS_DEBUT + " INTEGER, "
-					+ Couleur + " INTEGER, "
-					+ PASSAGE_REPRISE + " INTEGER"
-					+ ");";
-	//Destruction de la table
-	private static final String Alerte_TABLE_DROP = "DROP TABLE IF EXISTS "
-			+ Alerte_Table;
-
-
-	/***********************************************************************/
-	/***************************VariationRythme*****************************/
-	/***********************************************************************/
-	//Colonnes
-	public static final String IDVarRythme = "id_variation_rythme";
-	//public static final String MESURE_DEBUT = "mesure_debut";
-	//public static final String TEMPS_DEBUT = "temps_debut";
-	public static final String Taux_Varitation = "taux_de_variation";
-	//public static final String PASSAGE_REPRISE = "passage_reprise";
-
-	//Creation de la table
-	private static final String CREATE_VariationRythme_TABLE =
-			"CREATE TABLE " + Variation_Rythme_Table + " ("
-					+ IDVarRythme + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ IDMusique + " INTEGER, "
-					+ MESURE_DEBUT + " INTEGER, "
-					+ TEMPS_DEBUT + " INTEGER, "
-					+ Taux_Varitation + " REAL, "
-					+ PASSAGE_REPRISE + " INTEGER"
-					+ ");";
-	//Destruction de la table
-	private static final String VaritationRythme_TABLE_DROP = "DROP TABLE IF EXISTS "
-			+ Variation_Rythme_Table;
-
-	/***********************************************************************/
-	/***************************Suspension*****************************/
-	/***********************************************************************/
-	//Colonnes
-	public static final String IDSuspension = "id_suspension";
-	public static final String MESURE = "mesure";
-	public static final String TEMPS = "temps";
-	public static final String DUREE = "duree";
-	//public static final String PASSAGE_REPRISE = "passage_reprise";
-
-	//Creation de la table
-	private static final String CREATE_Suspension_TABLE =
-			"CREATE TABLE " + Suspension_Table + " ("
-					+ IDSuspension + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ IDMusique + " INTEGER, "
-					+ MESURE + " INTEGER, "
-					+ TEMPS + " INTEGER, "
-					+ DUREE + " INTEGER, "
-					+ PASSAGE_REPRISE + " INTEGER"
-					+ ");";
-	//Destruction de la table
-	private static final String Suspension_TABLE_DROP = "DROP TABLE IF EXISTS "
-			+ Suspension_Table;
-
-	/***********************************************************************/
-	/******************************Armature*********************************/
-	/***********************************************************************/
-	//Colonnes
-	public static final String IDArmature = "id_armature";
-	//public static final String MESURE_DEBUT = "mesure";
-	//public static final String TEMPS_DEBUT = "temps";
-	public static final String Alteration = "alteration";
-	//public static final String PASSAGE_REPRISE = "passage_reprise";
-
-	//Creation de la table
-	private static final String CREATE_Armature_TABLE =
-			"CREATE TABLE " + Armature_Table + " ("
-					+ IDArmature + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ IDMusique + " INTEGER, "
-					+ MESURE_DEBUT + " INTEGER, "
-					+ TEMPS_DEBUT + " INTEGER, "
-					+ Alteration + " INTEGER, "
-					+ PASSAGE_REPRISE + " INTEGER"
-					+ ");";
-	//Destruction de la table
-	private static final String Armature_TABLE_DROP = "DROP TABLE IF EXISTS "
-			+ Armature_Table;
-
-	/***********************************************************************/
-	/******************************Evenement********************************/
-	/***********************************************************************/
 	//Colonnes
 	public static final String IDEvenement = "id_evenement";
-	public static final String FLAG = "flag";
+	public static final String FLAG = "arg1";
 	//public static final String MESURE_DEBUT = "mesure";
 	public static final String ARG2 = "arg2";
 	public static final String ARG3 = "arg3";
-	//public static final String PASSAGE_REPRISE = "passage_reprise";
+	public static final String PASSAGE_REPRISE = "passage_reprise";
 	//Creation de la table
 	private static final String CREATE_EVENEMENT_TABLE =
 			"CREATE TABLE " + Evenement_Table + " ("
@@ -297,22 +149,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 					+ MESURE_DEBUT + " INTEGER, "
 					+ ARG2 + " INTEGER, "
 					+ PASSAGE_REPRISE + " INTEGER, "
-					+ ARG3 + " INTEGER "
+					+ ARG3 + " FLOAT "
 					+ ");";
 	//Destruction de la table
 	private static final String EVENEMENT_TABLE_DROP = "DROP TABLE IF EXISTS "
 			+ Evenement_Table;
-
-	/*
-	//L'instance de notre base de données
-		private static DataBaseHelper instance;
-	//Fonction qui retourne l'instance en cours1
-		public static synchronized DataBaseHelper getHelper(Context context) {
-			if (instance == null)
-				instance = new DataBaseHelper(context);
-			return instance;
-		}
-	*/
 
 	//Contructeur
 	public DataBaseHelper(Context context) {
@@ -336,12 +177,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_VarTemps_TABLE);
 		db.execSQL(CREATE_VarIntensite_Table);
 		db.execSQL(CREATE_Partie_Table);
-		db.execSQL(CREATE_MesuresNonLues_TABLE);
-		db.execSQL(CREATE_Reprise_TABLE);
-		db.execSQL(CREATE_Alerte_TABLE);
-		db.execSQL(CREATE_VariationRythme_TABLE);
-		db.execSQL(CREATE_Suspension_TABLE);
-		db.execSQL(CREATE_Armature_TABLE);
 		db.execSQL(CREATE_EVENEMENT_TABLE);
 	}
 
@@ -353,12 +188,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 		db.execSQL(VarTemps_TABLE_DROP);
 		db.execSQL(VarIntensite_TABLE_DROP);
 		db.execSQL(Partie_TABLE_DROP);
-		db.execSQL(MesuresNonLues_TABLE_DROP);
-		db.execSQL(Reprise_TABLE_DROP);
-		db.execSQL(Alerte_TABLE_DROP);
-		db.execSQL(VaritationRythme_TABLE_DROP);
-		db.execSQL(Suspension_TABLE_DROP);
-		db.execSQL(Armature_TABLE_DROP);
 		db.execSQL(EVENEMENT_TABLE_DROP);
 		this.onCreate(db);
 	}

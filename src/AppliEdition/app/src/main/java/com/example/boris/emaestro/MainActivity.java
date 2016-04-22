@@ -61,15 +61,8 @@ public class MainActivity extends Activity {
 		synchro.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				DataBaseManager bd = new DataBaseManager(v.getContext());
-				bd.open();
-				List<Musique> m = bd.getMusiques();
-				bd.close();
-
 				CatalogueDAO bdd = new CatalogueDAO(v.getContext());
 				bdd.open();
-				bdd.clean();
-				bdd.save(m);
 				bdd.synchronizer();
 				bdd.close();
 			}
@@ -79,6 +72,15 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this, CatalogueActivity.class);
+				startActivity(intent);
+			}
+		});
+
+		final Button catalogue = (Button) findViewById(R.id.catalogue);
+		catalogue.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, ChangeCatalogueActivity.class);
 				startActivity(intent);
 			}
 		});

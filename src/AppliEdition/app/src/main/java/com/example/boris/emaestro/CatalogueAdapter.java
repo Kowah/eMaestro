@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
 import BDD.to.Catalogue;
 import BDD.to.Musique;
@@ -42,6 +43,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
     Button editer;
     Button supprimer;
     Button jouer;
+    Button addCatalogue;
     //VariationTempsDAO bddTempsVar;
     //VariationIntensiteDAO bddIntensiteVar;
     DataBaseManager bdd;
@@ -74,14 +76,14 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
 
 
                 Intent intent = new Intent(getContext(), EditionActivity.class);
-                intent.putExtra(EXTRA_NOMPARTITION,musique.getName() );
+                intent.putExtra(EXTRA_NOMPARTITION, musique.getName());
                 intent.putExtra(EXTRA_NBMESURE, String.valueOf(musique.getNb_mesure()));
                 //intent.putExtra(EXTRA_PULSATION, String.valueOf(musique.getNb_pulsation()));
                 //intent.putExtra(EXTRA_TPSPARMESURE,String.valueOf( musique.getNb_temps_mesure()));
                 //intent.putExtra(EXTRA_UNITE, String.valueOf(musique.getUnite_pulsation()));
-                intent.putExtra(EXTRA_ID_PARTITION,String.valueOf(musique.getId()));
+                intent.putExtra(EXTRA_ID_PARTITION, String.valueOf(musique.getId()));
 
-                intent.putExtra(EXTRA_NEW_PARTITION,"false");
+                intent.putExtra(EXTRA_NEW_PARTITION, "false");
 
                 getContext().startActivity(intent);
             }
@@ -139,6 +141,7 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
                 v.getContext().startActivity(intent);
             }
         });
+
 
         if(viewHolder == null){
             viewHolder = new CatalogueViewHolder();
