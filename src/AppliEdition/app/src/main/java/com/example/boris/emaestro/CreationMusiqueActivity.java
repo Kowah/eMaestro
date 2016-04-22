@@ -50,37 +50,19 @@ public class CreationMusiqueActivity extends Activity {
     //BDD
     //final MusiqueDAO bddMusique = new MusiqueDAO(this);
     DataBaseManager bdd = new DataBaseManager(this);
-
-    Button drag;
-    boolean dragActive ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.creation_musique);
 
         bdd.open();
-        dragActive = false;
+
         pulsation = (EditText) findViewById(R.id.pulsation);
         nomPartitionE = (EditText) findViewById(R.id.nom);
         nbMesureE = (EditText) findViewById(R.id.nbMesure);
-        drag = (Button) findViewById(R.id.drag);
         uniteSpinner = (Spinner) findViewById(R.id.uniteTempo);
         tpsParMesureSpinner = (Spinner) findViewById(R.id.tempsParMesure);
         Button loginButton = (Button) findViewById(R.id.creer);
-
-        //Boutonn choix entre drag et selection
-        drag.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dragActive = ! dragActive;
-                if(dragActive){
-                    drag.setText("Désactiver le drag n drop");
-
-                }else{
-                    drag.setText("Activer le drag n drop");
-                }
-            }
-        });
 
         // Spinner Unité du tempo
         List<String> uniteList = new ArrayList<String>();
@@ -146,13 +128,7 @@ public class CreationMusiqueActivity extends Activity {
                 intent.putExtra(EXTRA_ID_PARTITION, "-1");
                 intent.putExtra(EXTRA_NEW_PARTITION, "true");
 
-                if (dragActive) {
-                    Toast.makeText(CreationMusiqueActivity.this, "Edition par drag and drop", Toast.LENGTH_SHORT).show();//TODO gestion à l'echelle de une mesure
-                    intent.putExtra(EXTRA_DRAGACTIF, "true");
-                } else {
-                    Toast.makeText(CreationMusiqueActivity.this, "Edition par selection", Toast.LENGTH_SHORT).show();
-                    intent.putExtra(EXTRA_DRAGACTIF, "false");
-                }
+
 
                 if (unite.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir l'unité de temps", Toast.LENGTH_SHORT).show();

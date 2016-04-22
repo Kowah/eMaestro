@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
@@ -330,7 +333,8 @@ public class EditionActivity  extends Activity {
                                                             final EditText textMesureFinRepet = (EditText) popupView.findViewById(R.id.textMesureFinRepet);
                                                             final EditText textMesureDebut2eRepet = (EditText) popupView.findViewById(R.id.textMesureDebut2eRepet);
                                                             final TextView textMesureFin2eRepet = (TextView) popupView.findViewById(R.id.textMesureFin2eRepet);
-
+                                                            final CheckBox repriseSansMuet = (CheckBox)  popupView.findViewById(R.id.repriseSansMuet);
+                                                            final TextView textAbarrer = (TextView) popupView.findViewById(R.id.textView11);
                                                             //Modif la fin de la partie non lue lors de la 2e repet en meme temps que la fin de la repet car elles doivent etre egales
                                                             textMesureFinRepet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                                                 @Override
@@ -339,11 +343,27 @@ public class EditionActivity  extends Activity {
                                                                 }
                                                             });
 
+
                                                             //le debut de la repetition est à la mesure sélectionnée
                                                             textMesureDebutRepet.setText("" + m.getId());
                                                             textMesureFinRepet.setText("" + m.getId());
                                                             textMesureDebut2eRepet.setText("" + m.getId());
                                                             textMesureFin2eRepet.setText("" + m.getId());
+                                                            repriseSansMuet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                                @Override
+                                                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                                    if(repriseSansMuet.isChecked()){
+                                                                        textAbarrer.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                                                                        textMesureDebut2eRepet.setFocusable(false);
+
+                                                                    }
+                                                                    else{
+                                                                        textAbarrer.setPaintFlags(0);
+                                                                        textMesureDebut2eRepet.setFocusableInTouchMode(true);
+                                                                    }
+                                                                }
+                                                            });
+
 
                                                             //Gestion des boutons du popup Reprise
                                                             popup.setNegativeButton("Annuler", null);
@@ -367,7 +387,8 @@ public class EditionActivity  extends Activity {
                                                                             }
                                                                         }
                                                                         if(eventUpdate != null){
-                                                                            ArrayList<MesuresNonLues> eventsMesures = bdd.getMesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION));
+                                                                            Toast.makeText(context, "Merci de supprimer la reprise avant d'en créer une nouvelle sur cette mesure", Toast.LENGTH_SHORT).show();
+                                                                           /* ArrayList<MesuresNonLues> eventsMesures = bdd.getMesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION));
                                                                             MesuresNonLues eventMesureUpdate = null;
                                                                             for(MesuresNonLues eventM : eventsMesures){
                                                                                 //FIXME Pas sur que ce soit le bon event qu'on récup. Ajouter un id reprise dans mesuresNonLues ?
@@ -377,14 +398,21 @@ public class EditionActivity  extends Activity {
                                                                             }
                                                                             eventUpdate.setMesure_fin(mesureFin);
                                                                             bdd.update(eventUpdate);
-                                                                            eventMesureUpdate.setMesure_fin(mesureFinNonLu);
-                                                                            eventMesureUpdate.setPassage_reprise(2);
-                                                                            bdd.update(eventMesureUpdate);
+                                                                            if(repriseSansMuet.isChecked()) {
+                                                                                eventMesureUpdate.setMesure_fin(mesureFinNonLu);
+                                                                                eventMesureUpdate.setPassage_reprise(2);
+                                                                                bdd.update(eventMesureUpdate);
+                                                                            }*/
+
                                                                         }else{
                                                                             Reprise nouvelEvent = new Reprise(bdd.getMusique(EXTRA_NOMPARTITION).getId(), mesureDebut, mesureFin);
                                                                             bdd.save(nouvelEvent);
-                                                                            MesuresNonLues eventNonLues = new MesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION).getId(),mesureDebutNonLu, mesureFinNonLu, 2);
-                                                                            bdd.save(eventNonLues);
+                                                                            if(!repriseSansMuet.isChecked()) {
+
+
+                                                                                MesuresNonLues eventNonLues = new MesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION).getId(), mesureDebutNonLu, mesureFinNonLu, 2);
+                                                                                bdd.save(eventNonLues);
+                                                                            }
                                                                         }
                                                                     }
                                                                     MAJAffichage();

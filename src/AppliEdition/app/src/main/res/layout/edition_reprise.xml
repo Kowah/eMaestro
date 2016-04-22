@@ -63,6 +63,7 @@
             android:id="@+id/textMesureDebut2eRepet"
             android:layout_weight="1" />
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,4 +79,11 @@
             android:id="@+id/textMesureFin2eRepet"
             android:layout_weight="1" />
     </TableRow>
+
+    <CheckBox
+        android:id="@+id/repriseSansMuet"
+        android:text="Tout relire lors de la dexième fois"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>
