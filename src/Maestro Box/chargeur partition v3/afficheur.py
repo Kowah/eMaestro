@@ -77,6 +77,10 @@ class afficheur :
     scheduler.enter(0,3,self.afficher_mesure,(descripteur["mesure_courante"],))
     scheduler.enter(0,3,self.afficher_passage,(descripteur["passage_reprise_courant"],))
 
+    if ("label" in descripteur):
+      scheduler.enter((t - 1) * tempo_en_seconde, 2, self.afficher_partie, (descripteur["label"],))
+      del descripteur["label"]
+
     for t in range(1, descripteur["temps_par_mesure"] + 1):
 
       scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_temps, (descripteur["temps_par_mesure"], t))
@@ -109,7 +113,7 @@ class afficheur :
         del descripteur["couleur_alerte_" + str(t)]
 
       if ("temps_debut_armature_" + str(t) in descripteur):
-        scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_armature, (descripteur["alteration_" + str(t)],))
+        scheduler.enter((t - 1) * tempo_en_seconde, 2, self.afficher_armature, (descripteur["alteration_" + str(t)],))
         del descripteur["temps_debut_armature_" + str(t)]
         del descripteur["alteration_" + str(t)]
 
