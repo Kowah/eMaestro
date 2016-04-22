@@ -14,7 +14,7 @@ class Telecommande(threading.Thread):
         self.logo=''
         self.matrix = None
         self.count = 1
-	self.name = ''
+	self.name = 0
         
     def setMessage(self,msg):
         self.message=msg
@@ -29,9 +29,11 @@ class Telecommande(threading.Thread):
 
     def play(self):
        print "playing "+ self.name
-       cp = Chargeur_partition(self.name)
+       cp = Chargeur_partition(ord(self.name))
+       map_mesure_modif = chargeur.get_map_mesures_modif()
+       display = afficheur(m)
        while self.message == 'PLAY':
-            afficher(cp.get_liste_de_lecture(), cp.get_images_ephemeres(),self.matrix)
+            display.lire(map_mesure_modif,1,1,map_mesure_modif["mesure_fin_musique"],1)
     
     def pause(self):
         print "PAUSE"

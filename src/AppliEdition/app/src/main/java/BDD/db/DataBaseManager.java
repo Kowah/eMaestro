@@ -483,8 +483,9 @@ public class DataBaseManager {
             alerte.setFlag(cursor.getInt(2));
             alerte.setMesure_debut(cursor.getInt(3));
             alerte.setTemps_debut(cursor.getInt(4));
-            alerte.setCouleur(cursor.getInt(5));
-            alerte.setPassage_reprise(cursor.getInt(6));
+            alerte.setPassage_reprise(cursor.getInt(5));
+            alerte.setCouleur(cursor.getInt(6));
+
 
             alertes.add(alerte);
         }
@@ -558,8 +559,9 @@ public class DataBaseManager {
             armature.setFlag(cursor.getInt(2));
             armature.setMesure_debut(cursor.getInt(3));
             armature.setTemps_debut(cursor.getInt(4));
-            armature.setAlteration(cursor.getInt(5));
-            armature.setPassage_reprise(cursor.getInt(6));
+            armature.setPassage_reprise(cursor.getInt(5));
+            armature.setAlteration(cursor.getInt(6));
+
 
             armatures.add(armature);
         }
