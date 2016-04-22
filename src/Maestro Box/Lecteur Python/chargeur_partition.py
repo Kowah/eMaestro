@@ -5,20 +5,25 @@ user="guest"
 pwd="guest"
 db="emaestro"
 
+#host="localhost"
+#user="tristan"
+#pwd="1234"
+#db="emaestro"
+
 class Chargeur_partition:
 
 
   def __init__(self, id_musique):
     self.id_partition_chargee = id_musique
-    self.map_mesure_modif = {}
+    self.map_mesures_modif = {}
     self.lecteur_bdd = LecteurBDD(host, user, pwd, db)
     self.charger_partition(id_musique)
 
 
   def charger_partition(self, id_musique):
 
-      self.map_mesure_modif = self.lecteur_bdd.getDicoVariationTemps(id_musique)
-      self.map_mesure_modif["mesure_fin_musique"] = self.lecteur_bdd.getMesureFin(id_musique)
+      self.map_mesures_modif = self.lecteur_bdd.getDicoVariationTemps(id_musique)
+      self.map_mesures_modif["mesure_fin_musique"] = self.lecteur_bdd.getMesureFin(id_musique)
 
 #  def com():
       dicotmp = self.lecteur_bdd.getDicoVariationIntensite(id_musique)
@@ -82,8 +87,8 @@ class Chargeur_partition:
     return self.id_partition_chargee
 
 
-  def get_map_mesure_modif(self):
-     return self.map_mesure_modif
+  def get_map_mesures_modif(self):
+     return self.map_mesures_modif
 
 
 

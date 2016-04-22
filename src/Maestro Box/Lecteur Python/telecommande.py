@@ -30,8 +30,8 @@ class Telecommande(threading.Thread):
     def play(self):
        print "playing "+ self.name
        cp = Chargeur_partition(ord(self.name))
-       map_mesure_modif = chargeur.get_map_mesures_modif()
-       display = afficheur(m)
+       map_mesure_modif = cp.get_map_mesures_modif()
+       display = afficheur(self.matrix)
        while self.message == 'PLAY':
             display.lire(map_mesure_modif,1,1,map_mesure_modif["mesure_fin_musique"],1)
     
