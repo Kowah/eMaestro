@@ -202,7 +202,7 @@ class afficheur :
     if alerte == '-1':
       image = Image.open(chemin_images + '8_8_black.png')
     else:
-      image = Image.open(chemin_images + partie +'.png')
+      image = Image.open(chemin_images + 'partie' + partie +'.png')
     image.load()
     self.matrix.SetImage(image.im.id, pos_partie[0], pos_partie[1])
 
