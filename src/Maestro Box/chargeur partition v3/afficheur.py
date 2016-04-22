@@ -94,7 +94,7 @@ class afficheur :
           descripteur["temps_debut_intensite_"+str(prochain_temps)] = True
           descripteur["nb_temps_intensite_"+str(prochain_temps)] = descripteur["nb_temps_intensite_"+str(t)] - 1
         else:
-          descripteur["intensite_courante"] = descripteur["intensite"]
+          descripteur["intensite_courante"] = descripteur["intensite_"+str(t)]
         del descripteur["intensite_"+str(t)]
         del descripteur["temps_debut_intensite_"+str(t)]
         del descripteur["nb_temps_intensite_"+str(t)]
@@ -126,15 +126,19 @@ class afficheur :
 
   def afficher_decompte(self, temps_par_mesure, tempo, scheduler):
     tempo_en_seconde = 60 / float(tempo)
-    image = Image.open(chemin_images + '64_32_black.png')
-    image.load()
-    scheduler.enter(t * tempo_en_seconde, 1, self.matrix.SetImage, (image.im.id, 0, 0))
     for t in range(temps_par_mesure):
-      image = Image.open(chemin_images + str(temps_par_mesure - t) + '.png')
-      image.load()
-      scheduler.enter(t * tempo_en_seconde, 1, self.matrix.SetImage, (image.im.id, 0, 0))
+      scheduler.enter(t * tempo_en_seconde, 1, self.afficher_decompte_aux, (temps_par_mesure - t,))
     scheduler.enter(temps_par_mesure * tempo_en_seconde, 1, self.wait, ())
     scheduler.run()
+    image = Image.open(chemin_images + '64_32_black.png')
+    image.load()
+    scheduler.enter(0, 1, self.matrix.SetImage, (image.im.id, 0, 0))
+    scheduler.run()
+
+  def afficher_decompte_aux(self, numero):
+    image = Image.open(chemin_images + 'd' + str(numero) + '.png')
+    image.load()
+    self.matrix.SetImage(image.im.id, 0, 0)
 
   def wait(self):
     return 0
