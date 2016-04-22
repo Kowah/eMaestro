@@ -76,11 +76,11 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_debut, passage_reprise, arg2 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 0')
+      cur.execute('SELECT mesure_debut, arg2 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 0')
       infos = cur.fetchall()
 
-      d1 = {str(m) + '.2' : {"prochaine_mesure" : mf, "mesure_non_lue" : True} for (m,mf,p) in infos}
-      d2 = {str(mf) + '.2' : {"mesure_non_lue" : True} for (m,mf,p) in infos}
+      d1 = {str(m) + '.2' : {"prochaine_mesure" : mf, "mesure_non_lue" : True} for (m,mf) in infos}
+      d2 = {str(mf) + '.2' : {"mesure_non_lue" : True} for (m,mf) in infos}
       d1.update(d2)
       if d1 == None:
         d1 = {}
