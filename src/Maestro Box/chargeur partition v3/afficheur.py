@@ -184,7 +184,7 @@ class afficheur :
 
 
   def afficher_passage(self, passage):
-    image = Image.open(chemin_images + 'mesure' + str(passage)+'.png')# remplacer mesure par passage quand il y aura des images specifiques
+    image = Image.open(chemin_images + 'passage' + str(passage)+'.png')
     image.load()
     self.matrix.SetImage(image.im.id, pos_passage[0], pos_passage[1])
 
