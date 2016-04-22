@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageSwitcher;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import BDD.db.DataBaseManager;
 import BDD.to.Alertes;
@@ -44,7 +41,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
     int mesureDebut;
     int mesureFin;
     HashMap<Integer,Integer> mapMesures;
-    ArrayList<Pair<String,Integer>> listeImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,60 +54,15 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         bdd = new DataBaseManager(this);
         bdd.open();
 
-        //chargement
 
-        Chargeur_partition chargeur = new Chargeur_partition(this,bdd);
-        chargeur.charger_partition(idMusique);
-
-        mapMesures = (HashMap) chargeur.get_map_mesures_temps(); //Map entre le numero d'une mesure et son temps de debut
-        listeImages = (ArrayList) chargeur.get_liste_de_lecture(); //Liste des images correspondant aux temps de la musique
-        final HashMap<String,Integer> banqueImages = (HashMap) chargeur.get_images_ephemeres(); //Banque des images affichables
-
-        final ArrayList<Pair<String,Integer>> listelecture = new ArrayList<>();
-
-        //selection de la partie demandee
-
-        int premierTemps = mapMesures.get(mesureDebut);
-        int dernierTemps;
-        if(mapMesures.containsKey(mesureFin+1)){
-            dernierTemps=mapMesures.get(mesureFin+1);
-        }
-        else{
-            dernierTemps=listeImages.size();
-        }
-
-        for(int i=premierTemps; i<dernierTemps; i++){
-            listelecture.add(listeImages.get(i));
-        }
-
-        //ajout du decompte et de la fin
-
-        int tempsMesure2;
-
-        if(mapMesures.containsKey(mesureDebut+1)){
-            tempsMesure2 = mapMesures.get(mesureDebut+1);
-        }
-        else{
-            tempsMesure2 = listeImages.size();
-        }
-
-        int nbDecompte = tempsMesure2 - premierTemps;
-        int tempo = listeImages.get(premierTemps).getRight();
-
-        for(int n=1; n<=nbDecompte; n++){
-            listelecture.add(0,new Pair<>("d"+n,tempo));
-        }
-
-
-        listelecture.add(new Pair<>("fin",1));
-
+        mapMesures = creerMapMesureTemps();
 
         //mapCercle
         // format : nbTemps -> (idImage,tempsAffichage)
         //maps pour les autres informations
         // format : nbTemps -> idImage ou image
 
-        final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle2();
+        final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle();
         final HashMap<Integer,Bitmap> mapMesure = creerMapMesure();
         final HashMap<Integer,Integer> mapNuance = creerMapNuance();
         final HashMap<Integer,Integer> mapSection = creerMapSection();
@@ -159,11 +110,11 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         runnable = new Runnable() {
 
             int tempsDebut = mapMesures.get(mesureDebut);
-            int tempsMesure2 = (mapMesures.containsKey(mesureDebut+1)) ? mapMesures.get(mesureDebut+1) : listeImages.size()+1;
+            int tempsMesure2 = mapMesures.get(mesureDebut+1);
             int nbDecompte = tempsMesure2 - tempsDebut;
 
             int numeroTemps = tempsDebut;
-            int numeroTempsFin = (mapMesures.containsKey(mesureFin+1)) ? mapMesures.get(mesureFin+1) : listeImages.size()+1;
+            int numeroTempsFin = mapMesures.get(mesureFin+1);
 
             HashMap<Integer,Integer> mapReprises = creerMapReprise();
             HashMap<Integer,Pair<Integer,Integer>> mapNonLues = creerMapNonLues();
@@ -180,7 +131,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                 bitmapArmature = bitArmature;
                 bitmapAlerte = bitAlerte;
                 return this;
-
             }
 
             @Override
@@ -285,6 +235,42 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
     }
 
+    private HashMap<Integer,Integer> creerMapMesureTemps(){
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        ArrayList<VariationTemps> listVariationTemps = bdd.getVariationsTemps(bdd.getMusique(idMusique));
+        Collections.sort(listVariationTemps, new Comparator<VariationTemps>() {
+            @Override
+            public int compare(VariationTemps lhs, VariationTemps rhs) {
+                return lhs.getMesure_debut() - rhs.getMesure_debut();
+            }
+        });
+
+        int indexVarTemps=0;
+        VariationTemps varTempsCourant = listVariationTemps.get(indexVarTemps);
+        int nbTempsMesure = varTempsCourant.getTemps_par_mesure();
+
+        int numTempsGlobal = 1;
+
+        for(int mesure=1; mesure<=mesureFin+1; mesure++){
+            map.put(mesure,numTempsGlobal);
+
+            //mise a jour du nb de temps par mesure et avance dans les events
+            if(mesure == varTempsCourant.getMesure_debut()){
+                nbTempsMesure = varTempsCourant.getTemps_par_mesure();
+                if(indexVarTemps+1 < listVariationTemps.size()){
+                    indexVarTemps++;
+                    varTempsCourant = listVariationTemps.get(indexVarTemps);
+                }
+            }
+
+            //avance dans les temps de la partition
+            numTempsGlobal += nbTempsMesure;
+        }
+
+        return map;
+    }
+
     private HashMap<Integer,Integer> creerMapReprise(){
         //format : nbTemps -> nbTemps apres Jump
         HashMap<Integer,Integer> map = new HashMap<>();
@@ -296,13 +282,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             int mesureFin = rep.getMesure_fin();
 
             int premierTempsReprise = mapMesures.get(mesureDebut);
-            int dernierTempsReprise;
-            if(mapMesures.containsKey(mesureFin+1)){
-                dernierTempsReprise = mapMesures.get(mesureFin+1)-1;
-            }
-            else{
-                dernierTempsReprise = listeImages.size()-1;
-            }
+            int dernierTempsReprise = mapMesures.get(mesureFin+1)-1;
 
             map.put(dernierTempsReprise,premierTempsReprise);
         }
@@ -321,15 +301,9 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             int passage = mnl.getPassage_reprise();
 
             int premierTemps = mapMesures.get(mesureDebut)-1;
-            int tempsJump;
-            if(mapMesures.containsKey(mesureFin+1)){
-                tempsJump = mapMesures.get(mesureFin+1);
-            }
-            else{
-                tempsJump = listeImages.size();
-            }
+            int tempsJump = mapMesures.get(mesureFin+1);
 
-            map.put(premierTemps, new Pair(tempsJump,passage));
+            map.put(premierTemps, new Pair<>(tempsJump,passage));
         }
 
         return map;
@@ -468,21 +442,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         return map;
     }
 
-    private HashMap<Integer,Pair<Integer,Integer>> creerMapCercle(ArrayList<Pair<String, Integer>> listelecture, HashMap<String, Integer> banqueImages){
-        // format : nbTemps -> (idImage,tempsAffichage)
-        HashMap<Integer,Pair<Integer,Integer>> map = new HashMap<>();
-
-        for(int index=0; index<listelecture.size(); index++){
-            String key = listelecture.get(index).getLeft();
-            int temps = listelecture.get(index).getRight();
-            int id = banqueImages.get(key);
-
-            map.put(index,new Pair<>(id,temps));
-        }
-        return map;
-    }
-
-    private HashMap<Integer,Pair<Integer,Integer>> creerMapCercle2(){
+    private HashMap<Integer,Pair<Integer,Integer>> creerMapCercle(){
         // format : nbTemps -> (idImage,tempo)
         HashMap<Integer,Pair<Integer,Integer>> map = new HashMap<>();
 
@@ -518,7 +478,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             for(int temps = 1; temps <= nbTemps; temps++){
                 //recup les images de cercle pour chaque temps et les ajouter a la map
                 int idImage = getResources().getIdentifier("a"+nbTemps+"_"+temps, "drawable", getPackageName());
-                map.put(numTempsGlobal, new Pair(idImage,tempo));
+                map.put(numTempsGlobal, new Pair<>(idImage,tempo));
 
                 numTempsGlobal++;
             }
@@ -531,11 +491,11 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         //ajouter les images de decompte et de fin
         for(int decompte=1; decompte <= 8; decompte++){
             int idDecompte = getResources().getIdentifier("d"+decompte, "drawable", getPackageName());
-            map.put(-decompte, new Pair(idDecompte, tempoMesureDebut));
+            map.put(-decompte, new Pair<>(idDecompte, tempoMesureDebut));
         }
 
         int idFin = getResources().getIdentifier("fin", "drawable", getPackageName());
-        map.put(0, new Pair(idFin,1));
+        map.put(0, new Pair<>(idFin,1));
 
         return map;
     }
@@ -580,79 +540,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         }
 
         return bitmap;
-    }
-
-    private ArrayList<Integer> getOrdreLectureMesures(){
-        //TODO A Tester avec reprises et mesures non lues
-        //Donne l'ordre de lecture en prenant en compte les reprises et les mesures non lues
-        //Considere que les reprises et les parties non lues sont correctement créées et ne s'entrelacent pas
-
-        //Recuperation des reprises et des mesures non lues de la musique
-        ArrayList<Reprise> reprises = bdd.getReprises(bdd.getMusique(idMusique));
-        Collections.sort(reprises, new Comparator<Reprise>() {
-            @Override
-            public int compare(Reprise lhs, Reprise rhs) {
-                return lhs.getMesure_debut() - rhs.getMesure_debut();
-            }
-        });
-        ArrayList<MesuresNonLues> mesuresNonLues = bdd.getMesuresNonLues(bdd.getMusique(idMusique));
-        Collections.sort(mesuresNonLues, new Comparator<MesuresNonLues>() {
-            @Override
-            public int compare(MesuresNonLues lhs, MesuresNonLues rhs) {
-                return lhs.getMesure_debut() - rhs.getMesure_debut();
-            }
-        });
-
-        int indexReprise = 0;
-        int indexMesureNL = 0;
-        Reprise prochaineReprise = reprises.get(indexReprise);
-        MesuresNonLues prochaineMesuresNL = mesuresNonLues.get(indexMesureNL);
-        int repetitionCourante = 1;
-        boolean enregistrer = true;
-
-        ArrayList<Integer> ordreLecture = new ArrayList<>();
-        int m=mesureDebut;
-        while(m<=mesureFin){
-
-            //Si la mesure est au debut d'une partie non lue
-            if(prochaineMesuresNL.getMesure_debut() == m &&
-                    prochaineMesuresNL.getPassage_reprise() == repetitionCourante){
-                //on saute les mesures non lues
-                m = prochaineMesuresNL.getMesure_fin();
-                enregistrer = false;
-            }
-
-            if(enregistrer){
-                //On lit la mesure m
-                ordreLecture.add(m);
-            }
-            enregistrer = true;
-
-            //Si la mesure est une fin de reprise
-            if(prochaineReprise.getMesure_fin() == m){
-                if(repetitionCourante == 1){
-                    //premier passage dans la reprise
-
-                    //retourne au debut de la reprise
-                    m = prochaineReprise.getMesure_debut();
-                    repetitionCourante = 2;
-                }
-                else {
-                    //on est passé deux fois dans la reprise, on passe a la suite
-                    m++;
-                    repetitionCourante = 1;
-                    if (indexReprise + 1 < reprises.size()) {
-                        indexReprise++;
-                        prochaineReprise = reprises.get(indexReprise);
-                    }
-                }
-            }
-            else{
-                m++;
-            }
-
-        }
-        return ordreLecture;
     }
 
     @Override
