@@ -48,7 +48,7 @@ class afficheur :
         descripteur["passage_reprise_courant"] = descripteur["prochain_passage"]
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enter(temps_affichage_logo, 1, wait, ())
+    scheduler.enter(temps_affichage_logo, 1, self.wait, ())
     scheduler.run()
 
     self.afficher_decompte(descripteur["temps_par_mesure"], descripteur["tempo"], scheduler)
@@ -113,7 +113,7 @@ class afficheur :
         del descripteur["temps_debut_armature_" + str(t)]
         del descripteur["alteration_" + str(t)]
 
-    scheduler.enter(descripteur["temps_par_mesure"] * tempo_en_seconde, 1, wait, ())
+    scheduler.enter(descripteur["temps_par_mesure"] * tempo_en_seconde, 1, self.wait, ())
 
     scheduler.run()
 
@@ -126,14 +126,14 @@ class afficheur :
 
   def afficher_decompte(self, temps_par_mesure, tempo, scheduler):
     tempo_en_seconde = 60 / float(tempo)
-    image = Image.open(chemin_images + '64*32_black.png')
+    image = Image.open(chemin_images + '64_32_black.png')
     image.load()
     scheduler.enter(t * tempo_en_seconde, 1, self.matrix.SetImage, (image.im.id, 0, 0))
     for t in range(temps_par_mesure):
       image = Image.open(chemin_images + str(temps_par_mesure - t) + '.png')
       image.load()
       scheduler.enter(t * tempo_en_seconde, 1, self.matrix.SetImage, (image.im.id, 0, 0))
-    scheduler.enter(temps_par_mesure * tempo_en_seconde, 1, wait, ())
+    scheduler.enter(temps_par_mesure * tempo_en_seconde, 1, self.wait, ())
     scheduler.run()
 
   def wait(self):
@@ -163,13 +163,13 @@ class afficheur :
       dizaine = mesure_courante % 100 / 10
     unite = mesure_courante % 10
     if centaine == -1:
-      image = Image.open(chemin_images + '8*8_black.png')
+      image = Image.open(chemin_images + '8_8_black.png')
     else:
       image = Image.open(chemin_images + 'mesure' + str(centaine)+'.png')
     image.load()
     self.matrix.SetImage(image.im.id, pos_centaine[0], pos_centaine[1])
     if dizaine == -1:
-      image = Image.open(chemin_images + '8*8_black.png')
+      image = Image.open(chemin_images + '8_8_black.png')
     else:
       image = Image.open(chemin_images + 'mesure' + str(dizaine)+'.png')
     image.load()
@@ -186,14 +186,17 @@ class afficheur :
 
 
   def afficher_intensite(self, intensite):
-    image = Image.open(chemin_images + 'intensite' + str(int(round(intensite)))+'.png')
+    if int(intensite) == -1:
+      image = Image.open(chemin_images + '16_16_black.png')
+    else:
+      image = Image.open(chemin_images + 'intensite' + str(int(round(intensite)))+'.png')
     image.load()
     self.matrix.SetImage(image.im.id, pos_intensite[0], pos_intensite[1])
 
 
   def afficher_partie(self, partie):
     if alerte == '-1':
-      image = Image.open(chemin_images + '8*8_black.png')
+      image = Image.open(chemin_images + '8_8_black.png')
     else:
       image = Image.open(chemin_images + partie +'.png')
     image.load()
@@ -202,7 +205,7 @@ class afficheur :
 
   def afficher_alerte(self, alerte):
     if alerte == -1:
-      image = Image.open(chemin_images + '8*8_black.png')
+      image = Image.open(chemin_images + '8_8_black.png')
     else:
       image = Image.open(chemin_images + 'alerte' + str(alerte) +'.png')
     image.load()
@@ -217,8 +220,8 @@ class afficheur :
       image1 = Image.open(chemin_images + 'armature' + armature + '.png')
       image2 = Image.open(chemin_images + 'diese.png')
     else:
-      image1 = Image.open(chemin_images + '8*8_black.png')
-      image2 = Image.open(chemin_images + '8*8_black.png')
+      image1 = Image.open(chemin_images + '8_8_black.png')
+      image2 = Image.open(chemin_images + '8_8_black.png')
     self.matrix.SetImage(image1.im.id, pos_armature_chiffre[0], pos_armature_chiffre[1])
     self.matrix.SetImage(image2.im.id, pos_armature_symb[0], pos_armature_symb[1])
 
