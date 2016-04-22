@@ -54,7 +54,7 @@ public class Chargeur_partition {
 		int temps_par_mesure = varI.getTemps_par_mesure();
 		int mesure_debut = varI.getMesure_debut();
 		for (int i = mesure_debut; i <= mesure_fin; i++){
-			this.map_mesures_temps.put(i, next_nb_temps);
+			this.map_mesures_temps.put(i, next_nb_temps+1); //debug j'ai rajoute le +1 pour test avec la nouvelle mapCercle
 			for (int j = 1; j <= temps_par_mesure; j++){
 				key = String.valueOf(temps_par_mesure) + "." + String.valueOf(j);
 				this.liste_de_lecture.add(new Pair<String, Integer>(key, tempo));

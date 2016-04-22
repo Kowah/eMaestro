@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import BDD.db.DataBaseManager;
 import BDD.to.Alertes;
@@ -27,6 +29,7 @@ import BDD.to.Armature;
 import BDD.to.MesuresNonLues;
 import BDD.to.Reprise;
 import BDD.to.VariationIntensite;
+import BDD.to.VariationTemps;
 import util.Pair;
 
 /**
@@ -108,7 +111,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         //maps pour les autres informations
         // format : nbTemps -> idImage ou image
 
-        final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle(listelecture,banqueImages);
+        final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle2();
         final HashMap<Integer,Bitmap> mapMesure = creerMapMesure();
         final HashMap<Integer,Integer> mapNuance = creerMapNuance();
         final HashMap<Integer,Integer> mapSection = creerMapSection();
@@ -154,12 +157,13 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         }
 
         runnable = new Runnable() {
+
             int tempsDebut = mapMesures.get(mesureDebut);
-            int tempsMesure2 = (mapMesures.containsKey(mesureDebut+1)) ? mapMesures.get(mesureDebut+1) : listeImages.size();
+            int tempsMesure2 = (mapMesures.containsKey(mesureDebut+1)) ? mapMesures.get(mesureDebut+1) : listeImages.size()+1;
             int nbDecompte = tempsMesure2 - tempsDebut;
 
-            int index = 0;
-            int numeroTemps= tempsDebut-nbDecompte;
+            int numeroTemps = tempsDebut;
+            int numeroTempsFin = (mapMesures.containsKey(mesureFin+1)) ? mapMesures.get(mesureFin+1) : listeImages.size()+1;
 
             HashMap<Integer,Integer> mapReprises = creerMapReprise();
             HashMap<Integer,Pair<Integer,Integer>> mapNonLues = creerMapNonLues();
@@ -176,21 +180,37 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                 bitmapArmature = bitArmature;
                 bitmapAlerte = bitAlerte;
                 return this;
+
             }
 
             @Override
             public void run() {
 
-                if(index >= listelecture.size()){
+                if(nbDecompte > 0){
+
+                    //afficher le decompte
+                    int temps = 60000/ mapCercle.get(-nbDecompte).getRight();
+                    switcher.postDelayed(this, temps);
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mapCercle.get(-nbDecompte).getLeft());
+                    nbDecompte--;
+                    BitmapDrawable draw = new BitmapDrawable(getResources(),bitmap);
+                    switcher.setImageDrawable(draw);
+                }
+                else if(numeroTemps == numeroTempsFin){
+                    //afficher la fin
+                    int idFin = getResources().getIdentifier("fin","drawable",getPackageName());
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), idFin);
+                    BitmapDrawable draw = new BitmapDrawable(getResources(),bitmap);
+                    switcher.setImageDrawable(draw);
                     switcher.removeCallbacks(runnable);
                 }
                 else{
+                    int temps = 0 ;
 
-                    int temps=0;
-
-                    if(mapCercle.containsKey(index)){
-                        bitmapCercle = BitmapFactory.decodeResource(getResources(), mapCercle.get(index).getLeft());
-                        temps = 60000/mapCercle.get(index).getRight();
+                    if(mapCercle.containsKey(numeroTemps)){
+                        bitmapCercle = BitmapFactory.decodeResource(getResources(), mapCercle.get(numeroTemps).getLeft());
+                        temps = 60000/mapCercle.get(numeroTemps).getRight();
                     }
 
                     switcher.postDelayed(this, temps);
@@ -220,12 +240,8 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
                     Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
                     Bitmap bitmapFinal;
-                    if(index >= nbDecompte && index < listelecture.size()-1) {
-                        bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapArmature, bitmapAlerte);
-                    }
-                    else{
-                        bitmapFinal = bitmapCercle;
-                    }
+                    bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapArmature, bitmapAlerte);
+
                     BitmapDrawable draw = new BitmapDrawable(getResources(),bitmapFinal);
                     switcher.setImageDrawable(draw);
 
@@ -235,33 +251,28 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                         if(numeroPassageReprise == 1){
                             //saut de reprise
                             numeroTemps = mapReprises.get(numeroTemps);
-                            index = numeroTemps + nbDecompte;
                             numeroPassageReprise = 2;
                         }
                         else{
                             //on ne fait le saut qu'une fois
                             mapReprises.remove(numeroTemps);
                             numeroPassageReprise = 1;
-                            index++;
                             numeroTemps++;
                         }
                     }
                     else if(mapNonLues.containsKey(numeroTemps)){
                         Pair<Integer,Integer> tempsEtPassage = mapNonLues.get(numeroTemps);
-                       if(numeroPassageReprise == tempsEtPassage.getRight()){
-                           //on effectue le saut
-                           numeroTemps = tempsEtPassage.getLeft();
-                           index = numeroTemps + nbDecompte;
-                           numeroPassageReprise = 1;
-                       }
+                        if(numeroPassageReprise == tempsEtPassage.getRight()){
+                            //on effectue le saut
+                            numeroTemps = tempsEtPassage.getLeft();
+                            numeroPassageReprise = 1;
+                        }
                         else{
-                           //on est pas dans le bon passage donc on lit
-                           index++;
-                           numeroTemps++;
-                       }
+                            //on est pas dans le bon passage donc on lit
+                            numeroTemps++;
+                        }
                     }
                     else{
-                        index++;
                         numeroTemps++;
                     }
 
@@ -358,7 +369,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         //une image de mesure par temps de debut
         HashMap<Integer, Bitmap> map = new HashMap<>();
 
-        for(int m=mesureDebut; m<=mesureFin; m++){
+        for(int m=1; m<=mesureFin; m++){
             int tempsDebut = mapMesures.get(m);
             Bitmap imageM = creerBitmapMesure(m);
             map.put(tempsDebut, imageM);
@@ -468,11 +479,67 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
             map.put(index,new Pair<>(id,temps));
         }
+        return map;
+    }
 
+    private HashMap<Integer,Pair<Integer,Integer>> creerMapCercle2(){
+        // format : nbTemps -> (idImage,tempo)
+        HashMap<Integer,Pair<Integer,Integer>> map = new HashMap<>();
 
+        ArrayList<VariationTemps> variationTemps = bdd.getVariationsTemps(bdd.getMusique(idMusique));
+        Collections.sort(variationTemps, new Comparator<VariationTemps>() {
+            @Override
+            public int compare(VariationTemps lhs, VariationTemps rhs) {
+                return lhs.getMesure_debut() - rhs.getMesure_debut();
+            }
+        });
+
+        int indexVarTemps = 0;
+        VariationTemps varTemps = variationTemps.get(indexVarTemps);
+        int prochainChangement = varTemps.getMesure_debut();
+        int nbTemps = varTemps.getTemps_par_mesure();
+        int tempo = varTemps.getTempo();
+
+        int numTempsGlobal = 1;
+        int tempoMesureDebut = tempo;
+
+        for(int mesure=1; mesure<=mesureFin; mesure++){
+            if(mesure == prochainChangement){
+                nbTemps = varTemps.getTemps_par_mesure();
+                tempo = varTemps.getTempo();
+
+                if(indexVarTemps+1 < variationTemps.size()){
+                    indexVarTemps++;
+                    varTemps = variationTemps.get(indexVarTemps);
+                    prochainChangement = varTemps.getMesure_debut();
+                }
+            }
+
+            for(int temps = 1; temps <= nbTemps; temps++){
+                //recup les images de cercle pour chaque temps et les ajouter a la map
+                int idImage = getResources().getIdentifier("a"+nbTemps+"_"+temps, "drawable", getPackageName());
+                map.put(numTempsGlobal, new Pair(idImage,tempo));
+
+                numTempsGlobal++;
+            }
+
+            if(mesure == mesureDebut){
+                tempoMesureDebut = tempo;
+            }
+        }
+
+        //ajouter les images de decompte et de fin
+        for(int decompte=1; decompte <= 8; decompte++){
+            int idDecompte = getResources().getIdentifier("d"+decompte, "drawable", getPackageName());
+            map.put(-decompte, new Pair(idDecompte, tempoMesureDebut));
+        }
+
+        int idFin = getResources().getIdentifier("fin", "drawable", getPackageName());
+        map.put(0, new Pair(idFin,1));
 
         return map;
     }
+
 
     private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap armature, Bitmap alerte){
         //cercle n'est pas null
