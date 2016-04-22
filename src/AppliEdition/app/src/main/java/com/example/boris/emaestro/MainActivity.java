@@ -106,18 +106,41 @@ public class MainActivity extends Activity {
 		final ImageButton reconnect = (ImageButton) findViewById(R.id.reconnect);
 		reconnect.setOnClickListener(new OnClickListener() {
 			int selected = -1;
+			String keyName = "Maestro";
+			boolean enable = false;
 			@Override
 			public void onClick(View v) {
 				Context c = v.getContext();
 
 				WifiManager wifi = (WifiManager) v.getContext().getSystemService(v.getContext().WIFI_SERVICE);
+				if(!wifi.isWifiEnabled()){
+					final AlertDialog.Builder enableWifi = new AlertDialog.Builder(v.getContext());
+					enableWifi.setMessage("Le wifi est desactivé, voulez vous l'activer");
+					enableWifi.setTitle("Wifi")
+
+							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									enable = true;
+								}
+							})
+							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									//TODO:
+								}
+							});
+					enableWifi.show();
+					wifi.setWifiEnabled(enable);
+				}
 				if (wifi.isWifiEnabled()) {
 					List<android.net.wifi.ScanResult> scan = wifi.getScanResults();
 
 					final List<String> name = new ArrayList<String>();
 					for (android.net.wifi.ScanResult s : scan) {
-						//TODO: Garder que les reseaux commencant par maestro
-						name.add(s.SSID);
+							if(s.SSID.length() >= keyName.length() && s.SSID.substring(0,keyName.length()).equals(keyName)) {
+							name.add(s.SSID);
+						}
 					}
 					AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 					LayoutInflater inflater = getLayoutInflater();
@@ -129,7 +152,6 @@ public class MainActivity extends Activity {
 						public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
 							// Affichage de la donnée sélectionnée dans un textview
 							selected = position;
-							System.out.println(id + "asap touche" + position);
 						}
 					});
 
@@ -140,15 +162,14 @@ public class MainActivity extends Activity {
 							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int id) {
+
 									DataBaseManager.connect(getApplicationContext(), name.get(selected));
-									System.out.println("asap OK");
 								}
 							})
 							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int id) {
 									//TODO:
-									System.out.println("asap Cancel");
 								}
 							});
 					builder.show();

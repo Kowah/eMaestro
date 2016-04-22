@@ -23,7 +23,7 @@ public class MesuresNonLues extends Evenement {
 
     public MesuresNonLues(int idMusique,int mesure_debut, int mesure_fin, int passage_reprise){
         this.idMusique = idMusique;
-        this.flag = 1;
+        this.flag = DataBaseHelper.FLAG_MNL;
         this.mesure_debut = mesure_debut;
         this.arg2 = mesure_fin;
         this.passage_reprise = passage_reprise;

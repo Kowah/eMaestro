@@ -126,7 +126,7 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
                 + DataBaseHelper.ARG2 + ","
                 + DataBaseHelper.PASSAGE_REPRISE  + ","
                 + DataBaseHelper.ARG3 + ")"
-                +" values(?,?,?,?,?,?);";
+                +" values(?,?,?,?,?,?,?);";
         //Etape 0 : Connection a la bdd distante
         Connection co = ConnectonJDBC.getConnection();
         if (co == null) {
