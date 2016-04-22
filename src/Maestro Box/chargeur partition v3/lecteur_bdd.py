@@ -76,7 +76,7 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_debut, passage_reprise, mesure_fin_ou_temps_debut FROM Evenement WHERE id_musique = '+str(id_musique)+' AND type_evenement = 0')
+      cur.execute('SELECT mesure_debut, passage_reprise, arg2 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 0')
       infos = cur.fetchall()
 
       d1 = {str(m) + '.2' : {"prochaine_mesure" : mf, "mesure_non_lue" : True} for (m,mf,p) in infos}
@@ -92,7 +92,7 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_fin_ou_temps_debut, mesure_debut FROM Evenement WHERE id_musique = '+str(id_musique)+' AND type_evenement = 1')
+      cur.execute('SELECT arg2, mesure_debut FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 1')
       infos = cur.fetchall()
 
       d1 = {str(mf) + '.1' : {"prochaine_mesure" : md, "prochain_passage" : 2} for (mf,md) in infos}
@@ -108,7 +108,7 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_debut, mesure_fin_ou_temps_debut, information_evenement FROM Evenement WHERE id_musique = '+str(id_musique)+' AND type_evenement = 2')
+      cur.execute('SELECT mesure_debut, arg2, arg3 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 2')
       infos = cur.fetchall()
 
       d = {}
@@ -133,7 +133,7 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_debut, passage_reprise, mesure_fin_ou_temps_debut, information_evenement FROM Evenement WHERE id_musique = '+str(id_musique)+' AND type_evenement = 3')
+      cur.execute('SELECT mesure_debut, passage_reprise, arg2, arg3 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 3')
       infos = cur.fetchall()
 
       d = {}
@@ -152,7 +152,7 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_debut, passage_reprise, mesure_fin_ou_temps_debut, information_evenement FROM Evenement WHERE id_musique = '+str(id_musique)+' AND type_evenement = 4')
+      cur.execute('SELECT mesure_debut, passage_reprise, arg2, arg3 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 4')
       infos = cur.fetchall()
 
       d = {}
@@ -171,7 +171,7 @@ class LecteurBDD:
     with db:
       cur = db.cursor()
 
-      cur.execute('SELECT mesure_debut, mesure_fin_ou_temps_debut, information_evenement FROM Evenement WHERE id_musique = '+str(id_musique)+' AND type_evenement = 5')
+      cur.execute('SELECT mesure_debut, arg2, arg3 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 5')
       infos = cur.fetchall()
 
       d = {}

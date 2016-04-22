@@ -31,15 +31,15 @@ class afficheur :
 
     gc.disable()
 
-    map_mesure_modif = m.copy()
-    descripteur = map_mesure_modif["1.1"]
+    map_mesures_modif = m.copy()
+    descripteur = map_mesures_modif["1.1"]
     descripteur["mesure_courante"] = 1
     descripteur["passage_reprise_courant"] = 1
     descripteur["intensite_courante"] = -1
 
     while(descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_debut_lecture, passage_debut_lecture):
-      if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesure_modif :
-        descripteur.update(map_mesure_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
+      if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
+        descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
       if "prochaine_mesure" in descripteur:
         descripteur["mesure_courante"] = descripteur["prochaine_mesure"]
       else:
@@ -54,8 +54,8 @@ class afficheur :
     afficher_decompte(descripteur["temps_par_mesure"], descripteur["tempo"], scheduler)
 
     while(descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_fin_lecture + 1, passage_fin_lecture):
-      if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesure_modif :
-        descripteur.update(map_mesure_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
+      if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
+        descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
       if "mesure_non_lue" not in descripteur :
         afficher(descripteur, scheduler)
       if "prochaine_mesure" in descripteur:
@@ -100,11 +100,13 @@ class afficheur :
         del descripteur["nb_temps_intensite_"+str(t)]
         scheduler.enter((t - 1) * tempo_en_seconde, 1, afficher_intensite, (descripteur["intensite_courante"],))
 
+#      if ("temps_alerte_" + str(t))
+
     scheduler.enter(descripteur["temps_par_mesure"] * tempo_en_seconde, 1, wait, ())
 
     scheduler.run()
 
-# TODO armature, alerte, partie
+# TODO armature, alerte
 
   def afficher_logo(self):
     image = Image.open(chemin_images + 'ema logo.png')
