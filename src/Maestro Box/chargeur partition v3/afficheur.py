@@ -8,6 +8,7 @@ from rgbmatrix import Adafruit_RGBmatrix
 chemin_images = "drawable/"
 
 temps_affichage_logo = 2
+temps_affichage_fin = 5
 
 pos_temps = (8,0)
 pos_intensite = (16, 8)
@@ -40,8 +41,11 @@ class afficheur :
     while(descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_debut_lecture, passage_debut_lecture):
       if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
         descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
+      if "mesure_non_lue" in descripteur :
+        del descripteur["mesure_non_lue"]
       if "prochaine_mesure" in descripteur:
         descripteur["mesure_courante"] = descripteur["prochaine_mesure"]
+        del descripteur["prochaine_mesure"]
       else:
         descripteur["mesure_courante"] += 1
       if "prochain_passage" in descripteur:
@@ -58,14 +62,19 @@ class afficheur :
         descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
       if "mesure_non_lue" not in descripteur :
         self.afficher(descripteur, scheduler)
+      else:
+        del descripteur["mesure_non_lue"]
       if "prochaine_mesure" in descripteur:
         descripteur["mesure_courante"] = descripteur["prochaine_mesure"]
+        del descripteur["prochaine_mesure"]
       else:
         descripteur["mesure_courante"] += 1
       if "prochain_passage" in descripteur:
         descripteur["passage_reprise_courant"] = descripteur["prochain_passage"]
 
     self.afficher_fin()
+    scheduler.enter(temps_affichage_fin, 1, self.wait, ())
+    scheduler.run()
 
     gc.enable()
 
@@ -102,7 +111,7 @@ class afficheur :
         del descripteur["intensite_"+str(t)]
         del descripteur["temps_debut_intensite_"+str(t)]
         del descripteur["nb_temps_intensite_"+str(t)]
-        scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_intensite, (descripteur["intensite_courante"],))
+      scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_intensite, (descripteur["intensite_courante"],))
 
       if ("temps_alerte_" + str(t) in descripteur):
         scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_alerte, (descripteur["couleur_alerte_" + str(t)],))
@@ -222,14 +231,16 @@ class afficheur :
 
   def afficher_armature(self, armature):
     if armature < 0:
-      image1 = Image.open(chemin_images + 'armature' + (-armature) + '.png')
+      image1 = Image.open(chemin_images + 'armature' + str(-armature) + '.png')
       image2 = Image.open(chemin_images + 'bemol.png')
     elif armature > 0:
-      image1 = Image.open(chemin_images + 'armature' + armature + '.png')
+      image1 = Image.open(chemin_images + 'armature' + str(armature) + '.png')
       image2 = Image.open(chemin_images + 'diese.png')
     else:
       image1 = Image.open(chemin_images + '8_8_black.png')
       image2 = Image.open(chemin_images + '8_8_black.png')
+    image1.load()
+    image2.load()
     self.matrix.SetImage(image1.im.id, pos_armature_chiffre[0], pos_armature_chiffre[1])
     self.matrix.SetImage(image2.im.id, pos_armature_symb[0], pos_armature_symb[1])
 
