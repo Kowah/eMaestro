@@ -355,7 +355,6 @@ public class EditionActivity  extends Activity {
                                                                     if(repriseSansMuet.isChecked()){
                                                                         textAbarrer.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
                                                                         textMesureDebut2eRepet.setFocusable(false);
-
                                                                     }
                                                                     else{
                                                                         textAbarrer.setPaintFlags(0);
@@ -377,7 +376,8 @@ public class EditionActivity  extends Activity {
                                                                     int mesureFinNonLu = Integer.parseInt(textMesureFin2eRepet.getText().toString());
 
                                                                     //Conditions d'acceptation d'un event Reprise
-                                                                    if(mesureDebut < mesureDebutNonLu && mesureDebutNonLu <= mesureFin) {
+                                                                    if((repriseSansMuet.isChecked() && mesureDebut < mesureFin)
+                                                                            || (!repriseSansMuet.isChecked() && mesureDebut < mesureDebutNonLu && mesureDebutNonLu <= mesureFin) ){
 
                                                                         Reprise eventUpdate = null;
                                                                         ArrayList<Reprise> eventsReprise = bdd.getReprises(bdd.getMusique(EXTRA_NOMPARTITION));
@@ -387,7 +387,7 @@ public class EditionActivity  extends Activity {
                                                                             }
                                                                         }
                                                                         if(eventUpdate != null){
-                                                                            Toast.makeText(context, "Merci de supprimer la reprise avant d'en créer une nouvelle sur cette mesure", Toast.LENGTH_SHORT).show();
+                                                                            Toast.makeText(context, "Merci de supprimer la reprise avant d'en créer une nouvelle sur cette mesure", Toast.LENGTH_LONG).show();
                                                                            /* ArrayList<MesuresNonLues> eventsMesures = bdd.getMesuresNonLues(bdd.getMusique(EXTRA_NOMPARTITION));
                                                                             MesuresNonLues eventMesureUpdate = null;
                                                                             for(MesuresNonLues eventM : eventsMesures){
@@ -414,6 +414,16 @@ public class EditionActivity  extends Activity {
                                                                                 bdd.save(eventNonLues);
                                                                             }
                                                                         }
+                                                                    }
+                                                                    else{
+                                                                        //les conditions ne sont pas bonnes
+                                                                        if(repriseSansMuet.isChecked()){
+                                                                            Toast.makeText(context, "La mesure de fin doit être après la mesure de début", Toast.LENGTH_LONG).show();
+                                                                        }
+                                                                        else{
+                                                                            Toast.makeText(context, "Les indications de mesures ne sont pas valides", Toast.LENGTH_LONG).show();
+                                                                        }
+
                                                                     }
                                                                     MAJAffichage();
                                                                 /*   apparament inutile

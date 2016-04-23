@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="à"
+            android:text="à "
             android:id="@+id/textView12" />
 
         <TextView
@@ -82,8 +82,8 @@
 
     <CheckBox
         android:id="@+id/repriseSansMuet"
-        android:text="Tout relire lors de la dexième fois"
+        android:text="Tout relire lors de la deuxième fois"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:checked="false" />
 </LinearLayout>
