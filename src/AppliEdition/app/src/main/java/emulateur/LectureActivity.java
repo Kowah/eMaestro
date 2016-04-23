@@ -61,7 +61,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         // format : nbTemps -> (idImage,tempsAffichage)
         //maps pour les autres informations
         // format : nbTemps -> idImage ou image
-
         final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle();
         final HashMap<Integer,Bitmap> mapMesure = creerMapMesure();
         final HashMap<Integer,Integer> mapNuance = creerMapNuance();
@@ -72,40 +71,8 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         final HashMap<Integer,Integer> mapAlerte = creerMapAlerte();
 
         //lancement de l'animation
-
         switcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         switcher.setFactory(this);
-
-        int tempsDebut = mapMesures.get(mesureDebut);
-        Bitmap bitmapNuance = null;
-        Bitmap bitmapArmature = null;
-        Bitmap bitmapAlerte = null;
-
-        //initialisation de la nuance. On recupere la derniere image de nuance avant le temps de debut
-        //idem pour l'armature et les alertes
-        for(int numeroTemps=1; numeroTemps<tempsDebut; numeroTemps++){
-            if(mapNuance.containsKey(numeroTemps)){
-                int idNuance = mapNuance.get(numeroTemps);
-                if(idNuance != -1){
-                    bitmapNuance = BitmapFactory.decodeResource(getResources(), mapNuance.get(numeroTemps));
-                }
-                else{
-                    bitmapNuance = null;
-                }
-            }
-            if(mapArmature.containsKey(numeroTemps)){
-                bitmapArmature = mapArmature.get(numeroTemps);
-            }
-            if(mapAlerte.containsKey(numeroTemps)){
-                int idAlerte = mapAlerte.get(numeroTemps);
-                if(idAlerte != -1){
-                    bitmapAlerte = BitmapFactory.decodeResource(getResources(), mapAlerte.get(numeroTemps));
-                }
-                else{
-                    bitmapAlerte = null;
-                }
-            }
-        }
 
         runnable = new Runnable() {
 
@@ -126,18 +93,10 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             Bitmap bitmapArmature = null;
             Bitmap bitmapAlerte = null;
 
-            public Runnable init(Bitmap bitNuanceInit, Bitmap bitArmature, Bitmap bitAlerte){
-                bitmapNuance = bitNuanceInit;
-                bitmapArmature = bitArmature;
-                bitmapAlerte = bitAlerte;
-                return this;
-            }
-
             @Override
             public void run() {
 
                 if(nbDecompte > 0){
-
                     //afficher le decompte
                     int temps = 60000/ mapCercle.get(-nbDecompte).getRight();
                     switcher.postDelayed(this, temps);
@@ -229,7 +188,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
                 }
             }
-        }.init(bitmapNuance,bitmapArmature,bitmapAlerte);//initialisation avec les images de départ récupérées avant le premier temps
+        };
 
         switcher.postDelayed(runnable,500);
 
@@ -323,19 +282,41 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
     private HashMap<Integer, Integer> creerMapNuance() {
         HashMap<Integer, Integer> map = new HashMap<>();
-
         ArrayList<VariationIntensite> variations = bdd.getVariationsIntensite(bdd.getMusique(idMusique));
-        for (VariationIntensite var : variations) {
-            int mesure = var.getMesureDebut();
-            int tempsMesure = mapMesures.get(mesure);
-            int tpsDebut = var.getTempsDebut();
-            int i = var.getIntensite();
-            int idImage = -1;
-            if(i != -1) {
-                idImage = getResources().getIdentifier("intensite" + i, "drawable", getPackageName());
+        Collections.sort(variations, new Comparator<VariationIntensite>() {
+            @Override
+            public int compare(VariationIntensite lhs, VariationIntensite rhs) {
+                int tempslhs = mapMesures.get(lhs.getMesureDebut())+lhs.getTempsDebut();
+                int tempsrhs = mapMesures.get(rhs.getMesureDebut())+rhs.getTempsDebut();
+                return tempslhs - tempsrhs;
             }
-            map.put(tempsMesure+tpsDebut-1,idImage);
+        });
+
+        int tempsFin = mapMesures.get(mesureFin+1);
+
+        int indexVar = 0;
+        VariationIntensite varCourante = variations.get(indexVar);
+        int tempsVar = mapMesures.get(varCourante.getMesureDebut()) + varCourante.getTempsDebut() - 1;
+        int idImageCourante=-1;
+
+        for(int temps=1; temps<tempsFin; temps++){
+
+            if(temps==tempsVar){
+                //maj de l'image courante
+                int intensite = varCourante.getIntensite();
+                idImageCourante = getResources().getIdentifier("intensite"+intensite,"drawable",getPackageName());
+
+                //chargement de la prochaine variation
+                if(indexVar+1 < variations.size()){
+                    indexVar++;
+                    varCourante = variations.get(indexVar);
+                    tempsVar = mapMesures.get(varCourante.getMesureDebut()) + varCourante.getTempsDebut() - 1;
+                }
+            }
+
+            map.put(temps,idImageCourante);
         }
+
         return map;
     }
 
@@ -376,27 +357,44 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
     }
 
     private HashMap<Integer,Bitmap> creerMapArmature() {
-        HashMap<Integer,Bitmap> mapArmature = new HashMap<>();
+        HashMap<Integer, Bitmap> map = new HashMap<>();
+        ArrayList<Armature> listeVariations = bdd.getArmature(bdd.getMusique(idMusique));
+        Collections.sort(listeVariations, new Comparator<Armature>() {
+            @Override
+            public int compare(Armature lhs, Armature rhs) {
+                return lhs.getMesure_debut() - rhs.getMesure_debut();
+            }
+        });
 
-        ArrayList<Armature> listeArmature = bdd.getArmature(bdd.getMusique(idMusique));
+        int indexVar=0;
+        Armature varCourante = listeVariations.get(indexVar);
+        int tempsVar = mapMesures.get(varCourante.getMesure_debut()) + varCourante.getTemps_debut() - 1;
 
-        for(Armature arm : listeArmature){
-            int tpsDebut = arm.getTemps_debut();
-            int alteration = arm.getAlteration();
-            int mesure = arm.getMesure_debut();
+        Bitmap imageCourante = null;
 
-            int tpsMesure = mapMesures.get(mesure);
-            //creer l'image
-            Bitmap image = null;
-            if(alteration != 0){
-                image = creerBitmapArmature(alteration);
+        int tempsFin = mapMesures.get(mesureFin+1);
+        for(int temps = 1; temps < tempsFin; temps++){
+
+            if(temps == tempsVar){
+                //maj de l'image
+
+                imageCourante = null;
+                if(varCourante.getAlteration() != 0){
+                    imageCourante = creerBitmapArmature(varCourante.getAlteration());
+                }
+
+                //chargement de la prochaine variation
+                if(indexVar+1 < listeVariations.size()){
+                    indexVar++;
+                    varCourante = listeVariations.get(indexVar);
+                    tempsVar = mapMesures.get(varCourante.getMesure_debut());
+                }
             }
 
-            mapArmature.put(tpsMesure+tpsDebut-1, image);
+            map.put(temps,imageCourante);
         }
 
-
-        return mapArmature;
+        return map;
     }
 
     private Bitmap creerBitmapArmature(int alteration) {
