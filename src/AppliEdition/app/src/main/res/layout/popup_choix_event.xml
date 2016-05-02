@@ -10,10 +10,7 @@
         android:id="@+id/newNuance"
         android:text="Nuance"
         />
-    <Button
-            android:id="@+id/newMesureMuette"
-            android:text="Mesures Muettes"
-            />
+
     </TableRow>
 
     <TableRow

@@ -8,16 +8,10 @@
 
     <include android:id="@+id/mesures"
         layout="@layout/grille_mesure"
-        android:layout_height="500dp"
-        android:layout_width="800dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
         />
-
-    <TextView
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:id ="@+id/debug"
-        android:text="debug"/>
  
 
     <ImageView

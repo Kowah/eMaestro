@@ -96,7 +96,7 @@ public class EditionActivity  extends Activity {
     List<Alertes> varAlertesListSurMesureCour;
 
     //debug
-    TextView debug;
+   // TextView debug;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +107,7 @@ public class EditionActivity  extends Activity {
         bdd.open();
 
         //Debug
-        debug = (TextView) findViewById(R.id.debug);
+     //   debug = (TextView) findViewById(R.id.debug);
 
         //nuance selection
         List<String> nuanceList = new ArrayList<String>();
@@ -151,7 +151,7 @@ public class EditionActivity  extends Activity {
 
         }else{
 
-            debug.setText("Erreur interne");
+           // debug.setText("Erreur interne");
 
         }
 
@@ -159,7 +159,7 @@ public class EditionActivity  extends Activity {
         //-----------------------
         //debug msg
         //-----------------------
-       for(int i = 0; i<varIntensiteList.size();i++){
+     /*  for(int i = 0; i<varIntensiteList.size();i++){
             debug.setText(debug.getText().toString()+"\n" + "NUANCE" + " nouveau event debut à :" + (varIntensiteList.get(i).getMesureDebut() ) + " nuance : " + partition.ConvertNuanceFromInt(varIntensiteList.get(i).getIntensite()));
         }
         for(int i = 0; i<varTempsList.size();i++){
@@ -176,7 +176,7 @@ public class EditionActivity  extends Activity {
         }//TODO faire un affiche plus complet de l'event mesure non lues, si besoin
         for(int i = 0; i<varAlertesList.size();i++){
             debug.setText(debug.getText().toString()+"\n" +"ALERTE" + " nouveau event debut à :" + (varAlertesList.get(i).getMesure_debut() ) + " sur le temps " + varAlertesList.get(i).getTemps_debut());
-        }
+        }*/
         //-----------------------
         //debug msg
         //-----------------------
