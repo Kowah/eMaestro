@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		final Button synchro = (Button) findViewById(R.id.synchro);
+		final ImageButton synchro = (ImageButton) findViewById(R.id.synchro);
 		synchro.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		final Button catalogue = (Button) findViewById(R.id.catalogue);
+		final ImageButton catalogue = (ImageButton) findViewById(R.id.catalogue);
 		catalogue.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		final Button emulateur = (Button) findViewById(R.id.emulateur);
+		final ImageButton emulateur = (ImageButton) findViewById(R.id.emulateur);
 		emulateur.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
