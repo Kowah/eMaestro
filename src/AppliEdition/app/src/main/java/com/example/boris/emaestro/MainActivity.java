@@ -23,17 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
-import BDD.to.Alertes;
-import BDD.to.Armature;
-import BDD.to.Evenement;
-import BDD.to.MesuresNonLues;
-import BDD.to.Musique;
-import BDD.to.Partie;
-import BDD.to.Reprise;
-import BDD.to.Suspension;
-import BDD.to.VarRythmes;
-import BDD.to.VariationIntensite;
-import BDD.to.VariationTemps;
 import emulateur.EmulateurActivity;
 import telecommande.Telecommande;
 
@@ -103,8 +92,8 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			}
 		});
-		final ImageButton reconnect = (ImageButton) findViewById(R.id.reconnect);
-		reconnect.setOnClickListener(new OnClickListener() {
+		final ImageButton connectToMaestroBox = (ImageButton) findViewById(R.id.reconnect);
+		connectToMaestroBox.setOnClickListener(new OnClickListener() {
 			int selected = -1;
 			String keyName = "Maestro";
 			boolean enable = false;
@@ -114,29 +103,14 @@ public class MainActivity extends Activity {
 
 				WifiManager wifi = (WifiManager) v.getContext().getSystemService(v.getContext().WIFI_SERVICE);
 				if(!wifi.isWifiEnabled()){
-					final AlertDialog.Builder enableWifi = new AlertDialog.Builder(v.getContext());
-					enableWifi.setMessage("Le wifi est desactivé, voulez vous l'activer");
-					enableWifi.setTitle("Wifi")
-
-							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int id) {
-									enable = true;
-								}
-							})
-							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int id) {
-									//TODO:
-								}
-							});
-					enableWifi.show();
-					wifi.setWifiEnabled(enable);
+					Toast.makeText(getApplicationContext(), "Attention votre Wifi est désactivé, merci de l'activer pour continuer", Toast.LENGTH_SHORT).show();
 				}
 				if (wifi.isWifiEnabled()) {
+					//Scans des réseaux disponibles
 					List<android.net.wifi.ScanResult> scan = wifi.getScanResults();
 
 					final List<String> name = new ArrayList<String>();
+					//Si le nom du reseau commence par keyname on le garde
 					for (android.net.wifi.ScanResult s : scan) {
 							if(s.SSID.length() >= keyName.length() && s.SSID.substring(0,keyName.length()).equals(keyName)) {
 							name.add(s.SSID);
@@ -154,10 +128,10 @@ public class MainActivity extends Activity {
 							selected = position;
 						}
 					});
-
+					//Affiche les Maestrobox disponibles
 					ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, name.toArray(new String[name.size()]));
 					lv.setAdapter(adapter);
-					builder.setTitle("Wifi")
+					builder.setTitle("Maestrox disponibles : ")
 
 							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 								@Override
@@ -169,7 +143,7 @@ public class MainActivity extends Activity {
 							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int id) {
-									//TODO:
+									//Rien à faire
 								}
 							});
 					builder.show();
