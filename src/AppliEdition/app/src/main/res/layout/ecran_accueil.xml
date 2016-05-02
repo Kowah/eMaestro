@@ -11,7 +11,7 @@
         android:layout_below="@+id/nouveau"
         android:layout_alignLeft="@+id/nouveau"
         android:layout_alignStart="@+id/nouveau"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="280dp" />
 
 
 
@@ -21,7 +21,7 @@
         android:background="@drawable/nouveau"
         android:layout_below="@+id/reconnect"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp" />
+        android:layout_marginTop="200dp" />
 
 
 
