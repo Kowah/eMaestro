@@ -414,7 +414,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             armature = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("diese","drawable",getPackageName()));
         }
 
-        Bitmap nbAlt = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesure" + alteration,"drawable",getPackageName()));
+        Bitmap nbAlt = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("armature" + alteration,"drawable",getPackageName()));
 
         canvas.drawBitmap(nbAlt,0,0,null);
         canvas.drawBitmap(armature,bitmap.getWidth()/2,0,null);
