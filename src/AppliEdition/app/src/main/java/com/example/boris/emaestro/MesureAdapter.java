@@ -130,6 +130,26 @@ public class MesureAdapter extends ArrayAdapter<Mesure> {
             convertView.findViewById(R.id.SecPassage).setAlpha(0f);
         }
 
+        if(mesure.getDiese()){
+            convertView.findViewById(R.id.diese).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.diese).setAlpha(0f);
+
+        }
+        if(mesure.getBemol()){
+            convertView.findViewById(R.id.bemol).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.bemol).setAlpha(0f);
+
+        }
+        if(mesure.getAlerte()){
+            convertView.findViewById(R.id.alerte).setAlpha(1f);
+        }else{
+            convertView.findViewById(R.id.alerte).setAlpha(0f);
+
+        }
+
+
 
         //on met a jour l'id de la view de la mesure
         ((TextView)convertView.findViewById(R.id.id)).setText(String.valueOf(mesure.getId()));

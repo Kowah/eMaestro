@@ -8,6 +8,27 @@
         android:layout_height="50dp"
         android:layout_below="@+id/tempoModif"
         android:background="@drawable/mesure" />
+
+    <ImageView
+        android:id="@+id/diese"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tempoModif"
+        android:background="@drawable/diese_edition" />
+    <ImageView
+        android:id="@+id/bemol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tempoModif"
+        android:background="@drawable/bemol_edition" />
+    <ImageView
+        android:id="@+id/alerte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tempoModif"
+        android:layout_toRightOf="@+id/bemol"
+        android:background="@drawable/alerte" />
+
     <ImageView
         android:id="@+id/PrePassage"
         android:layout_width="80dp"
