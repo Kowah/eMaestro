@@ -31,14 +31,14 @@ public class Telecommande extends AppCompatActivity {
     int musiqueID = 0;
     ArrayList<Button> buttons = new ArrayList<>();
     Button connectButton=null;
-
+    Spinner spinner =  null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.telecommande);
 
-        final Spinner spinner = (Spinner)findViewById(R.id.musiqueSpinner);
+        spinner = (Spinner)findViewById(R.id.musiqueSpinner);
 
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -124,26 +124,15 @@ public class Telecommande extends AppCompatActivity {
         for (Button b : buttons) {
             b.setClickable(connected);
         }
+        spinner.setClickable(connected);
         connectButton.setClickable(!connected);
+
     }
 
     public void action(String message){
 
         if(message == "PLAY" && printerServeur != null)
         {
-            //FIXME : trouver un moyen de synchroniser de manière sychrone
-       /*     DataBaseManager bd = new DataBaseManager(getBaseContext());
-            bd.open();
-            List<Musique> m = bd.getMusiques();
-            bd.close();
-
-            CatalogueDAO bdd = new CatalogueDAO(getBaseContext());
-            bdd.open();
-            bdd.clean();
-            bdd.save(m);
-            bdd.synchronizer();
-            bdd.close();*/
-
             printerServeur.write(musiqueID);
             printerServeur.flush();
         }

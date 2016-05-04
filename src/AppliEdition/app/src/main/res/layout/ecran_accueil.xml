@@ -11,7 +11,7 @@
         android:layout_below="@+id/nouveau"
         android:layout_alignLeft="@+id/nouveau"
         android:layout_alignStart="@+id/nouveau"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="280dp" />
 
 
 
@@ -21,7 +21,7 @@
         android:background="@drawable/nouveau"
         android:layout_below="@+id/reconnect"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp" />
+        android:layout_marginTop="200dp" />
 
 
 
@@ -32,27 +32,25 @@
         android:layout_alignParentTop="true"
          />
 
-    <Button
+    <ImageButton
         android:id="@+id/emulateur"
         android:text="Emul"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/emulateur"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/catalogue"
-        android:layout_toStartOf="@+id/catalogue" />
-    <Button
+        android:layout_alignParentStart="true" />
+    <ImageButton
         android:id="@+id/synchro"
         android:text="Synchro"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/synchroniser"
         android:layout_alignBaseline="@+id/catalogue"
         android:layout_alignBottom="@+id/catalogue"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignLeft="@+id/reconnect"
-        android:layout_alignStart="@+id/reconnect" />
+        android:layout_alignParentEnd="true"/>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -63,14 +61,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <Button
+    <ImageButton
         android:id="@+id/catalogue"
         android:text="Catalogue"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/catalogue"
         android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/chercher"
-        android:layout_alignStart="@+id/chercher"
         android:layout_toLeftOf="@+id/synchro"
         android:layout_toStartOf="@+id/synchro" />
 
