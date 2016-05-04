@@ -83,7 +83,7 @@ public class Partition {
             }
 
             this.setTempo(vT.getMesure_debut()-1, mesureFin, vT.getTempo());
-            this.setNbTemps(vT.getMesure_debut()-1, mesureFin, vT.getTemps_par_mesure());
+            this.setNbTemps(vT.getMesure_debut() - 1, mesureFin, vT.getTemps_par_mesure());
 
 
         }
@@ -120,7 +120,7 @@ public class Partition {
             }
             nuance = ConvertNuanceFromInt(vT.getIntensite());
             this.setNuance(vT.getMesureDebut()-1, mesureFin, nuance);
-            this.setTpsDebut(vT.getMesureDebut()-1, mesureFin, vT.getTempsDebut());
+            this.setTpsDebut(vT.getMesureDebut() - 1, mesureFin, vT.getTempsDebut());
 
         }
     }
@@ -128,6 +128,15 @@ public class Partition {
     public void setArmature  (int mesureDebut, int mesureFin, int alteration){
         for(int i=mesureDebut;i<=mesureFin; i++) {
                 partition.get(i).setArmature(alteration);
+            if(alteration<0){
+                partition.get(mesureDebut).setBemol(true);
+            }
+            else if(alteration>0){
+                    partition.get(mesureDebut).setDiese(true);
+
+            }else{
+                partition.get(mesureDebut).setSansArmature();
+            }
         }
     }
 
@@ -161,7 +170,7 @@ public class Partition {
     }
 
     public void setAlerte(int mesure_debut, int temps_debut, int couleur){
-        Mesure m = this.partition.get(mesure_debut-1);
+        Mesure m = this.partition.get(mesure_debut);
         m.setAlertePresente(true);
         m.setCouleur(couleur);
         m.setAlerteTpsDebut(temps_debut);

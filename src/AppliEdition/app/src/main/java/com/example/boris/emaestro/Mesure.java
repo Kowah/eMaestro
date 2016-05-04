@@ -22,6 +22,10 @@ public class Mesure {
     private boolean secPassage;//mesure joué pendant 2eme passage
     private boolean finPassage;//pour afficher petite barre verticale en fin de passage
 
+    //armature
+    private boolean diese;
+    private boolean bemol;
+
 
     //Alertes
     private int couleur;
@@ -42,6 +46,9 @@ public class Mesure {
         this.finPassage=false;
         this.finReprise = false;
         this.secPassage= false;
+
+        this.diese=false;
+        this.bemol=false;
 
         this.couleur=-1;
         this.alertePresente = false;
@@ -103,6 +110,16 @@ public class Mesure {
         this.finPassage = visible;
     }
 
+    public void setDiese(boolean visible){this.diese=visible;
+        this.bemol=!visible;}
+    public void setBemol(boolean visible){this.bemol=visible;
+        this.diese=!visible;}
+
+public void setSansArmature(){
+    this.bemol=false;
+    this.diese=false;
+}
+
     public void setAllReprise(boolean visible){
         this.setBarrePassage(visible);
         this.setDebutPassage(visible);
@@ -120,10 +137,13 @@ public class Mesure {
     public boolean getFinReprise(){return this.finReprise;}
     public boolean getSecPassage(){return this.secPassage;}
     public boolean getFinPassage(){return this.finPassage;}
-
+    public boolean getDiese(){return this.diese;}
+    public boolean getBemol(){return  this.bemol;}
     public void setCouleur(int couleur){this.couleur=couleur;}
     public void setAlertePresente(boolean present){ this.alertePresente = present;}
     public void setAlerteTpsDebut(int alerteTpsDebut){ this.alerteTpsDebut = alerteTpsDebut;}
+
+    public  boolean getAlerte(){return this.alertePresente;}
 
 
 }

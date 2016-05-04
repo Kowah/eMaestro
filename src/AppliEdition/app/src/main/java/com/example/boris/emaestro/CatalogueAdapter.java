@@ -125,9 +125,6 @@ public class CatalogueAdapter extends ArrayAdapter<Musique> {
 
 
 
-                                             //FIXME: Relance l'application pour mettre a jour la liste? Bonne idée?
-                                             //Intent intent = new Intent(v.getContext() , CatalogueActivity.class);
-                                             //v.getContext().startActivity(intent);
                                          }
                                      }
         );

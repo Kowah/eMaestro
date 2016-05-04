@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="77dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Séléctionnez les ePartitions que vous souhaitez ajouter/enlever du catalogue de ePartitions à envoyer sur la MaestroBox"
+        android:text="text"
         android:id="@+id/id" />
 
 

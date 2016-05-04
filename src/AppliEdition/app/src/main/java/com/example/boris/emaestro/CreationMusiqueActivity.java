@@ -117,8 +117,8 @@ public class CreationMusiqueActivity extends Activity {
                 nbPulsation = pulsation.getText().toString();
                 nomPartition = nomPartitionE.getText().toString();
                 // permet le passage de message dans un changement d'activité (startActivity)
-               // Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
-                Intent intent = new Intent(CreationMusiqueActivity.this,CatalogueActivity.class);
+                // Intent intent = new Intent(CreationMusiqueActivity.this, EditionActivity.class);
+                Intent intent = new Intent(CreationMusiqueActivity.this, CatalogueActivity.class);
 
                 intent.putExtra(EXTRA_NOMPARTITION, nomPartition);
                 intent.putExtra(EXTRA_NBMESURE, nbMesure);
@@ -129,7 +129,6 @@ public class CreationMusiqueActivity extends Activity {
                 intent.putExtra(EXTRA_NEW_PARTITION, "true");
 
 
-
                 if (unite.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir l'unité de temps", Toast.LENGTH_SHORT).show();
                 } else if (tpsParMesure.length() <= 0) {
@@ -137,7 +136,7 @@ public class CreationMusiqueActivity extends Activity {
                 } else if (pulsation.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir une pulsation", Toast.LENGTH_SHORT).show();
                 } else if (nbMesure.length() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Veuillez choisir le nombre de mesure", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Veuillez choisir un nombre de mesures valide", Toast.LENGTH_SHORT).show();
                 } else if (nomPartition.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "Veuillez choisir un nom de partition", Toast.LENGTH_SHORT).show();
                 } else {
@@ -145,25 +144,27 @@ public class CreationMusiqueActivity extends Activity {
                     Musique musiqueDejaPresente = bdd.getMusique(nomPartition);
                     if (!musiqueDejaPresente.getName().equals(nomPartition)) {
                         //si le nom de la musique n'existe pas deja on ajoute la musique dans la BDD
+                        if (Integer.parseInt(nbMesure) > 0) {
+                            long err = bdd.save(new Musique(nomPartition, Integer.parseInt(nbMesure)));
 
-                        int id = bdd.getMusiques().size() + 1;
-                        //TODO: seulement trois champs pour musique
-                        long err = bdd.save(new Musique(id, nomPartition, Integer.parseInt(nbMesure)));//, Integer.parseInt(nbPulsation), Integer.parseInt(unite), Integer.parseInt(tpsParMesure)));
+                            if (err == -1) {
+                                Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
+                            } else {
+                                int idmusique = bdd.getMusique(nomPartition).getId();
+                                bdd.save(new VariationIntensite(idmusique, -1, 1, 1, 0));
 
-                        if (err == -1) {
-                            Toast.makeText(getApplicationContext(), "Erreur lors de l'ajout de la partition dans la base de donnée", Toast.LENGTH_SHORT).show();
+                                bdd.save(new VariationTemps(idmusique, 1, Integer.parseInt(tpsParMesure), Integer.parseInt(nbPulsation), 1));//TODO : Gerer l'unite pulsation
+
+                                bdd.close();
+                                startActivity(intent);
+                                thisActivity.finish();
+                            }
                         } else {
-                            int idmusique = bdd.getMusique(nomPartition).getId();
-                            bdd.save(new VariationIntensite(idmusique,-1,1,1,0));
+                            Toast.makeText(getApplicationContext(), "Le nombre de mesures est incorrecte", Toast.LENGTH_LONG).show();
 
-                            bdd.save(new VariationTemps(idmusique, 1, Integer.parseInt(tpsParMesure), Integer.parseInt(nbPulsation), 1));//TODO : Gerer l'unite pulsation
-
-                            bdd.close();
-                            startActivity(intent);
-                            thisActivity.finish();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "La partition " + nomPartition + " existe déjà", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "La partition " + nomPartition + " existe déjà", Toast.LENGTH_LONG).show();
                     }
                 }
             }

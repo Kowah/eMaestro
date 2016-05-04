@@ -25,7 +25,6 @@ class Chargeur_partition:
       self.map_mesures_modif = self.lecteur_bdd.getDicoVariationTemps(id_musique)
       self.map_mesures_modif["mesure_fin_musique"] = self.lecteur_bdd.getMesureFin(id_musique)
 
-#  def com():
       dicotmp = self.lecteur_bdd.getDicoVariationIntensite(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
