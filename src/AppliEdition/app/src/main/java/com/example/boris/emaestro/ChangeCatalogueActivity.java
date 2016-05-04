@@ -24,18 +24,9 @@ public class ChangeCatalogueActivity extends Activity {
         bdd.open();
         catalogue = bdd.getMusiques();
         mListView = (ListView) findViewById(R.id.listView);
-        for (int i =0; i <catalogue.size();i++){
-            System.out.println(catalogue.get(i).getName());
-            // Toast.makeText(getApplicationContext(), "chargement musique "+  String.valueOf(catalogue.get(i).getId())+" nb variations temps :"+bdd.getVariationsTemps(catalogue.get(i)).size(), Toast.LENGTH_SHORT).show();
-
-        }
         bdd.close();
         adapter = new ChangeCatalogueAdapter(this,catalogue);
         mListView.setAdapter(adapter);
-
-
-
-
     }
 
 }

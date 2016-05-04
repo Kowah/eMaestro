@@ -33,34 +33,6 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-       /* //String networkSSID = "\"wifsic-free\"";
-        String networkSSID = "\"Maestro\"";
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        boolean exist = false;
-        int res = -1;
-        if(!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
-            wifi.disconnect();
-            for (WifiConfiguration i : wifi.getConfiguredNetworks()) {
-                if (i.SSID != null && i.SSID.equals(networkSSID)) {
-                    Toast.makeText(context, "SSID exist already: " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
-                    res = i.networkId;
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist) {
-                WifiConfiguration conf = new WifiConfiguration();
-                conf.SSID =  networkSSID;
-                conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                res = wifi.addNetwork(conf);
-                Toast.makeText(context, "SSID created: " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
-            }
-            wifi.enableNetwork(res, true);
-            while (!wifi.reconnect()) ;
-        }
-        else{
-            Toast.makeText(context, "Already connected " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
-        }*/
     }
 
     @Override
@@ -131,10 +103,9 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
         Connection co = ConnectonJDBC.getConnection();
         if (co == null) {
             result = false;
-            System.err.println("Impossible de se connecter à la bdd distante");
         }
         else {
-            PreparedStatement st = null;
+            PreparedStatement st;
             //Etape 1 : Vider les tables
             try {
                 st = co.prepareStatement(queryCleanMusique);
@@ -215,9 +186,9 @@ public class Synchronize extends AsyncTask<Void, String, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if(result)
-        Toast.makeText(context, "Succées:Les donnés du catalogue ont étés envoyés vers la maestrobox", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Succées:Les ePartitions du catalogue ont étés envoyés vers la maestrobox", Toast.LENGTH_LONG).show();
         else{
-            Toast.makeText(context, "Echec:Les donnés du catalogue n'ont pas étés envoyés vers la maestrobox", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Echec:Les ePartitions du catalogue n'ont pas pu êtres envoyées vers la maestrobox, vérifiez votre connexion", Toast.LENGTH_LONG).show();
         }
     }
 

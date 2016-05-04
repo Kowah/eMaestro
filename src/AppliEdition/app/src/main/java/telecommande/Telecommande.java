@@ -131,7 +131,7 @@ public class Telecommande extends AppCompatActivity {
 
     public void action(String message){
 
-        if(message == "PLAY" && printerServeur != null)
+        if(message.equals("PLAY") && printerServeur != null)
         {
             printerServeur.write(musiqueID);
             printerServeur.flush();

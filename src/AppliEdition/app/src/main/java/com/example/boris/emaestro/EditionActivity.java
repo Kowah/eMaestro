@@ -472,7 +472,7 @@ public class EditionActivity  extends Activity {
                                                                     //alteration : (-7 à -1 pour 7 à 1 bémols, 0 pour non affichage, 1 à 7 pour 1 à 7 dièses)
                                                                     int nouvArmature = Integer.parseInt(spinnerNbAlt.getSelectedItem().toString());
                                                                     String signeArmature = spinnerAlteration.getSelectedItem().toString();
-                                                                    if(signeArmature == "Bémol"){
+                                                                    if(signeArmature.equals("Bémol")){
                                                                         nouvArmature=nouvArmature*(-1);
                                                                     }
 

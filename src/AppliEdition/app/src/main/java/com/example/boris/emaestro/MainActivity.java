@@ -99,8 +99,6 @@ public class MainActivity extends Activity {
 			boolean enable = false;
 			@Override
 			public void onClick(View v) {
-				Context c = v.getContext();
-
 				WifiManager wifi = (WifiManager) v.getContext().getSystemService(v.getContext().WIFI_SERVICE);
 				if(!wifi.isWifiEnabled()){
 					Toast.makeText(getApplicationContext(), "Attention votre Wifi est désactivé, merci de l'activer pour continuer", Toast.LENGTH_SHORT).show();

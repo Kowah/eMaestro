@@ -600,6 +600,7 @@ public class DataBaseManager {
         Toast.makeText(c, "Connection a : " + Ssid, Toast.LENGTH_LONG).show();
 		WifiConfiguration conf = null;
 		boolean exist = false;
+		int res = -1;
 		if (!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
 			for (WifiConfiguration i : wifi.getConfiguredNetworks()) {
 				if (i.SSID != null && i.SSID.equals(networkSSID)) {
@@ -607,20 +608,17 @@ public class DataBaseManager {
 					exist = true;
 					conf = i;
 					}
-				//FIXME : On desactive tout les autres réseaux, peut mieux faire
-				else{
-					wifi.disableNetwork(i.networkId);
-				}
 			}
 			if (!exist) {
 				conf = new WifiConfiguration();
 				conf.SSID = networkSSID;
 				conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-				wifi.addNetwork(conf);
+				conf.status = WifiConfiguration.Status.ENABLED;
+				res = wifi.addNetwork(conf);
 			}
 			wifi.disconnect();
-			if(!wifi.enableNetwork(conf.networkId, true)){
-				Toast.makeText(c, "Echec de l'activation : " + conf.SSID, Toast.LENGTH_LONG).show();
+			if(!wifi.enableNetwork(res, true)){
+				Toast.makeText(c, "Echec de l'activation : " + res, Toast.LENGTH_LONG).show();
 			}
 			wifi.reconnect();
 
