@@ -98,6 +98,7 @@ class LecteurBDD:
       d1 = {str(mf) + '.1' : {"prochaine_mesure" : md, "prochain_passage" : 2} for (mf,md) in infos}
       d2 = {str(mf) + '.2' : {"prochain_passage" : 1} for (mf,md) in infos}
       d1.update(d2)
+      d1.update({str(md) + '.1' : {"mesure_debut_reprise" : True} for (mf,md) in infos})
       if d1 == None:
         d1 = {}
       return d1
