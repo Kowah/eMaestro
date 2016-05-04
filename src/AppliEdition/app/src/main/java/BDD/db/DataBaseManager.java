@@ -594,42 +594,53 @@ public class DataBaseManager {
         return events;
     }
 
-	public static void connect(Context c, String Ssid) {
-		String networkSSID = "\"" +Ssid+"\"";
+	public static void connect(Context c, String ssid) {
+		String networkSSID_quoted = "\"" +ssid+"\"";
 		WifiManager wifi = (WifiManager) c.getSystemService(c.WIFI_SERVICE);
-        Toast.makeText(c, "Connection a : " + Ssid, Toast.LENGTH_LONG).show();
+        Toast.makeText(c, "Connexion a : " + ssid, Toast.LENGTH_LONG).show();
 		WifiConfiguration conf = null;
 		boolean exist = false;
 		int res = -1;
-		if (!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
+		//Attention en fonction des appareilles getSSIS() renvoi avec ou sans quote
+		if (wifi.getConnectionInfo() == null || wifi.getConnectionInfo().getSSID() == null || ((!wifi.getConnectionInfo().getSSID().equals(networkSSID_quoted)) && (!wifi.getConnectionInfo().getSSID().equals(ssid)))) {
+			//On cherche a retrouver la configuration réseau
 			for (WifiConfiguration i : wifi.getConfiguredNetworks()) {
-				if (i.SSID != null && i.SSID.equals(networkSSID)) {
+				if (i.SSID != null && i.SSID.equals(networkSSID_quoted) || i.SSID != null && i.SSID.equals(ssid)) {
 					Toast.makeText(c, "SSID exist already: " + i.SSID, Toast.LENGTH_LONG).show();
 					exist = true;
-					conf = i;
+					res = i.networkId;
+					break;
 					}
 			}
+			//Si elle n'existe pas on la crée
 			if (!exist) {
 				conf = new WifiConfiguration();
-				conf.SSID = networkSSID;
+				conf.SSID = networkSSID_quoted;
 				conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 				conf.status = WifiConfiguration.Status.ENABLED;
 				res = wifi.addNetwork(conf);
 			}
+			//On se deconnecte du reseau courant
 			wifi.disconnect();
+			//On desactive touts les autres reseaux et on active notre reseau
 			if(!wifi.enableNetwork(res, true)){
 				Toast.makeText(c, "Echec de l'activation : " + res, Toast.LENGTH_LONG).show();
 			}
+			//On se reconnecte
 			wifi.reconnect();
-
-            if (wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
-                Toast.makeText(c, "Connexion réussie", Toast.LENGTH_LONG).show();
-            }
-			else{
-				Toast.makeText(c, "Connexion échoué", Toast.LENGTH_LONG).show();
+			//Si wifi differents de null (donc une connexion établi)
+			if((wifi != null) && (wifi.getConnectionInfo() != null) && (wifi.getConnectionInfo().getSSID() != null)) {
+				//On verifie qu'on s'est bien connécté au reseau souhaité
+				//if (wifi.getConnectionInfo().getSSID().equals(networkSSID_quoted) || wifi.getConnectionInfo().getSSID().equals(ssid)) {
+					Toast.makeText(c, "Connexion réussie", Toast.LENGTH_LONG).show();
 			}
-		} else {
-			if (!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
+			else {
+					Toast.makeText(c, "Connexion échouée ", Toast.LENGTH_LONG).show();
+				}
+
+			}
+		else {
+			if (!wifi.getConnectionInfo().getSSID().equals(networkSSID_quoted) && !wifi.getConnectionInfo().getSSID().equals(ssid)) {
 				Toast.makeText(c, " Impossible de se connecter a  " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
 
 			} else {
