@@ -136,8 +136,12 @@ public class MainActivity extends Activity {
 							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int id) {
-
-									DataBaseManager.connect(getApplicationContext(), name.get(selected));
+									if(selected >= 0) {
+										DataBaseManager.connect(getApplicationContext(), name.get(selected));
+									}
+									else{
+										Toast.makeText(getApplicationContext(), "Aucune MaestrBox de selectionnée", Toast.LENGTH_SHORT).show();
+									}
 								}
 							})
 							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

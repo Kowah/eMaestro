@@ -595,42 +595,47 @@ public class DataBaseManager {
     }
 
 	public static void connect(Context c, String Ssid) {
-		//String networkSSID = "\"wifsic-free\"";
 		String networkSSID = "\"" +Ssid+"\"";
 		WifiManager wifi = (WifiManager) c.getSystemService(c.WIFI_SERVICE);
-		ConnectivityManager wifi_manager = (ConnectivityManager) c.getSystemService(c.CONNECTIVITY_SERVICE);
         Toast.makeText(c, "Connection a : " + Ssid, Toast.LENGTH_LONG).show();
-
-        boolean exist = false;
-		int res = -1;
+		WifiConfiguration conf = null;
+		boolean exist = false;
 		if (!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
-			wifi.disconnect();
 			for (WifiConfiguration i : wifi.getConfiguredNetworks()) {
 				if (i.SSID != null && i.SSID.equals(networkSSID)) {
-					Toast.makeText(c, "SSID exist already: " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
-					res = i.networkId;
+					Toast.makeText(c, "SSID exist already: " + i.SSID, Toast.LENGTH_LONG).show();
 					exist = true;
-					break;
+					conf = i;
+					}
+				//FIXME : On desactive tout les autres réseaux, peut mieux faire
+				else{
+					wifi.disableNetwork(i.networkId);
 				}
 			}
 			if (!exist) {
-				WifiConfiguration conf = new WifiConfiguration();
+				conf = new WifiConfiguration();
 				conf.SSID = networkSSID;
 				conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-				res = wifi.addNetwork(conf);
-                wifi.enableNetwork(res, true);
-				Toast.makeText(c, "SSID created: " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
+				wifi.addNetwork(conf);
 			}
-			while (!wifi.reconnect());
-            if (!wifi_manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-                Toast.makeText(c, "Impossible de se connecter a la maestrobox", Toast.LENGTH_LONG).show();
+			wifi.disconnect();
+			if(!wifi.enableNetwork(conf.networkId, true)){
+				Toast.makeText(c, "Echec de l'activation : " + conf.SSID, Toast.LENGTH_LONG).show();
+			}
+			wifi.reconnect();
+
+            if (wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
+                Toast.makeText(c, "Connexion réussie", Toast.LENGTH_LONG).show();
             }
+			else{
+				Toast.makeText(c, "Connexion échoué", Toast.LENGTH_LONG).show();
+			}
 		} else {
-			if (!wifi_manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+			if (!wifi.getConnectionInfo().getSSID().equals(networkSSID)) {
 				Toast.makeText(c, " Impossible de se connecter a  " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
 
 			} else {
-				Toast.makeText(c, "Already connected " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
+				Toast.makeText(c, "Vous êtes deja connectés à " + wifi.getConnectionInfo().getSSID(), Toast.LENGTH_LONG).show();
 			}
 		}
 	}
