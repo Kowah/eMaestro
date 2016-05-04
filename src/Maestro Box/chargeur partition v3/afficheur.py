@@ -1,5 +1,4 @@
 import Image
-import ImageDraw
 import sched
 import time
 import gc
@@ -10,7 +9,10 @@ chemin_images = "drawable/"
 temps_affichage_logo = 2
 temps_affichage_fin = 5
 
-pos_temps = (8,0)
+pos_temps_h = (8,0)
+pos_temps_g = (8, 8)
+pos_temps_d = (32, 8)
+pos_temps_b = (8, 24)
 pos_intensite = (16, 8)
 pos_passage = (0, 24)
 pos_armature_symb = (56, 16)
@@ -21,22 +23,23 @@ pos_unite = (56, 0)
 pos_partie = (40, 8)
 pos_alerte = (40, 24)
 
-class afficheur :
+class Afficheur :
 
   def __init__(self,mat):
-		self.matrix = mat
+    self.matrix = mat
+    self.etat = "stop"
 
   def lire(self, m, mesure_debut_lecture, passage_debut_lecture, mesure_fin_lecture, passage_fin_lecture):
 
     self.afficher_logo()
-
-    gc.disable()
 
     map_mesures_modif = m.copy()
     descripteur = map_mesures_modif["1.1"]
     descripteur["mesure_courante"] = 1
     descripteur["passage_reprise_courant"] = 1
     descripteur["intensite_courante"] = -1
+    descripteur["alteration_courante"] = 0
+    descripteur["partie_courante"] = '-1'
 
     while(descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_debut_lecture, passage_debut_lecture):
       if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
@@ -50,6 +53,11 @@ class afficheur :
         descripteur["mesure_courante"] += 1
       if "prochain_passage" in descripteur:
         descripteur["passage_reprise_courant"] = descripteur["prochain_passage"]
+        del descripteur["prochain_passage"]
+
+    gc.disable()
+
+    self.etat = "play"
 
     scheduler = sched.scheduler(time.time, time.sleep)
     scheduler.enter(temps_affichage_logo, 1, self.wait, ())
@@ -57,20 +65,55 @@ class afficheur :
 
     self.afficher_decompte(descripteur["temps_par_mesure"], descripteur["tempo"], scheduler)
 
-    while(descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_fin_lecture + 1, passage_fin_lecture):
-      if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
-        descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
-      if "mesure_non_lue" not in descripteur :
-        self.afficher(descripteur, scheduler)
+    while ((self.etat != "stop") and (descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_fin_lecture + 1, passage_fin_lecture)):
+
+      if(self.etat == "play"):
+
+        if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
+          descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
+
+        if ("mesure_debut_reprise" in descripteur):
+          del descripteur["mesure_debut_reprise"]
+          descripteur["afficher_passage"] = True
+          dico_tmp = {
+"temps_par_mesure" : descripteur["temps_par_mesure"],
+"tempo" : descripteur["tempo"],
+"unite_pulsation" : descripteur["unite_pulsation"],
+"temps_debut_intensite_1" : True,
+"intensite_1" : descripteur["intensite_courante"],
+"label" : descripteur["partie_courante"],
+"temps_debut_armature_1" : True,
+"alteration_1" : descripteur["alteration_courante"]}
+
+          if (str(descripteur["mesure_courante"]) + '.2') in map_mesures_modif:
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dico_tmp.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
+          else:
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dico_tmp
+
+          if ("nb_temps_intensite_1" in descripteur):
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = {"nb_temps_intensite_1" : descripteur["nb_temps_intensite_1"]}.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
+          else:
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = {"nb_temps_intensite_1" : 0}.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
+
+        if "mesure_non_lue" not in descripteur :
+          self.afficher(descripteur, scheduler)
+        else:
+          del descripteur["mesure_non_lue"]
+          descripteur["afficher_passage"] = -1
+
+        if "prochaine_mesure" in descripteur:
+          descripteur["mesure_courante"] = descripteur["prochaine_mesure"]
+          del descripteur["prochaine_mesure"]
+        else:
+          descripteur["mesure_courante"] += 1
+
+        if "prochain_passage" in descripteur:
+          descripteur["passage_reprise_courant"] = descripteur["prochain_passage"]
+          del descripteur["prochain_passage"]
+
       else:
-        del descripteur["mesure_non_lue"]
-      if "prochaine_mesure" in descripteur:
-        descripteur["mesure_courante"] = descripteur["prochaine_mesure"]
-        del descripteur["prochaine_mesure"]
-      else:
-        descripteur["mesure_courante"] += 1
-      if "prochain_passage" in descripteur:
-        descripteur["passage_reprise_courant"] = descripteur["prochain_passage"]
+        while(self.etat == "pause"):
+          wait()
 
     self.afficher_fin()
     scheduler.enter(temps_affichage_fin, 1, self.wait, ())
@@ -84,10 +127,15 @@ class afficheur :
     tempo_en_seconde = 60 / float(descripteur["tempo"])
 
     scheduler.enter(0,3,self.afficher_mesure,(descripteur["mesure_courante"],))
-    scheduler.enter(0,3,self.afficher_passage,(descripteur["passage_reprise_courant"],))
+    if ("afficher_passage" in descripteur):
+      if descripteur["afficher_passage"] == -1:
+        scheduler.enter(0,3,self.afficher_passage,(-1,))
+      else:
+        scheduler.enter(0,3,self.afficher_passage,(descripteur["passage_reprise_courant"],))
 
     if ("label" in descripteur):
-      scheduler.enter((t - 1) * tempo_en_seconde, 2, self.afficher_partie, (descripteur["label"],))
+      scheduler.enter(0, 2, self.afficher_partie, (descripteur["label"],))
+      descripteur["partie_courante"] = descripteur["label"]
       del descripteur["label"]
 
     for t in range(1, descripteur["temps_par_mesure"] + 1):
@@ -111,7 +159,7 @@ class afficheur :
         del descripteur["intensite_"+str(t)]
         del descripteur["temps_debut_intensite_"+str(t)]
         del descripteur["nb_temps_intensite_"+str(t)]
-      scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_intensite, (descripteur["intensite_courante"],))
+        scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_intensite, (descripteur["intensite_courante"],))
 
       if ("temps_alerte_" + str(t) in descripteur):
         scheduler.enter((t - 1) * tempo_en_seconde, 1, self.afficher_alerte, (descripteur["couleur_alerte_" + str(t)],))
@@ -123,8 +171,17 @@ class afficheur :
 
       if ("temps_debut_armature_" + str(t) in descripteur):
         scheduler.enter((t - 1) * tempo_en_seconde, 2, self.afficher_armature, (descripteur["alteration_" + str(t)],))
+        descripteur["alteration_courante"] = descripteur["alteration_" + str(t)]
         del descripteur["temps_debut_armature_" + str(t)]
         del descripteur["alteration_" + str(t)]
+
+      if (self.etat == "play"):
+        scheduler.run()
+      elif (self.etat == "stop"):
+        return 0
+      else:
+        while(self.etat == "pause"):
+          wait()
 
     scheduler.enter(descripteur["temps_par_mesure"] * tempo_en_seconde, 1, self.wait, ())
 
@@ -139,10 +196,11 @@ class afficheur :
 
   def afficher_decompte(self, temps_par_mesure, tempo, scheduler):
     tempo_en_seconde = 60 / float(tempo)
-    for t in range(temps_par_mesure):
-      scheduler.enter(t * tempo_en_seconde, 1, self.afficher_decompte_aux, (temps_par_mesure - t,))
-    scheduler.enter(temps_par_mesure * tempo_en_seconde, 1, self.wait, ())
-    scheduler.run()
+    for i in range(2):
+      for t in range(temps_par_mesure):
+        scheduler.enter(t * tempo_en_seconde, 1, self.afficher_decompte_aux, (t + 1,))
+      scheduler.enter(temps_par_mesure * tempo_en_seconde, 1, self.wait, ())
+      scheduler.run()
     image = Image.open(chemin_images + '64_32_black.png')
     image.load()
     scheduler.enter(0, 1, self.matrix.SetImage, (image.im.id, 0, 0))
@@ -166,9 +224,18 @@ class afficheur :
 
 
   def afficher_temps(self, temps_par_mesure, temps_courant):
-    image = Image.open(chemin_images + 'a' + str(temps_par_mesure)+'_'+str(temps_courant)+'.png')
-    image.load()
-    self.matrix.SetImage(image.im.id, pos_temps[0], pos_temps[1])
+    imageh = Image.open(chemin_images + 'a' + str(temps_par_mesure)+'_'+str(temps_courant)+'_h.png')
+    imageh.load()
+    imageg = Image.open(chemin_images + 'a' + str(temps_par_mesure)+'_'+str(temps_courant)+'_g.png')
+    imageg.load()
+    imaged = Image.open(chemin_images + 'a' + str(temps_par_mesure)+'_'+str(temps_courant)+'_d.png')
+    imaged.load()
+    imageb = Image.open(chemin_images + 'a' + str(temps_par_mesure)+'_'+str(temps_courant)+'_b.png')
+    imageb.load()
+    self.matrix.SetImage(imageh.im.id, pos_temps_h[0], pos_temps_h[1])
+    self.matrix.SetImage(imageg.im.id, pos_temps_g[0], pos_temps_g[1])
+    self.matrix.SetImage(imaged.im.id, pos_temps_d[0], pos_temps_d[1])
+    self.matrix.SetImage(imageb.im.id, pos_temps_b[0], pos_temps_b[1])
 
 
   def afficher_mesure(self, mesure_courante):
@@ -197,7 +264,10 @@ class afficheur :
 
 
   def afficher_passage(self, passage):
-    image = Image.open(chemin_images + 'passage' + str(passage)+'.png')
+    if passage != -1:
+      image = Image.open(chemin_images + 'passage' + str(passage)+'.png')
+    else:
+      image = Image.open(chemin_images + '8_8_black.png')
     image.load()
     self.matrix.SetImage(image.im.id, pos_passage[0], pos_passage[1])
 
@@ -212,7 +282,7 @@ class afficheur :
 
 
   def afficher_partie(self, partie):
-    if alerte == '-1':
+    if partie == '-1':
       image = Image.open(chemin_images + '8_8_black.png')
     else:
       image = Image.open(chemin_images + 'partie' + partie +'.png')
@@ -243,4 +313,16 @@ class afficheur :
     image2.load()
     self.matrix.SetImage(image1.im.id, pos_armature_chiffre[0], pos_armature_chiffre[1])
     self.matrix.SetImage(image2.im.id, pos_armature_symb[0], pos_armature_symb[1])
+
+  def get_etat(self):
+    return self.etat
+
+  def set_etat(self, etat):
+    self.etat = etat
+
+
+
+
+
+
 
