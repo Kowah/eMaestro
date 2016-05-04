@@ -8,10 +8,9 @@
     android:layout_width="100dp"
     android:layout_height="40dp"
     android:background="@drawable/chercher"
-        android:layout_below="@+id/nouveau"
+        android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/nouveau"
-        android:layout_alignStart="@+id/nouveau"
-        android:layout_marginTop="280dp" />
+        android:layout_alignStart="@+id/nouveau" />
 
 
 
@@ -19,9 +18,8 @@
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:background="@drawable/nouveau"
-        android:layout_below="@+id/reconnect"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp" />
+        android:layout_above="@+id/chercher"
+        android:layout_centerHorizontal="true" />
 
 
 

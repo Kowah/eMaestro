@@ -376,7 +376,7 @@ public class EditionActivity  extends Activity {
                                                                     int mesureFinNonLu = Integer.parseInt(textMesureFin2eRepet.getText().toString());
 
                                                                     //Conditions d'acceptation d'un event Reprise
-                                                                    if((repriseSansMuet.isChecked() && mesureDebut < mesureFin)
+                                                                    if((repriseSansMuet.isChecked() && mesureDebut <= mesureFin)
                                                                             || (!repriseSansMuet.isChecked() && mesureDebut < mesureDebutNonLu && mesureDebutNonLu <= mesureFin) ){
 
                                                                         Reprise eventUpdate = null;
@@ -417,13 +417,7 @@ public class EditionActivity  extends Activity {
                                                                     }
                                                                     else{
                                                                         //les conditions ne sont pas bonnes
-                                                                        if(repriseSansMuet.isChecked()){
-                                                                            Toast.makeText(context, "La mesure de fin doit être après la mesure de début", Toast.LENGTH_LONG).show();
-                                                                        }
-                                                                        else{
-                                                                            Toast.makeText(context, "Les indications de mesures ne sont pas valides", Toast.LENGTH_LONG).show();
-                                                                        }
-
+                                                                        Toast.makeText(context, "Les indications de mesures ne sont pas valides", Toast.LENGTH_LONG).show();
                                                                     }
                                                                     MAJAffichage();
                                                                 /*   apparament inutile

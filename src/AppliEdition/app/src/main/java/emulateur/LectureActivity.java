@@ -64,11 +64,10 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         final HashMap<Integer,Pair<Integer,Integer>> mapCercle = creerMapCercle();
         final HashMap<Integer,Bitmap> mapMesure = creerMapMesure();
         final HashMap<Integer,Integer> mapNuance = creerMapNuance();
-        final HashMap<Integer,Integer> mapSection = creerMapSection();
-        final HashMap<Integer,Integer> mapRepetition = creerMapRepetition();
         final HashMap<Integer,Bitmap> mapArmature = creerMapArmature();
-        final HashMap<Integer,Integer> mapSignature = creerMapSignature();
         final HashMap<Integer,Integer> mapAlerte = creerMapAlerte();
+        //format : nbTemps Debut Reprise -> nbTemps Apres Reprise
+        final HashMap<Integer,Integer> mapRepetition = creerMapRepetition();
 
         //lancement de l'animation
         switcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
@@ -78,7 +77,8 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
             int tempsDebut = mapMesures.get(mesureDebut);
             int tempsMesure2 = mapMesures.get(mesureDebut+1);
-            int nbDecompte = tempsMesure2 - tempsDebut;
+            int decompteMax = tempsMesure2 - tempsDebut;
+            int nbDecompte = 1;
 
             int numeroTemps = tempsDebut;
             int numeroTempsFin = mapMesures.get(mesureFin+1);
@@ -92,17 +92,27 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             Bitmap bitmapNuance = null;
             Bitmap bitmapArmature = null;
             Bitmap bitmapAlerte = null;
+            Bitmap bitmapRepetition = null;
+            int numeroRepetition = 0;
+            int prochaineFinReprise = -1;
+            int passageDecompte = 0;
 
             @Override
             public void run() {
 
-                if(nbDecompte > 0){
+                if(passageDecompte<2){
                     //afficher le decompte
                     int temps = 60000/ mapCercle.get(-nbDecompte).getRight();
                     switcher.postDelayed(this, temps);
 
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mapCercle.get(-nbDecompte).getLeft());
-                    nbDecompte--;
+                    if(nbDecompte == decompteMax){
+                        nbDecompte = 1;
+                        passageDecompte++;
+                    }
+                    else{
+                        nbDecompte++;
+                    }
                     BitmapDrawable draw = new BitmapDrawable(getResources(),bitmap);
                     switcher.setImageDrawable(draw);
                 }
@@ -115,8 +125,10 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     switcher.removeCallbacks(runnable);
                 }
                 else{
+
                     int temps = 0 ;
 
+                    //Recuperation des differentes images pour le temps courant
                     if(mapCercle.containsKey(numeroTemps)){
                         bitmapCercle = BitmapFactory.decodeResource(getResources(), mapCercle.get(numeroTemps).getLeft());
                         temps = 60000/mapCercle.get(numeroTemps).getRight();
@@ -145,17 +157,33 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                     else{
                         bitmapAlerte = null;
                     }
-                    Bitmap bitmapSignature = (mapSignature.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSignature.get(numeroTemps)) : null;
-                    Bitmap bitmapRepetition = (mapRepetition.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapRepetition.get(numeroTemps)) : null;
-                    Bitmap bitmapSection = (mapSection.containsKey(numeroTemps)) ? BitmapFactory.decodeResource(getResources(), mapSection.get(numeroTemps)) : null;
+                    //Gestion du cas des repetitions
+                    if(mapRepetition.containsKey(numeroTemps) && numeroRepetition == 0){
+                        numeroRepetition = 1;
+                        int idImg1 = getResources().getIdentifier("passage1","drawable",getPackageName());
+                        bitmapRepetition = BitmapFactory.decodeResource(getResources(), idImg1);
+                        prochaineFinReprise = mapRepetition.get(numeroTemps);
+                    }
+                    else if(mapRepetition.containsKey(numeroTemps) && numeroRepetition == 1){
+                        numeroRepetition = 2;
+                        int idImg2 = getResources().getIdentifier("passage2","drawable",getPackageName());
+                        bitmapRepetition = BitmapFactory.decodeResource(getResources(), idImg2);
+                    }
+                    //Effacer l'info de repetition
+                    if(numeroTemps == prochaineFinReprise){
+                        numeroRepetition = 0;
+                        bitmapRepetition = null;
+                    }
+
                     Bitmap bitmapFinal;
-                    bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapSignature, bitmapRepetition, bitmapMesure, bitmapSection, bitmapArmature, bitmapAlerte);
+                    bitmapFinal = assemblerParties(bitmapCercle, bitmapNuance, bitmapMesure, bitmapArmature, bitmapAlerte, bitmapRepetition);
 
                     BitmapDrawable draw = new BitmapDrawable(getResources(),bitmapFinal);
                     switcher.setImageDrawable(draw);
 
 
                     //verifier les sauts liés aux reprises et mesures non lues
+
                     if(mapReprises.containsKey(numeroTemps)){
                         if(numeroPassageReprise == 1){
                             //saut de reprise
@@ -248,6 +276,25 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         return map;
     }
 
+    private HashMap<Integer,Integer> creerMapRepetition(){
+        //format : 1er de la reprise -> 1er temps apres la reprise
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        ArrayList<Reprise> reprises = bdd.getReprises(bdd.getMusique(idMusique));
+
+        for(Reprise rep : reprises){
+            int mesureDebut = rep.getMesure_debut();
+            int mesureFin = rep.getMesure_fin();
+
+            int premierTempsReprise = mapMesures.get(mesureDebut);
+            int premierTempsApres = mapMesures.get(mesureFin+1);
+
+            map.put(premierTempsReprise,premierTempsApres);
+        }
+
+        return map;
+    }
+
     private HashMap<Integer,Pair<Integer,Integer>> creerMapNonLues(){
         //format : nbTemps -> (nbTemps apres Jump, passage reprise)
         HashMap<Integer,Pair<Integer,Integer>> map = new HashMap<>();
@@ -259,25 +306,13 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             int mesureFin = mnl.getMesure_fin();
             int passage = mnl.getPassage_reprise();
 
-            int premierTemps = mapMesures.get(mesureDebut)-1;
-            int tempsJump = mapMesures.get(mesureFin+1);
+            int premierTemps = mapMesures.get(mesureDebut);
+            int tempsJump = mapMesures.get(mesureFin+1)-1;
 
             map.put(premierTemps, new Pair<>(tempsJump,passage));
         }
 
         return map;
-    }
-
-    private HashMap<Integer, Integer> creerMapSignature() {
-        return new HashMap<>();
-    }
-
-    private HashMap<Integer, Integer> creerMapRepetition() {
-        return new HashMap<>();
-    }
-
-    private HashMap<Integer, Integer> creerMapSection() {
-        return new HashMap<>();
     }
 
     private HashMap<Integer, Integer> creerMapNuance() {
@@ -336,7 +371,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
         Bitmap bitmapMesure = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesureexemple","drawable",getPackageName()));
 
-        Bitmap bitmap = Bitmap.createBitmap(bitmapMesure.getWidth(),bitmapMesure.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(bitmapMesure.getWidth(), bitmapMesure.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         int unite = nMesure%10;
@@ -345,7 +380,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         nMesure=nMesure/10;
         int centaine = nMesure%10;
 
-        Bitmap bitunite = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesure"+unite, "drawable", getPackageName()));
+        Bitmap bitunite = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier("mesure" + unite, "drawable", getPackageName()));
         Bitmap bitdizaine = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesure"+dizaine, "drawable", getPackageName()));
         Bitmap bitcentaine = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier("mesure"+centaine, "drawable", getPackageName()));
 
@@ -366,35 +401,38 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             }
         });
 
-        int indexVar=0;
-        Armature varCourante = listeVariations.get(indexVar);
-        int tempsVar = mapMesures.get(varCourante.getMesure_debut()) + varCourante.getTemps_debut() - 1;
+        if(listeVariations.size() > 0) {
 
-        Bitmap imageCourante = null;
+            int indexVar = 0;
+            Armature varCourante = listeVariations.get(indexVar);
+            int tempsVar = mapMesures.get(varCourante.getMesure_debut()) + varCourante.getTemps_debut() - 1;
 
-        int tempsFin = mapMesures.get(mesureFin+1);
-        for(int temps = 1; temps < tempsFin; temps++){
+            Bitmap imageCourante = null;
 
-            if(temps == tempsVar){
-                //maj de l'image
+            int tempsFin = mapMesures.get(mesureFin + 1);
+            for (int temps = 1; temps < tempsFin; temps++) {
 
-                imageCourante = null;
-                if(varCourante.getAlteration() != 0){
-                    imageCourante = creerBitmapArmature(varCourante.getAlteration());
+                if (temps == tempsVar) {
+                    //maj de l'image
+
+                    imageCourante = null;
+                    if (varCourante.getAlteration() != 0) {
+                        imageCourante = creerBitmapArmature(varCourante.getAlteration());
+                    }
+
+                    //chargement de la prochaine variation
+                    if (indexVar + 1 < listeVariations.size()) {
+                        indexVar++;
+                        varCourante = listeVariations.get(indexVar);
+                        tempsVar = mapMesures.get(varCourante.getMesure_debut());
+                    }
                 }
 
-                //chargement de la prochaine variation
-                if(indexVar+1 < listeVariations.size()){
-                    indexVar++;
-                    varCourante = listeVariations.get(indexVar);
-                    tempsVar = mapMesures.get(varCourante.getMesure_debut());
-                }
+                map.put(temps, imageCourante);
             }
-
-            map.put(temps,imageCourante);
         }
+            return map;
 
-        return map;
     }
 
     private Bitmap creerBitmapArmature(int alteration) {
@@ -499,7 +537,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
     }
 
 
-    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap signature, Bitmap repetition, Bitmap mesure, Bitmap section, Bitmap armature, Bitmap alerte){
+    private Bitmap assemblerParties(Bitmap cercle, Bitmap nuance, Bitmap mesure, Bitmap armature, Bitmap alerte, Bitmap repetition){
         //cercle n'est pas null
 
         Bitmap bitmap = Bitmap.createBitmap(cercle.getWidth(), cercle.getHeight(), cercle.getConfig());
@@ -512,10 +550,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             canvas.drawBitmap(nuance,(cercle.getWidth()/4),(cercle.getHeight()/4),null);
             //taille 32x32
         }
-        if(signature != null){
-            canvas.drawBitmap(signature,0,0,null);
-            //taille 16x32
-        }
         if(repetition != null){
             canvas.drawBitmap(repetition,0,(3*cercle.getHeight()/4),null);
             //taille 16x16
@@ -523,10 +557,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         if(mesure != null){
             canvas.drawBitmap(mesure,(5*cercle.getWidth()/8),0,null);
             //taille 48x16
-        }
-        if(section != null){
-            canvas.drawBitmap(section,(5*cercle.getWidth()/8),(cercle.getHeight()/4),null);
-            //taille 16x16
         }
         if(armature != null){
             canvas.drawBitmap(armature,(6*cercle.getWidth()/8),(cercle.getHeight()/2),null);
