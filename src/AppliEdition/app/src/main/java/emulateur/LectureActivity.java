@@ -69,6 +69,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
         //format : nbTemps Debut Reprise -> nbTemps Apres Reprise
         final HashMap<Integer,Integer> mapRepetition = creerMapRepetition();
 
+
         //lancement de l'animation
         switcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         switcher.setFactory(this);
@@ -96,6 +97,25 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             int numeroRepetition = 0;
             int prochaineFinReprise = -1;
             int passageDecompte = 0;
+
+            public Runnable init(){
+
+                ArrayList<Reprise> reprises = bdd.getReprises(bdd.getMusique(idMusique));
+
+                for(Reprise rep : reprises){
+                    int mesureD = rep.getMesure_debut();
+                    int mesureF = rep.getMesure_fin();
+
+                    if(mesureDebut > mesureD && mesureDebut <= mesureF){
+                        numeroRepetition = 1;
+                        int idImg1 = getResources().getIdentifier("passage1","drawable",getPackageName());
+                        bitmapRepetition = BitmapFactory.decodeResource(getResources(), idImg1);
+                        break;
+                    }
+                }
+
+                return this;
+            }
 
             @Override
             public void run() {
@@ -162,12 +182,12 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
                         numeroRepetition = 1;
                         int idImg1 = getResources().getIdentifier("passage1","drawable",getPackageName());
                         bitmapRepetition = BitmapFactory.decodeResource(getResources(), idImg1);
-                        prochaineFinReprise = mapRepetition.get(numeroTemps);
                     }
                     else if(mapRepetition.containsKey(numeroTemps) && numeroRepetition == 1){
                         numeroRepetition = 2;
-                        int idImg2 = getResources().getIdentifier("passage2","drawable",getPackageName());
+                        int idImg2 = getResources().getIdentifier("passage2","drawable", getPackageName());
                         bitmapRepetition = BitmapFactory.decodeResource(getResources(), idImg2);
+                        prochaineFinReprise = mapRepetition.get(numeroTemps);
                     }
                     //Effacer l'info de repetition
                     if(numeroTemps == prochaineFinReprise){
@@ -183,7 +203,6 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
 
                     //verifier les sauts liés aux reprises et mesures non lues
-
                     if(mapReprises.containsKey(numeroTemps)){
                         if(numeroPassageReprise == 1){
                             //saut de reprise
@@ -216,7 +235,7 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
 
                 }
             }
-        };
+        }.init();
 
         switcher.postDelayed(runnable,500);
 
@@ -306,8 +325,8 @@ public class LectureActivity extends Activity implements ViewSwitcher.ViewFactor
             int mesureFin = mnl.getMesure_fin();
             int passage = mnl.getPassage_reprise();
 
-            int premierTemps = mapMesures.get(mesureDebut);
-            int tempsJump = mapMesures.get(mesureFin+1)-1;
+            int premierTemps = mapMesures.get(mesureDebut)-1;
+            int tempsJump = mapMesures.get(mesureFin+1);
 
             map.put(premierTemps, new Pair<>(tempsJump,passage));
         }
