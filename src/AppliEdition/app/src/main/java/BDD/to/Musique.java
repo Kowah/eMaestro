@@ -93,7 +93,7 @@ public class Musique implements Parcelable {
         if (getClass() != obj.getClass())
             return false;
         Musique other = (Musique) obj;
-        if (id != other.id)
+        if (id != other.id || !name.equals(other.name) || nb_mesure != other.nb_mesure)
             return false;
         return true;
     }

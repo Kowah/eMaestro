@@ -45,5 +45,17 @@ public class Evenement {
     public int getArg2(){return arg2;}
     public int getPassage_reprise(){return passage_reprise;}
     public float getArg3() {return arg3;}
-
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Evenement other = (Evenement) obj;
+        if (id != other.id || idMusique != other.idMusique || flag != other.flag || arg2 != other.arg2 || mesure_debut != other.mesure_debut || arg3 != other.arg3 || passage_reprise != other.passage_reprise)
+            return false;
+        return true;
+    }
 }

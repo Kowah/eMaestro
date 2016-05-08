@@ -13,16 +13,15 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import BDD.db.CatalogueDAO;
 import BDD.db.DataBaseManager;
+import BDD.db.TestBDD;
 import emulateur.EmulateurActivity;
 import telecommande.Telecommande;
 
@@ -35,6 +34,12 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		c = this;
 		setContentView(R.layout.ecran_accueil);
+		/* Tests BDD
+		TestBDD test = new TestBDD(c);
+		if(!test.run()){
+			System.out.println("Attention, il y'a une erreur dans la gestion de la BDD");
+		}
+		*/;
 
 		final ImageButton nouveau = (ImageButton) findViewById(R.id.nouveau);
 		nouveau.setOnClickListener(new OnClickListener() {

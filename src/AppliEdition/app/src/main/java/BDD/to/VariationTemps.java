@@ -70,4 +70,18 @@ public class VariationTemps {
                 "temps_par_mesure"+ this.temps_par_mesure +
                 "tempo"+ this.tempo;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VariationTemps other = (VariationTemps) obj;
+        if (idVarTemps != other.idVarTemps || idmusique != other.idmusique || mesure_debut != other.mesure_debut || temps_par_mesure != other.temps_par_mesure || tempo != other.tempo || unite_pulsation != other.unite_pulsation)
+            return false;
+        return true;
+    }
 }
