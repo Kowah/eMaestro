@@ -5,9 +5,12 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boris.emaestro.R;
@@ -28,10 +31,11 @@ public class Telecommande extends AppCompatActivity {
     PrintWriter printerServeur = null;
     final String adresseIP = "192.168.103.1";
     final int port = 8192;
-    int musiqueID = 0;
+    int musiqueID = -1;
     ArrayList<Button> buttons = new ArrayList<>();
     Button connectButton=null;
     Spinner spinner =  null;
+    CatalogueDAO bdd = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class Telecommande extends AppCompatActivity {
 
         setConnected(false);
 
-        DataBaseManager bdd = new DataBaseManager(this);
+        bdd = new CatalogueDAO(this);
         bdd.open();
         final ArrayList<Musique> listMusique = bdd.getMusiques();
 
@@ -96,6 +100,36 @@ public class Telecommande extends AppCompatActivity {
 
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Musique selection = (Musique) parent.getItemAtPosition(position);
+
+                musiqueID = selection.getId();
+                spinner.setSelection(position);
+
+                //Afficher le nombre de mesures du morceau selectionne
+                TextView textNbMesures = (TextView) findViewById(R.id.textNbMesures);
+                int mesureFin = bdd.getMusique(musiqueID).getNb_mesure();
+                textNbMesures.setText("" + mesureFin);
+
+
+                //Mise par defaut les mesures de debut et de fin
+                EditText editMesureDebut = (EditText) findViewById(R.id.editMesureDebut);
+                EditText editMesureFin = (EditText) findViewById(R.id.editMesureFin);
+
+                editMesureDebut.setText("1");
+
+
+                editMesureFin.setText("" + mesureFin);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 
@@ -131,10 +165,31 @@ public class Telecommande extends AppCompatActivity {
 
     public void action(String message){
 
-        if(message.equals("PLAY") && printerServeur != null)
-        {
-            printerServeur.write(musiqueID);
-            printerServeur.flush();
+        if(message.equals("PLAY") && printerServeur != null) {
+            if (musiqueID != -1) {//Si un morceau a ete choisi
+                int mesureFinMusique = bdd.getMusique(musiqueID).getNb_mesure();
+                EditText editMesureDebut = (EditText) findViewById(R.id.editMesureDebut);
+                EditText editMesureFin = (EditText) findViewById(R.id.editMesureFin);
+                int mesureDebut = Integer.parseInt(editMesureDebut.getText().toString());
+                int mesureFin = Integer.parseInt(editMesureFin.getText().toString());
+
+                //Erreur dans les indications de mesures pour la lecture
+                if (mesureDebut <= 0 || mesureDebut > mesureFin || mesureFin > mesureFinMusique) {
+                    if (mesureDebut <= 0) {
+                        Toast.makeText(this, "La mesure de début doit valoir au minimum 1", Toast.LENGTH_LONG).show();
+                    }
+                    if (mesureDebut > mesureFin) {
+                        Toast.makeText(this, "La mesure de début doit précéder celle de fin", Toast.LENGTH_LONG).show();
+                    }
+                    if (mesureFin > mesureFinMusique) {
+                        Toast.makeText(this, "La mesure de fin doit au plus être la dernière mesure du morceau", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    printerServeur.write(musiqueID + "," + mesureDebut + "," + mesureFin);
+                    printerServeur.flush();
+                }
+
+            }
         }
         if (printerServeur != null) {
             printerServeur.write(message);
@@ -161,6 +216,7 @@ public class Telecommande extends AppCompatActivity {
             }
         } catch (IOException e) {
         }
+        bdd.close();
         super.onDestroy();
     }
 

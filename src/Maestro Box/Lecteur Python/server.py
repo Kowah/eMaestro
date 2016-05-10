@@ -18,23 +18,31 @@ while True:
 	try:
             thread_telecommande = Telecommande()
             thread_telecommande.setDaemon(True)
-            thread_telecommande.start()
             thread_telecommande.matrix = matrix
             thread_telecommande.logo = logo
-            message = client.recv(255) #Taille buffer
-            message = message.replace('\n', '')
-	    thread_telecommande.name = message
-	    message = client.recv(255)
-	    message = message.replace('\n','')
-            while message != 'QUIT' and message != 'SHUTDOWN' and message != '':
-                thread_telecommande.setMessage(message)
-                message = client.recv(255) #Taille buffer
-                message = message.replace('\n', '')
-            thread_telecommande.setMessage('QUIT')
-	    if message == 'SHUTDOWN':
-		print "Shutdown"
-	        os.system("shutdown now")
-            print "Quit received"
+	    quit = 0
+	    thread_telecommande.start()
+	    while quit == 0:
+             message = client.recv(255) #Taille buffer
+             message = message.replace('\n', '')
+             donnees = message.split(",")
+	     thread_telecommande.name = donnees[0]
+	     thread_telecommande.debut = donnees[1]
+	     thread_telecommande.fin = donnees[2]
+	     message = client.recv(255)
+	     message = message.replace('\n','')
+             while message != 'QUIT' and message != 'PAUSE' and  message != 'SHUTDOWN' and message != '' and thread_telecommande.display.get_etat != 'stop':
+                  message = client.recv(255) #Taille buffer
+                  message = message.replace('\n', '')
+                  thread_telecommande.setMessage(message)
+             if message == "QUIT"
+			     thread_telecommande.setMessage('QUIT')
+	     thread_telecommande.display.set_etat('stop')
+	     if message == 'SHUTDOWN':
+		 print "Shutdown"
+		 thread_telecommande.setMessage('QUIT')
+	         os.system("shutdown now")
+             print "Quit received"
         except Exception, e:
             print 'EXCEPTION : '+str(e)
             thread_telecommande.setMessage('QUIT')

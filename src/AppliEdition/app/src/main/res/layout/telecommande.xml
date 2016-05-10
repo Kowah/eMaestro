@@ -41,6 +41,70 @@
             android:contextClickable="false" />
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="838dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="380dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Nombre de mesures du morceau : "
+            android:id="@+id/textView4"
+            android:inputType="none" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/textNbMesures"
+            android:textColor="@android:color/black"
+            android:inputType="none" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="838dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="380dp">
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Commencer à la mesure :"
+        android:textColor="@android:color/black"
+        android:id="@+id/textView"
+        android:inputType="none"
+        android:layout_weight="0.00" />
+
+        <EditText
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editMesureDebut" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Finir à la mesure :"
+            android:textColor="@android:color/black"
+            android:id="@+id/textView2"
+            android:inputType="none"
+            android:layout_weight="0.00" />
+
+        <EditText
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editMesureFin" />
+    </LinearLayout>
+
     <Button
         android:layout_width="330dp"
         android:layout_height="wrap_content"
@@ -51,7 +115,7 @@
     <Button
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="Mettre en pause"
+        android:text="Stop"
         android:id="@+id/stopButton"
         android:layout_gravity="center_horizontal" />
 

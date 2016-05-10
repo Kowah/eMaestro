@@ -15,30 +15,35 @@ class Telecommande(threading.Thread):
         self.matrix = None
         self.count = 1
 	self.name = 0
+	self.debut = 0
+	self.fin = 0
+	self.display = None
         
     def setMessage(self,msg):
         self.message=msg
         
     def run(self):
+	self.display = Afficheur(self.matrix)
 	while self.message != 'QUIT':
 	  if self.message == 'PLAY':
+	    print(self.debut)
+	    print(self.fin)
 	    self.play()
+	    self.matrix.Clear()
+	    self.matrix.SetImage(self.logo.im.id,0,0)
           elif self.message == 'PAUSE':
 	    self.pause()
 	self.quit()
 
     def play(self):
        print "playing "+ self.name
-       cp = Chargeur_partition(ord(self.name))
+       cp = Chargeur_partition(self.name)
        map_mesure_modif = cp.get_map_mesures_modif()
-       display = afficheur(self.matrix)
-       while self.message == 'PLAY':
-            display.lire(map_mesure_modif,1,1,map_mesure_modif["mesure_fin_musique"],1)
+       self.display.lire(map_mesure_modif,int(self.debut),1,int(self.fin),1)
     
     def pause(self):
         print "PAUSE"
-        self.setMessage('')
-             
+        
     def quit(self):
 	print "End"
 	self.matrix.Clear()
