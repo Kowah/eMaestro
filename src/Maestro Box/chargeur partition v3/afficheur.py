@@ -6,8 +6,8 @@ from rgbmatrix import Adafruit_RGBmatrix
 
 chemin_images = "drawable/"
 
-temps_affichage_logo = 2
-temps_affichage_fin = 5
+temps_affichage_logo = 0
+temps_affichage_fin = 3
 
 pos_temps_h = (8,0)
 pos_temps_g = (8, 8)
@@ -43,7 +43,7 @@ class Afficheur :
 
     while(descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_debut_lecture, passage_debut_lecture):
       if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
-        descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
+        descripteur = dict(descripteur, ** map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
       if "mesure_non_lue" in descripteur :
         del descripteur["mesure_non_lue"]
       if "prochaine_mesure" in descripteur:
@@ -67,10 +67,12 @@ class Afficheur :
 
     while ((self.etat != "stop") and (descripteur["mesure_courante"], descripteur["passage_reprise_courant"]) != (mesure_fin_lecture + 1, passage_fin_lecture)):
 
+      gc.enable()
+
       if(self.etat == "play"):
 
         if (str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])) in map_mesures_modif :
-          descripteur.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
+          descripteur = dict(descripteur, ** map_mesures_modif[str(descripteur["mesure_courante"]) + '.' + str(descripteur["passage_reprise_courant"])])
 
         if ("mesure_debut_reprise" in descripteur):
           del descripteur["mesure_debut_reprise"]
@@ -86,16 +88,17 @@ class Afficheur :
 "alteration_1" : descripteur["alteration_courante"]}
 
           if (str(descripteur["mesure_courante"]) + '.2') in map_mesures_modif:
-            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dico_tmp.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dict(dico_tmp, ** map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
           else:
-            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dico_tmp
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dico_tmp.copy()
 
           if ("nb_temps_intensite_1" in descripteur):
-            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = {"nb_temps_intensite_1" : descripteur["nb_temps_intensite_1"]}.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dict({"nb_temps_intensite_1" : descripteur["nb_temps_intensite_1"]}, ** map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
           else:
-            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = {"nb_temps_intensite_1" : 0}.update(map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
+            map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'] = dict({"nb_temps_intensite_1" : 0}, ** map_mesures_modif[str(descripteur["mesure_courante"]) + '.2'])
 
         if "mesure_non_lue" not in descripteur :
+          gc.disable()
           self.afficher(descripteur, scheduler)
         else:
           del descripteur["mesure_non_lue"]
@@ -113,13 +116,14 @@ class Afficheur :
 
       else:
         while(self.etat == "pause"):
-          wait()
+          self.wait()
 
     self.afficher_fin()
     scheduler.enter(temps_affichage_fin, 1, self.wait, ())
     scheduler.run()
 
     gc.enable()
+    self.etat = "stop"
 
 
   def afficher(self, descripteur, scheduler):
@@ -175,13 +179,11 @@ class Afficheur :
         del descripteur["temps_debut_armature_" + str(t)]
         del descripteur["alteration_" + str(t)]
 
-      if (self.etat == "play"):
-        scheduler.run()
-      elif (self.etat == "stop"):
+      if (self.etat == "stop"):
         return 0
       else:
         while(self.etat == "pause"):
-          wait()
+          self.wait()
 
     scheduler.enter(descripteur["temps_par_mesure"] * tempo_en_seconde, 1, self.wait, ())
 
@@ -206,16 +208,16 @@ class Afficheur :
     scheduler.enter(0, 1, self.matrix.SetImage, (image.im.id, 0, 0))
     scheduler.run()
 
+
   def afficher_decompte_aux(self, numero):
     image = Image.open(chemin_images + 'd' + str(numero) + '.png')
     image.load()
     self.matrix.SetImage(image.im.id, 0, 0)
 
+
   def wait(self):
     return 0
 
-  def afficher_d_helper(self, d):
-    print time.time(), "decompte", d
 
   def afficher_fin(self):
     image = Image.open(chemin_images + 'fin.png')

@@ -29,10 +29,21 @@ class LecteurBDD:
       cur.execute('SELECT mesure_debut, temps_par_mesure, tempo, unite_pulsation FROM VariationTemps WHERE id_musique = '+str(id_musique))
       infos = cur.fetchall()
 
-      d1 = {str(m) + '.1' : {"temps_par_mesure" : tpm, "tempo" : t, "unite_pulsation" : u} for (m,tpm,t,u) in infos}
-      d2 = {str(m) + '.2' : {"temps_par_mesure" : tpm, "tempo" : t, "unite_pulsation" : u} for (m,tpm,t,u) in infos}
-      d1.update(d2)
-      return d1
+      d = {}
+      for (m,tpm,t,u) in infos:
+        key = str(m) + '.1'
+        if key in d:
+          d[key] = dict(d[key], ** {"temps_par_mesure" : tpm, "tempo" : t, "unite_pulsation" : u})
+        else:
+          d[key] = {"temps_par_mesure" : tpm, "tempo" : t, "unite_pulsation" : u}
+      for (m,tpm,t,u) in infos:
+        key = str(m) + '.2'
+        if key in d:
+          d[key] = dict(d[key], ** {"temps_par_mesure" : tpm, "tempo" : t, "unite_pulsation" : u})
+        else:
+          d[key] = {"temps_par_mesure" : tpm, "tempo" : t, "unite_pulsation" : u}
+
+      return d
 
 
   def getDicoVariationIntensite(self, id_musique):
@@ -47,13 +58,13 @@ class LecteurBDD:
       for (m,tdi,nt,i) in infos:
         key = str(m) + '.1'
         if key in d:
-          d[key].update({"temps_debut_intensite_"+str(tdi) : True, "nb_temps_intensite_"+str(tdi) : nt, "intensite_"+str(tdi) : i})
+          d[key] = dict(d[key], ** {"temps_debut_intensite_"+str(tdi) : True, "nb_temps_intensite_"+str(tdi) : nt, "intensite_"+str(tdi) : i})
         else:
           d[key] = {"temps_debut_intensite_"+str(tdi) : True, "nb_temps_intensite_"+str(tdi) : nt, "intensite_"+str(tdi) : i}
       for (m,tdi,nt,i) in infos:
         key = str(m) + '.2'
         if key in d:
-          d[key].update({"temps_debut_intensite_"+str(tdi) : True, "nb_temps_intensite_"+str(tdi) : nt, "intensite_"+str(tdi) : i})
+          d[key] = dict(d[key], ** {"temps_debut_intensite_"+str(tdi) : True, "nb_temps_intensite_"+str(tdi) : nt, "intensite_"+str(tdi) : i})
         else:
           d[key] = {"temps_debut_intensite_"+str(tdi) : True, "nb_temps_intensite_"+str(tdi) : nt, "intensite_"+str(tdi) : i}
 
@@ -79,12 +90,20 @@ class LecteurBDD:
       cur.execute('SELECT mesure_debut, arg2 FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 0')
       infos = cur.fetchall()
 
-      d1 = {str(m) + '.2' : {"prochaine_mesure" : mf, "mesure_non_lue" : True} for (m,mf) in infos}
-      d2 = {str(mf) + '.2' : {"mesure_non_lue" : True} for (m,mf) in infos}
-      d1.update(d2)
-      if d1 == None:
-        d1 = {}
-      return d1
+      d = {}
+      for (m,mf) in infos:
+        key1 = str(m) + '.2'
+        key2 = str(mf) + '.2'
+        if key1 in d:
+          d[key1] = dict(d[key1], ** {"prochaine_mesure" : mf, "mesure_non_lue" : True})
+        else:
+          d[key1] = {"prochaine_mesure" : mf, "mesure_non_lue" : True}
+        if key2 in d:
+          d[key2] = dict(d[key2], ** {"mesure_non_lue" : True})
+        else:
+          d[key2] = {"mesure_non_lue" : True}
+
+      return d
 
 
   def getDicoReprise(self, id_musique):
@@ -95,13 +114,25 @@ class LecteurBDD:
       cur.execute('SELECT arg2, mesure_debut FROM Evenement WHERE id_musique = '+str(id_musique)+' AND arg1 = 1')
       infos = cur.fetchall()
 
-      d1 = {str(mf) + '.1' : {"prochaine_mesure" : md, "prochain_passage" : 2} for (mf,md) in infos}
-      d2 = {str(mf) + '.2' : {"prochain_passage" : 1} for (mf,md) in infos}
-      d1.update(d2)
-      d1.update({str(md) + '.1' : {"mesure_debut_reprise" : True} for (mf,md) in infos})
-      if d1 == None:
-        d1 = {}
-      return d1
+      d = {}
+      for (mf,md) in infos:
+        key1 = str(mf) + '.1'
+        key2 = str(mf) + '.2'
+        key3 = str(md) + '.1'
+        if key1 in d:
+          d[key1] = dict(d[key1], ** {"prochaine_mesure" : md, "prochain_passage" : 2})
+        else:
+          d[key1] = {"prochaine_mesure" : md, "prochain_passage" : 2}
+        if key2 in d:
+          d[key2] = dict(d[key2], ** {"prochain_passage" : 1})
+        else:
+          d[key2] = {"prochain_passage" : 1}
+        if key3 in d:
+          d[key3] = dict(d[key3], ** {"mesure_debut_reprise" : True})
+        else:
+          d[key3] = {"mesure_debut_reprise" : True}
+
+      return d
 
 
   def getDicoAlerte(self, id_musique):
@@ -116,13 +147,13 @@ class LecteurBDD:
       for (m,t,c) in infos:
         key = str(m) + '.1'
         if key in d:
-          d[key].update({"temps_alerte_" + str(t) : True, "couleur_alerte_" + str(t) : int(c)})
+          d[key] = dict(d[key], ** {"temps_alerte_" + str(t) : True, "couleur_alerte_" + str(t) : int(c)})
         else:
           d[key] = {"temps_alerte_" + str(t) : True, "couleur_alerte_" + str(t) : int(c)}
       for (m,t,c) in infos:
         key = str(m) + '.2'
         if key in d:
-          d[key].update({"temps_alerte_" + str(t) : True, "couleur_alerte_" + str(t) : int(c)})
+          d[key] = dict(d[key], ** {"temps_alerte_" + str(t) : True, "couleur_alerte_" + str(t) : int(c)})
         else:
           d[key] = {"temps_alerte_" + str(t) : True, "couleur_alerte_" + str(t) : int(c)}
 
@@ -141,7 +172,7 @@ class LecteurBDD:
       for (m,p,t,tv) in infos:
         key = str(m) + '.'+ str(p)
         if key in d:
-          d[key].update({"temps_debut_variation_rythme_" + str(t) : True, "taux_de_variation_rythme_" + str(t) : tv})
+          d[key] = dict(d[key], ** {"temps_debut_variation_rythme_" + str(t) : True, "taux_de_variation_rythme_" + str(t) : tv})
         else:
           d[key] = {"temps_debut_variation_rythme_" + str(t) : True, "taux_de_variation_rythme_" + str(t) : tv}
 
@@ -160,7 +191,7 @@ class LecteurBDD:
       for (m,p,t,s) in infos:
         key = str(m) + '.'+ str(p)
         if key in d:
-          d[key].update({"temps_suspension_" + str(t) : True, "duree_suspension_" + str(t) : s})
+          d[key] = dict(d[key], ** {"temps_suspension_" + str(t) : True, "duree_suspension_" + str(t) : s})
         else:
           d[key] = {"temps_suspension_" + str(t) : True, "duree_suspension_" + str(t) : s}
 
@@ -179,13 +210,13 @@ class LecteurBDD:
       for (m,t,a) in infos:
         key = str(m) + '.1'
         if key in d:
-          d[key].update({"temps_debut_armature_" + str(t) : True, "alteration_" + str(t) : int(a)})
+          d[key] = dict(d[key], ** {"temps_debut_armature_" + str(t) : True, "alteration_" + str(t) : int(a)})
         else:
           d[key] = {"temps_debut_armature_" + str(t) : True, "alteration_" + str(t) : int(a)}
       for (m,t,a) in infos:
         key = str(m) + '.2'
         if key in d:
-          d[key].update({"temps_debut_armature_" + str(t) : True, "alteration_" + str(t) : int(a)})
+          d[key] = dict(d[key], ** {"temps_debut_armature_" + str(t) : True, "alteration_" + str(t) : int(a)})
         else:
           d[key] = {"temps_debut_armature_" + str(t) : True, "alteration_" + str(t) : int(a)}
 

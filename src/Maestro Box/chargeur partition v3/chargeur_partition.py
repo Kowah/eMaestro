@@ -28,56 +28,56 @@ class Chargeur_partition:
       dicotmp = self.lecteur_bdd.getDicoVariationIntensite(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoPartie(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoMesuresNonLues(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoReprise(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoAlerte(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoVariationRythme(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoSuspension(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
       dicotmp = self.lecteur_bdd.getDicoArmature(id_musique)
       for m in dicotmp:
         if m in self.map_mesures_modif:
-          self.map_mesures_modif[m].update(dicotmp[m])
+          self.map_mesures_modif[m] = dict(self.map_mesures_modif[m], ** dicotmp[m])
         else:
           self.map_mesures_modif[m] = dicotmp[m]
 
