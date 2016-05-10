@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -606,7 +605,7 @@ public class DataBaseManager {
 			//On cherche a retrouver la configuration réseau
 			for (WifiConfiguration i : wifi.getConfiguredNetworks()) {
 				if (i.SSID != null && i.SSID.equals(networkSSID_quoted) || i.SSID != null && i.SSID.equals(ssid)) {
-					Toast.makeText(c, "SSID exist already: " + i.SSID, Toast.LENGTH_LONG).show();
+					//Toast.makeText(c, "SSID exist already: " + i.SSID, Toast.LENGTH_LONG).show();
 					exist = true;
 					res = i.networkId;
 					break;

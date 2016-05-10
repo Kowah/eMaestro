@@ -113,6 +113,7 @@ public class MainActivity extends Activity {
 					List<android.net.wifi.ScanResult> scan = wifi.getScanResults();
 
 					final List<String> name = new ArrayList<String>();
+					name.clear();
 					//Si le nom du reseau commence par keyname on le garde
 					for (android.net.wifi.ScanResult s : scan) {
 							if(s.SSID.length() >= keyName.length() && s.SSID.substring(0,keyName.length()).equals(keyName)) {
@@ -134,7 +135,7 @@ public class MainActivity extends Activity {
 					//Affiche les Maestrobox disponibles
 					ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, name.toArray(new String[name.size()]));
 					lv.setAdapter(adapter);
-					builder.setTitle("Maestrox disponibles : ")
+					builder.setTitle("MaestrBox disponibles : ")
 
 							.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 								@Override
@@ -143,7 +144,7 @@ public class MainActivity extends Activity {
 										DataBaseManager.connect(getApplicationContext(), name.get(selected));
 									}
 									else{
-										Toast.makeText(getApplicationContext(), "Aucune MaestrBox de selectionnée", Toast.LENGTH_SHORT).show();
+										Toast.makeText(getApplicationContext(), "Aucune MaestroBox de selectionnée", Toast.LENGTH_SHORT).show();
 									}
 								}
 							})
